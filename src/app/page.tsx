@@ -450,7 +450,7 @@ export default function Home() {
                 type="date"
                 value={quoteDate}
                 onChange={(e) => setQuoteDate(e.target.value)}
-                className={inputClass}
+                className={`${inputClass} w-full`}
               />
             </div>
 
