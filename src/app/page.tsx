@@ -418,7 +418,7 @@ export default function Home() {
     }).format(value)
 
   return (
-    <main className="relative p-8 md:p-10 print:p-0 space-y-8">
+    <main className="relative p-4 md:p-6 xl:p-10 print:p-0 space-y-6 xl:space-y-8">
       <div className="flex items-center gap-3 print:hidden mb-6">
   <img
     src="/logo.png"
@@ -427,13 +427,13 @@ export default function Home() {
   />
 </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr] gap-6 xl:gap-8">
         <div className="space-y-4 print:hidden">
           <div className="pb-3 mb-4 border-b border-gray-700">
             <h2 className="text-xl font-semibold">Inputs</h2>
           </div>
           
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block mb-2">Quote Number</label>
               <input
@@ -477,7 +477,7 @@ export default function Home() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block mb-2">Customer Phone</label>
               <input
@@ -522,7 +522,7 @@ export default function Home() {
           <div>
             <label className="block font-semibold mb-3">Trees by Height</label>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {(["0-15 ft", "15-30 ft", "30-60 ft", "60+ ft"] as TreeHeightTier[]).map(
                 (tier) => (
                   <div key={tier}>
@@ -545,7 +545,7 @@ export default function Home() {
  
 
         {baseService !== "Stump Grinding" && (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block mb-2">Difficult Trees</label>
               <input
@@ -584,7 +584,7 @@ export default function Home() {
           </div>
         )} 
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block mb-2">Haul-Off</label>
               <select
@@ -610,7 +610,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block mb-2"># of Stumps</label>
               <input
@@ -755,7 +755,7 @@ export default function Home() {
                 Editing Quote {quoteNumber}
               </div>
             )}
-            <div className="flex justify-end gap-3 mb-4 print:hidden">
+            <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mb-4 print:hidden">
               <button
                 onClick={handleNewQuote}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm"
@@ -844,8 +844,8 @@ export default function Home() {
               </p>
             </div>
 
-            <div>
-              <table className="w-full text-sm border-collapse">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[600px] text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide">
                     <th className="text-left py-3">Item</th>
