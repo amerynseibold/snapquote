@@ -127,7 +127,7 @@ export default function Home() {
     }))
   }  
 
-  const totalTreeCount = Object.values(treeCountsByHeight).reduce(
+  const totalTreeCount: number = Object.values(treeCountsByHeight).reduce(
     (sum: number, value) => sum + (Number(value) || 0),
     0
   )
