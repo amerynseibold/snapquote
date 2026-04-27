@@ -477,7 +477,7 @@ export default function Home() {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
             <div>
               <label className="block mb-2">Customer Phone</label>
               <input
@@ -522,7 +522,7 @@ export default function Home() {
           <div>
             <label className="block font-semibold mb-3">Trees by Height</label>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
               {(["0-15 ft", "15-30 ft", "30-60 ft", "60+ ft"] as TreeHeightTier[]).map(
                 (tier) => (
                   <div key={tier}>
@@ -545,7 +545,7 @@ export default function Home() {
  
 
         {baseService !== "Stump Grinding" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
             <div>
               <label className="block mb-2">Difficult Trees</label>
               <input
@@ -584,7 +584,7 @@ export default function Home() {
           </div>
         )} 
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
             <div>
               <label className="block mb-2">Haul-Off</label>
               <select
@@ -610,7 +610,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
             <div>
               <label className="block mb-2"># of Stumps</label>
               <input
