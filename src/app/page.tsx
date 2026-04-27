@@ -41,7 +41,9 @@ export default function Home() {
     new Date().toISOString().split("T")[0]
   )
   const [baseService, setBaseService] = useState("")
-  const [treeCountsByHeight, setTreeCountsByHeight] = useState({
+  const [treeCountsByHeight, setTreeCountsByHeight] = useState<
+    Record<TreeHeightTier, number | "">
+    >({
       "0-15 ft": "",
       "15-30 ft": "",
       "30-60 ft": "",
@@ -288,7 +290,6 @@ export default function Home() {
     alert("Please enter a service address before saving.")
     return
   }
-
 
 
   const { error } = await supabase.from("quotes").upsert(
