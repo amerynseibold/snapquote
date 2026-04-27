@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import type { ChangeEvent } from "react"
 import { calculateQuote } from "@/lib/calculateQuote"
 import { pricingConfig } from "@/lib/pricingConfig"
 import { supabase } from "@/lib/supabase"
@@ -18,7 +19,6 @@ type SavedQuote = {
   tree_count_15_30: number
   tree_count_30_60: number
   tree_count_60_plus: number
-  tree_count: number
   difficult_tree_count: number
   hazard_tree_count: number
   stump_count: number
@@ -136,7 +136,7 @@ export default function Home() {
     return `P-${String(num).padStart(3, "0")}`
   }
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0]
   if (!file) return
 
@@ -205,7 +205,7 @@ export default function Home() {
     return
   }
 
-  setSavedQuotes(data || [])
+  setSavedQuotes((data || []) as SavedQuote[])
   }
 
   useEffect(() => {
@@ -748,7 +748,7 @@ export default function Home() {
               </div>
           </div>
 
-        {hasRequiredInputs ? (
+        {result ? (
           <div className="space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0">
             {selectedQuoteId && (
               <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">
@@ -855,7 +855,7 @@ export default function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  {result.lineItems.map((item, index) => (
+                  {result?.lineItems.map((item, index) => (
                     <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40">
                       <td className="py-3">{item.item}</td>
                       <td className="py-3">{item.description}</td>
