@@ -74,3 +74,24 @@ input[type="number"] {
   -moz-appearance: textfield !important; /* Firefox */
   appearance: textfield !important;
 }
+
+@media print {
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-watermark {
+    position: fixed !important;
+    right: 0.35in !important;
+    bottom: 0.25in !important;
+    z-index: 9999 !important;
+  }
+}
