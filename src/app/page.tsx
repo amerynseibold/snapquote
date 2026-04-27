@@ -749,12 +749,20 @@ export default function Home() {
           </div>
 
         {result ? (
-          <div className="space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0">
+          <div className="relative space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:min-h-[10in]">
             {selectedQuoteId && (
               <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">
                 Editing Quote {quoteNumber}
               </div>
             )}
+            <div className="hidden print:flex absolute bottom-4 right-0 items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
+              <span>Powered by</span>
+              <img
+                src="/logo2.png"
+                alt="SnapQuote Logo"
+                className="h-4 w-auto opacity-70"
+              />
+            </div>
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mb-4 print:hidden">
               <button
                 onClick={handleNewQuote}
@@ -914,15 +922,6 @@ export default function Home() {
           </div>
         )}
         </div>
-        
-      <div className="hidden print:flex print-watermark items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
-        <span>Powered by</span>
-        <img
-          src="/logo2.png"
-          alt="SnapQuote Logo"
-          className="h-4 w-auto opacity-70"
-        />
-      </div>
     </main>
   )
 }
