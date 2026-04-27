@@ -118,7 +118,7 @@ export default function Home() {
   }
 
   const inputClass =
-    "w-full bg-black text-white border border-gray-700 shadow-lg rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+    "w-full h-12 bg-black text-white border border-gray-700 shadow-lg rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
 
   const updateTreeCountByHeight = (tier: TreeHeightTier, value: string) => {
     setTreeCountsByHeight((prev) => ({
@@ -433,7 +433,7 @@ export default function Home() {
             <h2 className="text-xl font-semibold">Inputs</h2>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 min-[500px]:grid-cols-2 xl:grid-cols-3 gap-3">
             <div>
               <label className="block mb-2">Quote Number</label>
               <input
@@ -450,7 +450,7 @@ export default function Home() {
                 type="date"
                 value={quoteDate}
                 onChange={(e) => setQuoteDate(e.target.value)}
-                className={`${inputClass} w-full appearance-none`}
+                className={`${inputClass} min-w-0 w-full appearance-none`}
               />
             </div>
 
