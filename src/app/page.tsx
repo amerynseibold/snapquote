@@ -749,7 +749,7 @@ export default function Home() {
           </div>
 
         {result ? (
-          <div className="space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:min-h-[9in] print:flex print:flex-col">
+          <div className="space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:h-[10.5in] print:flex print:flex-col">
             {selectedQuoteId && (
               <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">
                 Editing Quote {quoteNumber}
@@ -869,7 +869,7 @@ export default function Home() {
               </table>
             </div>
 
-            <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:break-inside-avoid">
+            <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:break-inside-avoid print:mb-6">
               <div className="flex justify-between text-gray-400">
                 <span>Subtotal</span>
                 <span>{formatCurrency(result.subtotal)}</span>
@@ -906,7 +906,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="hidden print:flex mt-auto pt-8 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
+            <<div className="hidden print:flex mt-auto pt-12 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
               <span>Powered by</span>
               <img
                 src="/logo2.png"
