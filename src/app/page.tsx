@@ -906,7 +906,7 @@ export default function Home() {
               </div>
             </div>
 
-            <<div className="hidden print:flex mt-auto pt-12 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
+            <div className="hidden print:flex mt-auto pt-12 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
               <span>Powered by</span>
               <img
                 src="/logo2.png"
