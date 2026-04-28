@@ -869,8 +869,7 @@ export default function Home() {
               </table>
             </div>
 
-            <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2">
-              <div className="print:break-inside-avoid">      
+            <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:break-inside-avoid">
               <div className="flex justify-between text-gray-400">
                 <span>Subtotal</span>
                 <span>{formatCurrency(result.subtotal)}</span>
@@ -890,7 +889,7 @@ export default function Home() {
                 <span>Emergency</span>
                 <span>{formatCurrency(result.emergencyFee)}</span>
               </div>
-                
+
               <div className="flex justify-between font-medium border-t border-gray-700 pt-3 mt-2">
                 <span>Adjusted Subtotal</span>
                 <span>{formatCurrency(result.adjustedSubtotal)}</span>
@@ -905,8 +904,8 @@ export default function Home() {
                 <span>Grand Total</span>
                 <span className="text-green-500">{formatCurrency(result.total)}</span>
               </div>
-
             </div>
+
             <div className="hidden print:flex mt-auto pt-8 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
               <span>Powered by</span>
               <img
@@ -921,7 +920,7 @@ export default function Home() {
             Select a base service and enter the required quantity to preview the quote.
           </div>
         )}
-        </div>
+      </div>
     </main>
   )
 }
