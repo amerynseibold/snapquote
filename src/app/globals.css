@@ -95,3 +95,11 @@ input[type="number"] {
     z-index: 9999 !important;
   }
 }
+
+@media print {
+  .quote-print-area {
+    transform: scale(0.9);
+    transform-origin: top left;
+    width: 111%;
+  }
+}

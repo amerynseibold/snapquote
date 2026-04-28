@@ -749,7 +749,7 @@ export default function Home() {
           </div>
 
         {result ? (
-          <div className="space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:text-[12px] print:space-y-3">
+          <div className="quote-print-area space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:text-[12px] print:space-y-3">
             {selectedQuoteId && (
               <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">
                 Editing Quote {quoteNumber}
