@@ -896,7 +896,7 @@ export default function Home() {
               </div>
 
               <div className="flex justify-between">
-                <span>Tax</span>
+                <span>Tax (8.25%)</span>
                 <span>{formatCurrency(result.tax)}</span>
               </div>
 
