@@ -906,12 +906,12 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="hidden print:flex mt-auto pt-12 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
+            <div className="hidden print:flex mt-6 pt-2 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
               <span>Powered by</span>
               <img
                 src="/logo2.png"
                 alt="SnapQuote Logo"
-                className="h-4 w-auto opacity-70"
+                className="h-3 w-auto opacity-60"
               />
             </div>
           </div>
