@@ -749,7 +749,7 @@ export default function Home() {
           </div>
 
         {result ? (
-          <div className="relative space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:min-h-[10in]">
+          <div className="space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:min-h-[9in] print:flex print:flex-col">
             {selectedQuoteId && (
               <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">
                 Editing Quote {quoteNumber}
@@ -844,8 +844,8 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[600px] text-sm border-collapse">
+            <div className="overflow-x-auto print:overflow-visible">
+             <table className="w-full min-w-[600px] print:min-w-0 text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide">
                     <th className="text-left py-3">Item</th>
@@ -907,8 +907,7 @@ export default function Home() {
               </div>
 
             </div>
-            </div>
-                    <div className="hidden print:flex absolute bottom-2 right-2 items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
+            <div className="hidden print:flex mt-auto pt-8 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
               <span>Powered by</span>
               <img
                 src="/logo2.png"
