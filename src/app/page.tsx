@@ -908,14 +908,7 @@ export default function Home() {
 
             </div>
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center border rounded p-10 text-gray-400">
-            Select a base service and enter the required quantity to preview the quote.
-          </div>
-        )}
-        </div>
-        <div className="hidden print:flex absolute bottom-2 right-2 items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
+                    <div className="hidden print:flex absolute bottom-2 right-2 items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
               <span>Powered by</span>
               <img
                 src="/logo2.png"
@@ -923,6 +916,13 @@ export default function Home() {
                 className="h-4 w-auto opacity-70"
               />
             </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center border rounded p-10 text-gray-400">
+            Select a base service and enter the required quantity to preview the quote.
+          </div>
+        )}
+        </div>
     </main>
   )
 }
