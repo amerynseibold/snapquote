@@ -749,7 +749,7 @@ export default function Home() {
           </div>
 
         {result ? (
-          <div className="space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:h-[10.5in] print:flex print:flex-col">
+          <div className="space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:text-[12px] print:space-y-3">
             {selectedQuoteId && (
               <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">
                 Editing Quote {quoteNumber}
@@ -844,7 +844,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="overflow-x-auto print:break-inside-avoid">
+            <div className="overflow-x-auto print:overflow-visible">
              <table className="w-full min-w-[600px] print:min-w-0 text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide">
@@ -857,10 +857,10 @@ export default function Home() {
                 <tbody>
                   {result?.lineItems.map((item, index) => (
                     <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40">
-                      <td className="py-3">{item.item}</td>
-                      <td className="py-3">{item.description}</td>
-                      <td className="py-3 text-center">{item.quantity ?? "-"}</td>
-                      <td className="py-3 text-right font-medium">
+                      <td className="py-3 print:py-1.5">{item.item}</td>
+                      <td className="py-3 print:py-1.5">{item.description}</td>
+                      <td className="py-3 print:py-1.5 text-center">{item.quantity ?? "-"}</td>
+                      <td className="py-3 print:py-1.5 text-right font-medium">
                         {formatCurrency(item.total)}
                       </td>
                     </tr>
@@ -869,7 +869,7 @@ export default function Home() {
               </table>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:break-inside-avoid print:mt-4">
+            <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:mt-4 print:pt-3 print:space-y-1 print:break-inside-avoid">
               <div className="flex justify-between text-gray-400">
                 <span>Subtotal</span>
                 <span>{formatCurrency(result.subtotal)}</span>
@@ -900,7 +900,7 @@ export default function Home() {
                 <span>{formatCurrency(result.tax)}</span>
               </div>
 
-              <div className="flex justify-between font-bold text-2xl border-t border-gray-700 pt-4 mt-3">
+              className="flex justify-between font-bold text-2xl print:text-xl border-t border-gray-700 pt-4 mt-3 print:pt-2 print:mt-2"
                 <span>Grand Total</span>
                 <span>{formatCurrency(result.total)}</span>
               </div>
