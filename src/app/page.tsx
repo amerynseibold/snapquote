@@ -900,7 +900,7 @@ export default function Home() {
                 <span>{formatCurrency(result.tax)}</span>
               </div>
 
-              className="flex justify-between font-bold text-2xl print:text-xl border-t border-gray-700 pt-4 mt-3 print:pt-2 print:mt-2"
+              <div className="flex justify-between font-bold text-2xl print:text-xl border-t border-gray-700 pt-4 mt-3 print:pt-2 print:mt-2">
                 <span>Grand Total</span>
                 <span>{formatCurrency(result.total)}</span>
               </div>
