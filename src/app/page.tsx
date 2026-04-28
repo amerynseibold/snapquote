@@ -870,7 +870,7 @@ export default function Home() {
             </div>
 
             <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2">
-
+              <div className="print:break-inside-avoid">      
               <div className="flex justify-between text-gray-400">
                 <span>Subtotal</span>
                 <span>{formatCurrency(result.subtotal)}</span>
@@ -890,7 +890,7 @@ export default function Home() {
                 <span>Emergency</span>
                 <span>{formatCurrency(result.emergencyFee)}</span>
               </div>
-
+                
               <div className="flex justify-between font-medium border-t border-gray-700 pt-3 mt-2">
                 <span>Adjusted Subtotal</span>
                 <span>{formatCurrency(result.adjustedSubtotal)}</span>
@@ -907,13 +907,6 @@ export default function Home() {
               </div>
 
             </div>
-               <div className="hidden print:flex absolute bottom-2 right-2 items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
-              <span>Powered by</span>
-              <img
-                src="/logo2.png"
-                alt="SnapQuote Logo"
-                className="h-4 w-auto opacity-70"
-              />
             </div>
           </div>
         ) : (
@@ -921,6 +914,14 @@ export default function Home() {
             Select a base service and enter the required quantity to preview the quote.
           </div>
         )}
+                       <div className="hidden print:flex absolute bottom-2 right-2 items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
+              <span>Powered by</span>
+              <img
+                src="/logo2.png"
+                alt="SnapQuote Logo"
+                className="h-4 w-auto opacity-70"
+              />
+            </div>
         </div>
     </main>
   )
