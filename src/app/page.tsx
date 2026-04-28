@@ -869,7 +869,7 @@ export default function Home() {
               </table>
             </div>
 
-            <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:break-inside-avoid print:mb-6">
+                       <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:break-inside-avoid">
               <div className="flex justify-between text-gray-400">
                 <span>Subtotal</span>
                 <span>{formatCurrency(result.subtotal)}</span>
@@ -902,17 +902,12 @@ export default function Home() {
 
               <div className="flex justify-between font-bold text-2xl border-t border-gray-700 pt-4 mt-3">
                 <span>Grand Total</span>
-                <span className="text-green-500">{formatCurrency(result.total)}</span>
+                <span>{formatCurrency(result.total)}</span>
               </div>
-            </div>
 
-            <div className="hidden print:flex mt-6 pt-2 justify-end items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
-              <span>Powered by</span>
-              <img
-                src="/logo2.png"
-                alt="SnapQuote Logo"
-                className="h-3 w-auto opacity-60"
-              />
+              <div className="hidden print:block text-right pt-4 text-[9px] text-gray-500 italic opacity-60">
+                Powered by SnapQuote
+              </div>
             </div>
           </div>
         ) : (
