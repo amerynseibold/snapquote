@@ -844,7 +844,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="overflow-x-auto print:overflow-visible">
+            <div className="overflow-x-auto print:break-inside-avoid">
              <table className="w-full min-w-[600px] print:min-w-0 text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide">
@@ -869,7 +869,7 @@ export default function Home() {
               </table>
             </div>
 
-                       <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:break-inside-avoid">
+            <div className="mt-8 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:break-inside-avoid print:mt-4">
               <div className="flex justify-between text-gray-400">
                 <span>Subtotal</span>
                 <span>{formatCurrency(result.subtotal)}</span>
