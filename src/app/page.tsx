@@ -418,7 +418,7 @@ export default function Home() {
     }).format(value)
 
   return (
-    <main className="relative p-4 md:p-6 xl:p-10 print:p-0 space-y-6 xl:space-y-8">
+    <main className="relative p-4 md:p-6 xl:p-10 pb-24 print:p-0 space-y-6 xl:space-y-8">
       <div className="flex items-center gap-3 print:hidden mb-6">
   <img
     src="/logo.png"
@@ -755,7 +755,7 @@ export default function Home() {
                 Editing Quote {quoteNumber}
               </div>
             )}
-            <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mb-4 print:hidden">
+            <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
               <button
                 onClick={handleNewQuote}
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm"
@@ -920,6 +920,29 @@ export default function Home() {
             Select a base service and enter the required quantity to preview the quote.
           </div>
         )}
+      </div>
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-gray-800 p-3 flex gap-2 sm:hidden print:hidden">
+        <button
+          onClick={handleNewQuote}
+          className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-3 rounded text-sm font-medium"
+        >
+          New
+        </button>
+
+        <button
+          onClick={handleSaveQuote}
+          className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-3 rounded text-sm font-medium"
+        >
+          Save
+        </button>
+
+        <button
+          onClick={() => window.print()}
+          disabled={!result}
+          className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-3 py-3 rounded text-sm font-medium"
+        >
+          PDF
+        </button>
       </div>
     </main>
   )
