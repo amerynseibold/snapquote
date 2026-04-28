@@ -755,14 +755,6 @@ export default function Home() {
                 Editing Quote {quoteNumber}
               </div>
             )}
-            <div className="hidden print:flex absolute bottom-4 right-0 items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
-              <span>Powered by</span>
-              <img
-                src="/logo2.png"
-                alt="SnapQuote Logo"
-                className="h-4 w-auto opacity-70"
-              />
-            </div>
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mb-4 print:hidden">
               <button
                 onClick={handleNewQuote}
@@ -914,6 +906,14 @@ export default function Home() {
                 <span className="text-green-500">{formatCurrency(result.total)}</span>
               </div>
 
+            </div>
+               <div className="hidden print:flex absolute bottom-2 right-2 items-center gap-2 text-[10px] text-gray-500 italic opacity-70 pointer-events-none">
+              <span>Powered by</span>
+              <img
+                src="/logo2.png"
+                alt="SnapQuote Logo"
+                className="h-4 w-auto opacity-70"
+              />
             </div>
           </div>
         ) : (
