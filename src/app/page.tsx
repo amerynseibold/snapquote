@@ -886,7 +886,7 @@ export default function Home() {
               </div>
 
               <div className="flex justify-between">
-                <span>Emergency (25%)</span>
+                <span>Emergency</span>
                 <span>{formatCurrency(result.emergencyFee)}</span>
               </div>
 
@@ -896,7 +896,7 @@ export default function Home() {
               </div>
 
               <div className="flex justify-between">
-                <span>Tax (8.25%)</span>
+                <span>Tax</span>
                 <span>{formatCurrency(result.tax)}</span>
               </div>
 
@@ -905,8 +905,13 @@ export default function Home() {
                 <span>{formatCurrency(result.total)}</span>
               </div>
 
-              <div className="hidden print:block text-right pt-4 text-[9px] text-gray-500 italic opacity-60">
-                Powered by SnapQuote
+              <div className="hidden print:block text-right pt-4 text-[9px] text-gray-500 italic opacity-70">
+                <span className="mr-2">Powered by</span>
+                <img
+                  src="/logo2.png"
+                  alt="SnapQuote Logo"
+                  className="inline-block h-3 w-auto opacity-70 align-middle"
+                />
               </div>
             </div>
           </div>
