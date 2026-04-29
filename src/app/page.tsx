@@ -523,7 +523,7 @@ const inputClass =
                         className="max-w-[220px] text-sm text-gray-300 file:mr-3 file:rounded file:border-0 file:bg-gray-700 file:px-3 file:py-2 file:text-white"
                       />
 
-                      {logoUrl || logoFileName ? (
+                      {logoUrl ? (
                         <img
                           src={logoUrl}
                           alt="Logo preview"
