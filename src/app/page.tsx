@@ -919,7 +919,7 @@ const inputClass =
                 </table>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-2 print:mt-2 print:pt-2 print:space-y-1 print:break-inside-avoid print:flex print:justify-end">
+              <div className="mt-3 pt-2 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-1.5 print:mt-1 print:pt-1 print:space-y-1 print:flex print:justify-end">
                 <div className="w-[3.1in] max-w-full ml-auto">
 
                   <div className="flex justify-between text-gray-400">
