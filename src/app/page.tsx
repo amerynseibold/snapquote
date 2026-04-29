@@ -201,7 +201,7 @@ const inputClass =
   total
 `)
     .order("created_at", { ascending: false })
-    .limit(10)
+    .limit(12)
   if (error) {
     console.error("Error fetching saved quotes:", error)
     return
@@ -516,23 +516,27 @@ const inputClass =
                     <label className="block mb-1 text-sm">Customer-Facing Logo</label>
 
                     <div className="flex items-center gap-3">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleLogoUpload}
-                        className="max-w-[220px] text-sm text-gray-300 file:mr-3 file:rounded file:border-0 file:bg-gray-700 file:px-3 file:py-2 file:text-white"
-                      />
+                      <label className="cursor-pointer rounded-md bg-gray-700 px-3 py-2 text-sm text-white hover:bg-gray-600">
+                        Choose File
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          className="hidden"
+                        />
+                      </label>
 
                       {logoUrl ? (
-                        <img
-                          src={logoUrl}
-                          alt="Logo preview"
-                          className="h-9 w-9 rounded object-contain border border-gray-700 bg-black"
-                        />
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={logoUrl}
+                            alt="Logo preview"
+                            className="h-9 w-9 rounded object-contain border border-gray-700 bg-black"
+                          />
+                          <span className="text-sm text-gray-300">Logo uploaded</span>
+                        </div>
                       ) : (
-                        <span className="text-sm text-gray-300">
-                          {logoFileName || "Logo uploaded"}
-                        </span>
+                        <span className="text-sm text-gray-500">No file chosen</span>
                       )}
                     </div>
                   </div>
@@ -719,9 +723,9 @@ const inputClass =
           )}
         </section>
 
-        <section className="min-w-0">
+        <section className="min-w-0 bg-[#0b0f17] rounded-xl py-8 px-3 print:bg-transparent print:rounded-none print:py-0 print:px-0">
           {result ? (
-            <div className="quote-print-area space-y-6 border border-gray-600 rounded p-4 md:p-6 shadow-sm overflow-x-auto print:overflow-visible print:border-0 print:rounded-none print:shadow-none print:p-0 print:text-[12px] print:space-y-3">
+            <div className="quote-print-area max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-5 md:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.35)] rounded-sm print:max-w-none print:border-0 print:shadow-none print:rounded-none print:p-0">
               {selectedQuoteId && <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">Editing Quote {quoteNumber}</div>}
               <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
                 <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm">New Quote</button>
@@ -729,25 +733,47 @@ const inputClass =
                 <button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm">Print / Save PDF</button>
               </div>
 
-              <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6 mb-6 border-b border-gray-700 pb-5">
-                <div className="flex-1 min-w-0">
-                  <h1 className="text-2xl font-bold tracking-tight">Petra Services Complete Yard Care</h1>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-sm border-t border-gray-700 pt-4">
-                    <div className="space-y-1.5">
-                      <p className="text-gray-400 uppercase tracking-wide text-xs">Client</p>
-                      <p className="font-medium">{customerName}</p>
-                      {address && <><p>{address.split(",")[0]}</p><p>{address.split(",").slice(1).join(",").trim()}</p></>}
-                    </div>
-                    <div className="md:text-right space-y-1.5">
-                      <p><span className="text-gray-400 text-xs uppercase">Date:</span> {formatDisplayDate(quoteDate)}</p>
-                      <p><span className="text-gray-400 text-xs uppercase">Quote #</span> <span className="font-medium">{quoteNumber}</span></p>
-                      {customerPhone && <p><span className="text-gray-400 text-xs uppercase">Phone:</span> {customerPhone}</p>}
-                      {customerEmail && <p><span className="text-gray-400 text-xs uppercase">Email:</span> {customerEmail}</p>}
-                    </div>
-                  </div>
+            <div className="mb-4 border-b border-gray-700 pb-4 print:mb-4 print:pb-4">
+              <h1 className="text-2xl font-bold tracking-tight mb-4 print:text-xl">
+                Petra Services Complete Yard Care
+              </h1>
+
+              <div className="grid grid-cols-[1.2fr_1fr_140px] gap-8 items-stretch min-h-[120px] text-sm border-t border-gray-700 pt-4 print:gap-6 print:pt-3">
+
+                {/* LEFT: CLIENT */}
+                <div className="space-y-1.5 h-full">
+                  <p className="text-gray-400 uppercase tracking-wide text-xs">Client</p>
+                  <p className="font-medium">{customerName}</p>
+
+                  {address && (
+                    <>
+                      <p>{address.split(",")[0]}</p>
+                      <p>{address.split(",").slice(1).join(",").trim()}</p>
+                    </>
+                  )}
                 </div>
-                {logoUrl && <div className="w-36 h-36 md:w-44 md:h-36 flex items-start justify-start md:justify-end shrink-0"><img src={logoUrl} alt="Company logo" className="max-h-full max-w-full object-contain" /></div>}
+
+                {/* MIDDLE: DETAILS (RIGHT ALIGNED) */}
+                <div className="space-y-1.5 text-left h-full flex flex-col justify-start">
+                  <p><span className="text-gray-400 text-xs uppercase">Date:</span> {formatDisplayDate(quoteDate)}</p>
+                  <p><span className="text-gray-400 text-xs uppercase">Quote #</span> <span className="font-medium">{quoteNumber}</span></p>
+                  {customerPhone && <p><span className="text-gray-400 text-xs uppercase">Phone:</span> {customerPhone}</p>}
+                  {customerEmail && <p><span className="text-gray-400 text-xs uppercase">Email:</span> {customerEmail}</p>}
+                </div>
+
+                {/* RIGHT: LOGO (CENTERED VERTICALLY) */}
+                <div className="flex justify-end items-center h-full">
+                  {logoUrl && (
+                    <img
+                      src={logoUrl}
+                      alt="Company logo"
+                      className="max-h-28 max-w-[135px] object-contain"
+                    />
+                  )}
+                </div>
+
               </div>
+            </div>
 
               <div className="mt-4">
                 <p className="font-semibold text-base mb-1">Scope of Work:</p>
@@ -756,16 +782,16 @@ const inputClass =
 
               <div className="overflow-x-auto print:overflow-visible">
                 <table className="w-full min-w-[600px] print:min-w-0 text-sm border-collapse">
-                  <thead><tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide"><th className="text-left py-3">Item</th><th className="text-left py-3">Description</th><th className="text-center py-3">Qty</th><th className="text-right py-3">Total</th></tr></thead>
+                  <thead><tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide"><th className="text-left py-2">Item</th><th className="text-left py-3">Description</th><th className="text-center py-3">Qty</th><th className="text-right py-3">Total</th></tr></thead>
                   <tbody>
                     {result?.lineItems.map((item, index) => (
-                      <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40"><td className="py-3 print:py-1.5">{item.item}</td><td className="py-3 print:py-1.5">{item.description}</td><td className="py-3 print:py-1.5 text-center">{item.quantity ?? "-"}</td><td className="py-3 print:py-1.5 text-right font-medium">{formatCurrency(item.total)}</td></tr>
+                      <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40"><td className="py-2 print:py-1.5">{item.item}</td><td className="py-2 print:py-1.5">{item.description}</td><td className="py-2 print:py-1.5 text-center">{item.quantity ?? "-"}</td><td className="py-2 print:py-1.5 text-right font-medium">{formatCurrency(item.total)}</td></tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              <div className="mt-12 pt-6 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-2 print:mt-4 print:pt-3 print:space-y-1 print:break-inside-avoid">
+              <div className="mt-16 pt-4 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-2 print:mt-4 print:pt-3 print:space-y-1 print:break-inside-avoid">
                 <div className="flex justify-between text-gray-400"><span>Subtotal</span><span>{formatCurrency(result.subtotal)}</span></div>
                 <div className="flex justify-between text-gray-400"><span>Discount</span><span>({formatCurrency(discountAmount || 0)})</span></div>
                 <div className="flex justify-between"><span>Subtotal After Discount</span><span>{formatCurrency(result.subtotalAfterDiscount)}</span></div>
