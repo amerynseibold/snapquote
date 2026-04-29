@@ -32,6 +32,7 @@ type TreeHeightTier = "0-15 ft" | "15-30 ft" | "30-60 ft" | "60+ ft"
 
 export default function Home() {
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [companyName, setCompanyName] = useState("Petra Services Complete Yard Care")
   const [quoteNumber, setQuoteNumber] = useState("")
   const [customerName, setCustomerName] = useState("")
   const [customerPhone, setCustomerPhone] = useState("")
@@ -458,6 +459,17 @@ const inputClass =
               <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3">
                 <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Quote Info</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <label className="block mb-1 text-sm">Company Name</label>
+                    <input
+                      type="text"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+
                   <div>
                     <label className="block mb-1 text-sm">Quote Number</label>
                     <input
@@ -467,6 +479,7 @@ const inputClass =
                       className={inputClass}
                     />
                   </div>
+
                   <div>
                     <label className="block mb-1 text-sm">Quote Date</label>
                     <input
@@ -476,6 +489,7 @@ const inputClass =
                       className={`${inputClass} min-w-0 appearance-none`}
                     />
                   </div>
+
                 </div>
               </div>
 
@@ -735,9 +749,9 @@ const inputClass =
               </div>
 
             <div className="mb-4 border-b border-gray-700 pb-4 print:mb-4 print:pb-4">
-              <h1 className="text-2xl font-bold tracking-tight mb-4 print:text-lg">
-                Petra Services Complete Yard Care
-              </h1>
+             <h1 className="text-2xl font-bold tracking-tight mb-4 print:text-lg">
+               {companyName}
+             </h1>
 
               <div className="grid grid-cols-[1fr_1fr_70px] sm:grid-cols-[1.2fr_1fr_120px] xl:grid-cols-[1.2fr_1fr_140px] gap-3 sm:gap-8 items-start sm:items-stretch min-h-[90px] sm:min-h-[120px] text-xs sm:text-sm border-t border-gray-700 pt-4 print:grid-cols-[1.2fr_1fr_140px] print:gap-6 print:items-stretch print:min-h-[120px] print:pt-3">
 
@@ -778,7 +792,9 @@ const inputClass =
 
               <div className="mt-3 print:mt-2">
                 <p className="font-semibold text-base mb-1">Scope of Work:</p>
-                <p className="text-sm text-gray-400 leading-relaxed">{result?.scopeOfWork}</p>
+                <p className="max-w-[90%] text-sm text-gray-400 leading-relaxed print:leading-normal">
+                  {result?.scopeOfWork}
+                </p>
               </div>
 
               <div className="overflow-x-auto print:overflow-visible">
