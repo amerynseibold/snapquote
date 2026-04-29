@@ -726,7 +726,7 @@ const inputClass =
 
         <section className="min-w-0 rounded-xl py-4 sm:py-6 px-0 sm:px-3 print:rounded-none print:py-0 print:px-0">
           {result ? (
-            <div className="quote-print-area max-w-full sm:max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-4 sm:p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:max-w-none print:border-0 print:shadow-none print:rounded-none print:p-0 print:bg-white">
+            <div className="quote-print-area max-w-full sm:max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-4 sm:p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:max-w-none print:border-0 print:shadow-none print:rounded-none print:p-0 print:bg-white print:scale-[1.05] print:origin-top">
               {selectedQuoteId && <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">Editing Quote {quoteNumber}</div>}
               <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
                 <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm shadow-sm">New Quote</button>
@@ -735,7 +735,7 @@ const inputClass =
               </div>
 
             <div className="mb-4 border-b border-gray-700 pb-4 print:mb-4 print:pb-4">
-              <h1 className="text-2xl font-bold tracking-tight mb-4 print:text-xl">
+              <h1 className="text-2xl font-bold tracking-tight mb-4 print:text-lg">
                 Petra Services Complete Yard Care
               </h1>
 
@@ -776,23 +776,23 @@ const inputClass =
               </div>
             </div>
 
-              <div className="mt-4">
+              <div className="mt-3 print:mt-2">
                 <p className="font-semibold text-base mb-1">Scope of Work:</p>
                 <p className="text-sm text-gray-400 leading-relaxed">{result?.scopeOfWork}</p>
               </div>
 
               <div className="overflow-x-auto print:overflow-visible">
                 <table className="w-full min-w-[520px] sm:min-w-[600px] print:min-w-0 text-sm border-collapse">
-                  <thead><tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide"><th className="text-left py-2">Item</th><th className="text-left py-3">Description</th><th className="text-center py-3">Qty</th><th className="text-right py-3">Total</th></tr></thead>
+                  <thead><tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide"><th className="text-left py-1.5 print:py-1">Item</th><th className="text-left py-1.5 print:py-1">Description</th><th className="text-center py-1.5 print:py-1">Qty</th><th className="text-right py-1.5 print:py-1">Total</th></tr></thead>
                   <tbody>
                     {result?.lineItems.map((item, index) => (
-                      <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40"><td className="py-2 print:py-1.5">{item.item}</td><td className="py-2 print:py-1.5">{item.description}</td><td className="py-2 print:py-1.5 text-center">{item.quantity ?? "-"}</td><td className="py-2 print:py-1.5 text-right font-medium">{formatCurrency(item.total)}</td></tr>
+                      <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40"><td className="py-1.5 print:py-1">{item.item}</td><td className="py-1.5 print:py-1">{item.description}</td><td className="py-1.5 print:py-1 text-center">{item.quantity ?? "-"}</td><td className="py-1.5 print:py-1 text-right font-medium">{formatCurrency(item.total)}</td></tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-2 print:mt-4 print:pt-3 print:space-y-1 print:break-inside-avoid">
+              <div className="mt-4 pt-3 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-2 print:mt-2 print:pt-2 print:space-y-1 print:break-inside-avoid">
                 <div className="flex justify-between text-gray-400"><span>Subtotal</span><span>{formatCurrency(result.subtotal)}</span></div>
                 <div className="flex justify-between text-gray-400"><span>Discount</span><span>({formatCurrency(discountAmount || 0)})</span></div>
                 <div className="flex justify-between"><span>Subtotal After Discount</span><span>{formatCurrency(result.subtotalAfterDiscount)}</span></div>
