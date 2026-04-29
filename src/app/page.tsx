@@ -31,7 +31,7 @@ type SavedQuote = {
 type TreeHeightTier = "0-15 ft" | "15-30 ft" | "30-60 ft" | "60+ ft"
 
 export default function Home() {
-  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [logoUrl, setLogoUrl] = useState("")
   const [quoteNumber, setQuoteNumber] = useState("")
   const [customerName, setCustomerName] = useState("")
   const [customerPhone, setCustomerPhone] = useState("")
