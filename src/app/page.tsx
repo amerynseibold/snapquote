@@ -919,7 +919,7 @@ const inputClass =
                 </table>
               </div>
 
-              <div className="mt-3 pt-2 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-1.5 print:mt-1 print:pt-1 print:space-y-1 print:flex print:justify-end">
+              <div className="mt-3 pt-2 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-1.5 print:mt-1 print:pt-1 print:space-y-1 print:flex print:justify-end print:break-inside-auto">
                 <div className="w-[3.1in] max-w-full ml-auto">
 
                   <div className="flex justify-between text-gray-400">
@@ -942,7 +942,7 @@ const inputClass =
                     <span>{formatCurrency(result.emergencyFee)}</span>
                   </div>
 
-                  <div className="flex justify-between font-medium border-t border-gray-700 pt-3 mt-2">
+                  <div className="flex justify-between font-medium border-t border-gray-700 pt-2 mt-1">
                     <span>Adjusted Subtotal</span>
                     <span>{formatCurrency(result.adjustedSubtotal)}</span>
                   </div>
@@ -952,12 +952,12 @@ const inputClass =
                     <span>{formatCurrency(result.tax)}</span>
                   </div>
 
-                  <div className="flex justify-between font-bold text-2xl print:text-xl border-t border-gray-700 pt-4 mt-3 print:pt-2 print:mt-2">
+                  <div className="flex justify-between font-bold text-xl print:text-lg border-t border-gray-700 pt-2 mt-1">
                     <span>Grand Total</span>
                     <span>{formatCurrency(result.total)}</span>
                   </div>
 
-                  <div className="hidden print:block text-right pt-4 text-[9px] text-gray-500 italic opacity-70">
+                  <div className="hidden print:block text-right pt-2 text-[8px] text-gray-500 italic opacity-70">
                     <span className="mr-2">Powered by</span>
                     <img
                       src="/logo2.png"
@@ -967,7 +967,7 @@ const inputClass =
                   </div>
 
                 </div>
-              </div>
+              </div>            
             </div>
           ) : (
             <div className="flex min-h-[320px] items-center justify-center border border-gray-700 rounded p-10 text-gray-400 text-center">Select a base service and enter the required quantity to preview the quote.</div>
