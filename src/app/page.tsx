@@ -62,6 +62,7 @@ export default function Home() {
   const [selectedQuoteId, setSelectedQuoteId] = useState<number | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
   const [logoFileName, setLogoFileName] = useState("")
+  const [showDuplicateToast, setShowDuplicateToast] = useState(false)
   
   const [manualItems, setManualItems] = useState([
     { description: "", qty: "", price: ""}
@@ -229,6 +230,16 @@ const inputClass =
   }
 
   useEffect(() => {
+    if (showDuplicateToast) {
+      const timer = setTimeout(() => {
+        setShowDuplicateToast(false)
+      }, 2000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [showDuplicateToast])
+
+  useEffect(() => {
   const fetchSuggestedQuoteNumber = async () => {
     const { data, error } = await supabase
       .from("app_settings")
@@ -382,7 +393,7 @@ const inputClass =
   alert("Quote saved successfully.")
   }
 
-  const handleNewQuote = async () => {
+ const handleNewQuote = async () => {
   // clear all inputs
   setSelectedQuoteId(null)
   setConfirmDeleteId(null)
@@ -392,22 +403,21 @@ const inputClass =
   setAddress("")
   setBaseService("")
   setTreeCountsByHeight({
-  "0-15 ft": "",
-  "15-30 ft": "",
-  "30-60 ft": "",
-  "60+ ft": "", })
+    "0-15 ft": "",
+    "15-30 ft": "",
+    "30-60 ft": "",
+    "60+ ft": "",
+  })
   setDifficultTreeCount("")
   setHazardTreeCount("")
   setStumpCount("")
   setHaulOffIncluded(true)
   setEmergencyJob(false)
   setDiscountAmount("")
-  setManualItems([{ description: "", qty: "", price: ""}])
+  setManualItems([{ description: "", qty: "", price: "" }])
 
-  // reset date to today
   setQuoteDate(new Date().toISOString().split("T")[0])
 
-  // fetch next suggested quote number
   const { data, error } = await supabase
     .from("app_settings")
     .select("next_quote_number")
@@ -421,7 +431,37 @@ const inputClass =
   }
 
   setQuoteNumber(formatQuoteNumber(data.next_quote_number))
-  }  
+}
+
+const handleDuplicateQuote = async () => {
+  setSelectedQuoteId(null)
+  setConfirmDeleteId(null)
+
+  // ✅ Clear customer info
+  setCustomerName("")
+  setCustomerPhone("")
+  setCustomerEmail("")
+  setAddress("")
+
+  // Reset date
+  setQuoteDate(new Date().toISOString().split("T")[0])
+
+  const { data, error } = await supabase
+    .from("app_settings")
+    .select("next_quote_number")
+    .eq("id", 1)
+    .single()
+
+  if (error) {
+    console.error("Error fetching next quote number:", error)
+    alert("Could not create duplicate quote number.")
+    return
+  }
+
+  setQuoteNumber(formatQuoteNumber(data.next_quote_number))
+
+  setShowDuplicateToast(true)
+}
 
   // format phone number
   const formatPhoneNumber = (value: string) => {
@@ -465,11 +505,38 @@ const inputClass =
               <p className="text-xs text-gray-400 mt-1">Enter the job details, then review the quote preview below.</p>
             </div>
 
-            <div className="hidden sm:flex gap-2">
-              <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm shadow-sm">New Quote</button>
-              <button onClick={handleSaveQuote} disabled={!result} className="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-4 py-2 rounded text-sm shadow-sm">Save Quote</button>
-              <button onClick={() => window.print()} disabled={!result} className="hidden sm:inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-4 py-2 rounded text-sm shadow-sm">Print / Save PDF</button>
-            </div>
+              <div className="hidden sm:flex gap-2">
+                <button
+                  onClick={handleNewQuote}
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm shadow-sm"
+                >
+                  New Quote
+                </button>
+
+                <button
+                  onClick={handleDuplicateQuote}
+                  disabled={!selectedQuoteId}
+                  className="bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 text-gray-700 px-4 py-2 rounded text-sm shadow-sm"
+                >
+                  Duplicate Quote
+                </button>
+
+                <button
+                  onClick={handleSaveQuote}
+                  disabled={!result}
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-4 py-2 rounded text-sm shadow-sm"
+                >
+                  Save Quote
+                </button>
+
+                <button
+                  onClick={() => window.print()}
+                  disabled={!result}
+                  className="hidden sm:inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-4 py-2 rounded text-sm shadow-sm"
+                >
+                  Print / Save PDF
+                </button>
+              </div>
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-start">
@@ -768,8 +835,21 @@ const inputClass =
                   Additional Items
                 </h4>
 
+                <div className="grid grid-cols-[2fr_0.7fr_1fr_1fr_0.5fr] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
+                  <span>Description</span>
+                  <span>Qty</span>
+                  <span>Price</span>
+                  <span className="text-right">Total</span>
+                  <span></span>
+                </div>
+
                 {manualItems.map((item, index) => (
-                  <div key={index} className="grid grid-cols-4 gap-2">
+                  <div
+                    key={index}
+                    className={`grid grid-cols-[2fr_0.7fr_1fr_1fr_auto] gap-2 items-center pb-2 transition-colors duration-150 ${
+                      index !== manualItems.length - 1 ? "border-b border-gray-200" : ""
+                    } hover:bg-gray-50`}
+                  >
                     <input
                       type="text"
                       placeholder="Description"
@@ -799,7 +879,6 @@ const inputClass =
                       placeholder="$0"
                       value={item.price ?? ""}
                       onChange={(e) => {
-                        // ONLY allow whole numbers
                         const raw = e.target.value.replace(/[^0-9]/g, "")
 
                         const updated = [...manualItems]
@@ -809,17 +888,25 @@ const inputClass =
                       onBlur={() => {
                         if (item.price !== "") {
                           const updated = [...manualItems]
-                          updated[index].price = String(Number(item.price)) // ensure clean number
+                          updated[index].price = String(Number(item.price))
                           setManualItems(updated)
                         }
                       }}
                       className={inputClass}
                     />
+
+                    {/* ✅ LIVE TOTAL (THIS WAS MISSING PLACEMENT) */}
+                    <div className="text-sm font-medium text-right text-gray-700">
+                      {formatCurrency(
+                        (Number(item.qty) || 0) * (Number(item.price) || 0)
+                      )}
+                    </div>
+
                     <button
                       onClick={() =>
                         setManualItems(manualItems.filter((_, i) => i !== index))
                       }
-                      className="text-red-500 text-sm"
+                      className="text-red-400 text-xs hover:text-red-600"
                     >
                       Remove
                     </button>
@@ -828,7 +915,10 @@ const inputClass =
 
                 <button
                   onClick={() =>
-                    setManualItems([...manualItems, { description: "", qty: "", price: "" }])
+                    setManualItems([
+                      ...manualItems,
+                      { description: "", qty: "", price: "" },
+                    ])
                   }
                   className="text-blue-600 text-sm"
                 >
@@ -847,9 +937,34 @@ const inputClass =
             <div className="quote-print-area max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:w-full print:max-w-full md:print:w-[7in] md:print:max-w-[7in] print:mx-auto print:overflow-visible print:border-0 print:shadow-none print:rounded-none print:p-0 print:bg-white">
               {selectedQuoteId && <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">Editing Quote {quoteNumber}</div>}
               <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
-                <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm shadow-sm">New Quote</button>
-                <button onClick={handleSaveQuote} className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm shadow-sm">Save Quote</button>
-                <button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm shadow-sm">Print / Save PDF</button>
+                <button
+                  onClick={handleNewQuote}
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm shadow-sm"
+                >
+                  New Quote
+                </button>
+
+                <button
+                  onClick={handleDuplicateQuote}
+                  disabled={!selectedQuoteId}
+                  className="bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 text-gray-700 px-3 py-2 rounded text-sm shadow-sm"
+                >
+                  Duplicate
+                </button>
+
+                <button
+                  onClick={handleSaveQuote}
+                  className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm shadow-sm"
+                >
+                  Save Quote
+                </button>
+
+                <button
+                  onClick={() => window.print()}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm shadow-sm"
+                >
+                  Print / Save PDF
+                </button>
               </div>
 
             <div className="mb-4 border-b border-gray-700 pb-4 print:mb-4 print:pb-4">
@@ -1000,6 +1115,16 @@ const inputClass =
         <button onClick={handleNewQuote} className="flex-1 active:scale-95 transition-transform duration-100 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm font-medium">New</button>
         <button onClick={handleSaveQuote} disabled={!result} className="flex-1 active:scale-95 transition-transform duration-100 bg-green-600 hover:bg-green-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-3 py-2 rounded text-sm font-medium">Save</button>
         <button onClick={() => window.print()} disabled={!result} className="flex-1 active:scale-95 transition-transform duration-100 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-3 py-2 rounded text-sm font-medium">Export</button>
+      </div>
+
+      <div
+        className={`fixed bottom-4 right-4 bg-gray-900 text-white text-sm px-4 py-2 rounded shadow-lg z-50 transition-all duration-300 transform ${
+          showDuplicateToast
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+      >
+        Quote duplicated — ready to edit
       </div>
     </main>
   )
