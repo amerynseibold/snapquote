@@ -36,7 +36,10 @@ input[type="number"] {
     size: letter;
     margin: 0.5in;
   }
-
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   html,
   body {
     background: white !important;
