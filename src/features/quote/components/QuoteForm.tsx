@@ -29,8 +29,8 @@ type QuoteFormProps = {
 
   manualItems: {
     description: string
-    qty: string | number
-    price: string | number
+    qty: string
+    price: string
   }[]
 
   totalTreeCount: number
@@ -61,8 +61,8 @@ type QuoteFormProps = {
   setManualItems: (
     value: {
       description: string
-      qty: string | number
-      price: string | number
+      qty: string
+      price: string
     }[]
   ) => void
 
