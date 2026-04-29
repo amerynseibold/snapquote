@@ -34,19 +34,19 @@ input[type="number"] {
 @media print {
   @page {
     size: letter;
-    margin: 0.5in;
+    margin: 0.35in;
   }
+
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+
   html,
   body {
     background: white !important;
     color: black !important;
     overflow: visible !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
   }
 
   main {
@@ -54,6 +54,16 @@ input[type="number"] {
     margin: 0 !important;
     background: white !important;
     overflow: visible !important;
+  }
+
+  .print\:hidden,
+  .fixed,
+  .sticky {
+    display: none !important;
+  }
+
+  section {
+    margin-bottom: 0 !important;
   }
 
   .quote-print-area {
