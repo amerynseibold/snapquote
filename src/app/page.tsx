@@ -739,7 +739,7 @@ const inputClass =
                 Petra Services Complete Yard Care
               </h1>
 
-              <div className="grid grid-cols-1 sm:grid-cols-[1.2fr_1fr_120px] xl:grid-cols-[1.2fr_1fr_140px] gap-4 sm:gap-8 items-start sm:items-stretch sm:min-h-[120px] text-sm border-t border-gray-700 pt-4 print:grid-cols-[1.2fr_1fr_140px] print:gap-6 print:items-stretch print:min-h-[120px] print:pt-3">
+              <div className="grid grid-cols-[1fr_1fr_70px] sm:grid-cols-[1.2fr_1fr_120px] xl:grid-cols-[1.2fr_1fr_140px] gap-3 sm:gap-8 items-start sm:items-stretch min-h-[90px] sm:min-h-[120px] text-xs sm:text-sm border-t border-gray-700 pt-4 print:grid-cols-[1.2fr_1fr_140px] print:gap-6 print:items-stretch print:min-h-[120px] print:pt-3">
 
                 {/* LEFT: CLIENT */}
                 <div className="space-y-1.5 h-full">
@@ -782,11 +782,18 @@ const inputClass =
               </div>
 
               <div className="overflow-x-auto print:overflow-visible">
-               <table className="w-full min-w-0 text-sm border-collapse">
-                  <thead><tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide"><th className="text-left py-1.5 print:py-1">Item</th><th className="text-left py-1.5 print:py-1">Description</th><th className="text-center py-1.5 print:py-1">Qty</th><th className="text-right py-1.5 print:py-1">Total</th></tr></thead>
+               <table className="w-full min-w-0 text-xs sm:text-sm border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide">
+                      <th className="text-left py-1.5 sm:py-2 print:py-1 w-[22%]">Item</th>
+                      <th className="text-left py-1.5 sm:py-2 print:py-1 w-[48%]">Description</th>
+                      <th className="text-center py-1.5 sm:py-2 print:py-1 w-[12%]">Qty</th>
+                      <th className="text-right py-1.5 sm:py-2 print:py-1 w-[18%]">Total</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {result?.lineItems.map((item, index) => (
-                      <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40"><td className="py-1.5 print:py-1">{item.item}</td><td className="py-1.5 print:py-1">{item.description}</td><td className="py-1.5 print:py-1 text-center">{item.quantity ?? "-"}</td><td className="py-1.5 print:py-1 text-right font-medium">{formatCurrency(item.total)}</td></tr>
+                      <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40"><td className="py-1.5 sm:py-2 print:py-1">{item.item}</td><td className="py-1.5 sm:py-2 print:py-1">{item.description}</td><td className="py-1.5 sm:py-2 print:py-1 text-center">{item.quantity ?? "-"}</td><td className="py-1.5 sm:py-2 print:py-1 text-right font-medium">{formatCurrency(item.total)}</td></tr>
                     ))}
                   </tbody>
                 </table>
