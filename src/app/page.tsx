@@ -538,7 +538,7 @@ const inputClass =
                     <label className="block mb-1 text-sm">Discount</label>
                       <input
                         type="text"
-                        placeholder="$0.00"
+                        placeholder="$0"
                         value={discountAmount}
                         onChange={(e) => {
                           const raw = e.target.value.replace(/[^0-9.]/g, "")
