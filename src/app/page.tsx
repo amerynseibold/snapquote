@@ -726,7 +726,7 @@ const inputClass =
 
         <section className="min-w-0 rounded-xl py-4 sm:py-6 px-0 sm:px-3 print:rounded-none print:py-0 print:px-0">
           {result ? (
-            <div className="quote-print-area max-w-full sm:max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-4 sm:p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:max-w-none print:border-0 print:shadow-none print:rounded-none print:p-0 print:bg-white print:scale-[1.05] print:origin-top">
+            <div className="quote-print-area w-full">
               {selectedQuoteId && <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">Editing Quote {quoteNumber}</div>}
               <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
                 <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm shadow-sm">New Quote</button>
@@ -782,7 +782,7 @@ const inputClass =
               </div>
 
               <div className="overflow-x-auto print:overflow-visible">
-                <table className="w-full min-w-[520px] sm:min-w-[600px] print:min-w-0 text-sm border-collapse">
+               <table className="w-full min-w-0 text-sm border-collapse">
                   <thead><tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide"><th className="text-left py-1.5 print:py-1">Item</th><th className="text-left py-1.5 print:py-1">Description</th><th className="text-center py-1.5 print:py-1">Qty</th><th className="text-right py-1.5 print:py-1">Total</th></tr></thead>
                   <tbody>
                     {result?.lineItems.map((item, index) => (

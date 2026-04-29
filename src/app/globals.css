@@ -12,58 +12,13 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-@media print {
-  @page {
-    margin: 0.4in;
-  }
-  body {
-    background: white !important;
-    color: black !important;
-  }
 
-  main {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  .bg-black {
-    background: white !important;
-    color: black !important;
-  }
-
-  .text-white,
-  .text-gray-600,
-  .text-gray-400 {
-    color: black !important;
-  }
-
-  .border,
-  .border-b,
-  .border-t {
-    border-color: #d1d5db !important;
-  }
-
-  input,
-  select,
-  button {
-    display: none !important;
-  }
-  
-}
-
-/* Remove number input arrows completely */
+/* Remove number input arrows */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none !important;
@@ -71,46 +26,49 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 input[type="number"] {
-  -moz-appearance: textfield !important; /* Firefox */
+  -moz-appearance: textfield !important;
   appearance: textfield !important;
 }
 
+/* Print / PDF export */
 @media print {
   @page {
     size: letter;
     margin: 0.5in;
   }
 
+  html,
   body {
     background: white !important;
     color: black !important;
+    overflow: visible !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  .print-watermark {
-    position: fixed !important;
-    right: 0.35in !important;
-    bottom: 0.25in !important;
-    z-index: 9999 !important;
-  }
-}
-
-@media print {
-  .quote-print-area {
-    transform: scale(0.9);
-    transform-origin: top left;
-    width: 111%;
-  }
-}
-
-@media print {
-  body {
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
     background: white !important;
+    overflow: visible !important;
   }
 
   .quote-print-area {
     box-shadow: none !important;
     border: none !important;
+    border-radius: 0 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .quote-print-area table {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  input,
+  select,
+  button {
+    display: none !important;
   }
 }
