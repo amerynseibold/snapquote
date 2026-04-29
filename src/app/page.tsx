@@ -420,14 +420,14 @@ const inputClass =
     }).format(value)
 
   return (
-    <main className="min-h-screen bg-[#f5f6f8] text-gray-900 p-3 md:p-4 xl:p-5 pb-20 print:bg-white print:p-0">
-      <div className="max-w-[1500px] mx-auto space-y-5 print:max-w-none print:space-y-0">
-        <div className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 px-4 py-2 flex justify-between items-center shadow-sm print:hidden">
+    <main className="min-h-screen bg-[#f5f6f8] text-gray-900 p-2 sm:p-3 md:p-4 xl:p-5 pb-24 sm:pb-20 print:bg-white print:p-0">
+      <div className="max-w-[1500px] mx-auto space-y-4 sm:space-y-5 print:max-w-none print:space-y-0">
+        <div className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 px-3 sm:px-4 py-2 flex justify-between items-center shadow-sm print:hidden">
           <div className="flex items-center">
             <img
               src="/SnapQuote (no bckgnd).png"
               alt="SnapQuote Logo"
-              className="h-8 md:h-9 w-auto object-contain -ml-1"
+              className="h-7 sm:h-8 md:h-9 w-auto object-contain -ml-1"
             />
           </div>
 
@@ -435,14 +435,14 @@ const inputClass =
             <span className="text-sm text-gray-500">{quoteNumber}</span>
           )}
         </div>
-        <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-4 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-200 pb-3">
+        <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-3 sm:p-4 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 border-b border-gray-200 pb-3">
             <div>
               <h2 className="text-lg font-semibold">Quote Builder</h2>
               <p className="text-xs text-gray-400 mt-1">Enter the job details, then review the quote preview below.</p>
             </div>
 
-            <div className="flex gap-2">
+            <div className="hidden sm:flex gap-2">
               <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm shadow-sm">New Quote</button>
               <button onClick={handleSaveQuote} disabled={!result} className="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-4 py-2 rounded text-sm shadow-sm">Save Quote</button>
               <button onClick={() => window.print()} disabled={!result} className="hidden sm:inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-4 py-2 rounded text-sm shadow-sm">Print / Save PDF</button>
@@ -724,9 +724,9 @@ const inputClass =
           )}
         </section>
 
-        <section className="min-w-0 rounded-xl py-6 px-3 print:rounded-none print:py-0 print:px-0">
+        <section className="min-w-0 rounded-xl py-4 sm:py-6 px-0 sm:px-3 print:rounded-none print:py-0 print:px-0">
           {result ? (
-            <div className="quote-print-area max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:max-w-none print:border-0 print:shadow-none print:rounded-none print:p-0 print:bg-white">
+            <div className="quote-print-area max-w-full sm:max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-4 sm:p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:max-w-none print:border-0 print:shadow-none print:rounded-none print:p-0 print:bg-white">
               {selectedQuoteId && <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">Editing Quote {quoteNumber}</div>}
               <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
                 <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm shadow-sm">New Quote</button>
@@ -739,7 +739,7 @@ const inputClass =
                 Petra Services Complete Yard Care
               </h1>
 
-              <div className="grid grid-cols-[1.2fr_1fr_140px] gap-8 items-stretch min-h-[120px] text-sm border-t border-gray-700 pt-4 print:gap-6 print:pt-3">
+              <div className="grid grid-cols-1 sm:grid-cols-[1.2fr_1fr_120px] xl:grid-cols-[1.2fr_1fr_140px] gap-4 sm:gap-8 items-start sm:items-stretch sm:min-h-[120px] text-sm border-t border-gray-700 pt-4 print:grid-cols-[1.2fr_1fr_140px] print:gap-6 print:items-stretch print:min-h-[120px] print:pt-3">
 
                 {/* LEFT: CLIENT */}
                 <div className="space-y-1.5 h-full">
@@ -763,12 +763,12 @@ const inputClass =
                 </div>
 
                 {/* RIGHT: LOGO (CENTERED VERTICALLY) */}
-                <div className="flex justify-end items-center h-full">
+                <div className="flex justify-start sm:justify-end items-center h-full print:justify-end">
                   {logoUrl && (
                     <img
                       src={logoUrl}
                       alt="Company logo"
-                      className="max-h-28 max-w-[135px] object-contain"
+                      className="max-h-24 max-w-[115px] sm:max-h-28 sm:max-w-[135px] object-contain"
                     />
                   )}
                 </div>
@@ -782,7 +782,7 @@ const inputClass =
               </div>
 
               <div className="overflow-x-auto print:overflow-visible">
-                <table className="w-full min-w-[600px] print:min-w-0 text-sm border-collapse">
+                <table className="w-full min-w-[520px] sm:min-w-[600px] print:min-w-0 text-sm border-collapse">
                   <thead><tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide"><th className="text-left py-2">Item</th><th className="text-left py-3">Description</th><th className="text-center py-3">Qty</th><th className="text-right py-3">Total</th></tr></thead>
                   <tbody>
                     {result?.lineItems.map((item, index) => (
