@@ -5,6 +5,12 @@ export type TreeCountsByHeight = {
   "60+ ft": number
 }
 
+export type ManualItem = {
+  description: string
+  qty: string | number
+  price: string | number
+}
+
 export type QuoteInput = {
   baseService: string
   treeCountsByHeight: TreeCountsByHeight
@@ -14,6 +20,7 @@ export type QuoteInput = {
   haulOffIncluded: boolean
   emergencyJob: boolean
   discountAmount: number
+  manualItems?: ManualItem[]
 }
 
 export type PricingConfig = {
@@ -42,6 +49,7 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
     haulOffIncluded,
     emergencyJob,
     discountAmount,
+    manualItems = [],
   } = input
 
   const basePrice = pricing.services[baseService] || 0
@@ -62,20 +70,22 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
     total: number
   }[] = []
 
-  Object.entries(treeCountsByHeight).forEach(([heightTier, count]) => {
-    if (count <= 0) return
+  if (baseService !== "Stump Grinding") {
+    Object.entries(treeCountsByHeight).forEach(([heightTier, count]) => {
+      if (count <= 0) return
 
-    const heightModifier = pricing.heightModifiers[heightTier] || 0
-    const rate = basePrice + heightModifier
+      const heightModifier = pricing.heightModifiers[heightTier] || 0
+      const rate = basePrice + heightModifier
 
-    lineItems.push({
-      item: baseService,
-      description: `${heightTier} tree service`,
-      rate,
-      quantity: count,
-      total: rate * count,
+      lineItems.push({
+        item: baseService,
+        description: `${heightTier} tree service`,
+        rate,
+        quantity: count,
+        total: rate * count,
+      })
     })
-  })
+  }
 
   const difficultTotal = difficultAccess * difficultTreeCount
   const hazardTotal = hazardTree * hazardTreeCount
@@ -126,8 +136,26 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
     })
   }
 
+  manualItems
+    .filter((item) => item.description && item.qty && item.price)
+    .forEach((item) => {
+      const quantity = Number(item.qty) || 0
+      const rate = Number(item.price) || 0
+
+      if (quantity <= 0 || rate <= 0) return
+
+      lineItems.push({
+        item: "Additional",
+        description: item.description,
+        rate,
+        quantity,
+        total: quantity * rate,
+      })
+    })
+
   const subtotal = lineItems.reduce((sum, item) => sum + item.total, 0)
-  const subtotalAfterDiscount = subtotal - discountAmount
+  const safeDiscount = Math.min(discountAmount, subtotal)
+  const subtotalAfterDiscount = subtotal - safeDiscount
   const emergencyFee = emergencyJob ? subtotalAfterDiscount * emergencyRate : 0
   const adjustedSubtotal = subtotalAfterDiscount + emergencyFee
   const tax = adjustedSubtotal * taxRate
@@ -149,7 +177,7 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
 
     scopeOfWork = `${baseService} for ${totalTreeCount} tree${
       totalTreeCount > 1 ? "s" : ""
-    } (${heightSummary}).`
+    }${heightSummary ? ` (${heightSummary})` : ""}.`
 
     if (difficultTreeCount > 0) {
       scopeOfWork += ` Includes difficult access handling for ${difficultTreeCount} tree${

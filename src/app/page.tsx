@@ -26,6 +26,7 @@ type SavedQuote = {
   emergency_job: boolean
   discount_amount: number
   total: number
+  manual_items: { description: string; qty: string | number; price: string | number }[] | null
 }
 
 type TreeHeightTier = "0-15 ft" | "15-30 ft" | "30-60 ft" | "60+ ft"
@@ -56,11 +57,15 @@ export default function Home() {
   const [stumpCount, setStumpCount] = useState<number | "">("")
   const [haulOffIncluded, setHaulOffIncluded] = useState(true)
   const [emergencyJob, setEmergencyJob] = useState(false)
-  const [discountAmount, setDiscountAmount] = useState<number | "">("")
+  const [discountAmount, setDiscountAmount] = useState("")
   const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([])
   const [selectedQuoteId, setSelectedQuoteId] = useState<number | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
   const [logoFileName, setLogoFileName] = useState("")
+  
+  const [manualItems, setManualItems] = useState([
+    { description: "", qty: "", price: ""}
+  ])
 
   const formatDisplayDate = (dateString: string) => {
     if(!dateString) return ""
@@ -95,7 +100,18 @@ export default function Home() {
     setHaulOffIncluded(quote.haul_off_included)
     setEmergencyJob(quote.emergency_job)
 
-    setDiscountAmount(quote.discount_amount)
+    setDiscountAmount(quote.discount_amount ? String(quote.discount_amount) : "")
+
+    setManualItems(
+      quote.manual_items && quote.manual_items.length > 0
+        ? quote.manual_items.map((item) => ({
+            description: item.description || "",
+            qty: String(item.qty || ""),
+            price: String(item.price || ""),
+          }))
+        : [{ description: "", qty: "", price: "" }]
+    )
+    
   }
 
   const deleteQuote = async (quoteId: number) => {
@@ -199,7 +215,8 @@ const inputClass =
   haul_off_included,
   emergency_job,
   discount_amount,
-  total
+  total,
+  manual_items
 `)
     .order("created_at", { ascending: false })
     .limit(12)
@@ -270,7 +287,8 @@ const inputClass =
           stumpCount: stumpCount || 0,
           haulOffIncluded,
           emergencyJob,
-          discountAmount: discountAmount || 0,
+          discountAmount: Number(discountAmount) || 0,
+          manualItems,
         },
         pricingConfig
       )
@@ -315,7 +333,10 @@ const inputClass =
         stump_count: stumpCount || 0,
         haul_off_included: haulOffIncluded,
         emergency_job: emergencyJob,
-        discount_amount: discountAmount || 0,
+        discount_amount: Number(discountAmount) || 0,
+        manual_items: manualItems.filter(
+            (item) => item.description || item.qty || item.price
+        ),
         subtotal: result.subtotal,
         subtotal_after_discount: result.subtotalAfterDiscount,
         emergency_fee: result.emergencyFee,
@@ -381,6 +402,7 @@ const inputClass =
   setHaulOffIncluded(true)
   setEmergencyJob(false)
   setDiscountAmount("")
+  setManualItems([{ description: "", qty: "", price: ""}])
 
   // reset date to today
   setQuoteDate(new Date().toISOString().split("T")[0])
@@ -514,18 +536,28 @@ const inputClass =
 
                   <div>
                     <label className="block mb-1 text-sm">Discount</label>
-                    <input
-                      type="number"
-                      placeholder="$"
-                      value={discountAmount}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        setDiscountAmount(val === "" ? "" : Number(val))
-                      }}
-                      onWheel={(e) => e.currentTarget.blur()}
-                      className={inputClass}
-                    />
-                  </div>
+                      <input
+                        type="text"
+                        placeholder="$0.00"
+                        value={discountAmount}
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/[^0-9.]/g, "")
+                          const parts = raw.split(".")
+                          const cleaned = parts.length > 2 ? parts[0] + "." + parts[1] : raw
+                          const limited = cleaned.includes(".")
+                            ? cleaned.split(".")[0] + "." + cleaned.split(".")[1].slice(0, 2)
+                            : cleaned
+
+                          setDiscountAmount(limited)
+                        }}
+                        onBlur={() => {
+                          if (discountAmount !== "") {
+                            setDiscountAmount(Number(discountAmount).toFixed(2))
+                          }
+                        }}
+                        className={inputClass}
+                      />                  
+                    </div>
 
                   <div className="sm:col-span-2">
                     <label className="block mb-1 text-sm">Customer-Facing Logo</label>
@@ -731,6 +763,78 @@ const inputClass =
                   </div>
                 </>
               )}
+              <div className="mt-3 space-y-2">
+                <h4 className="text-xs font-semibold uppercase text-gray-500">
+                  Additional Items
+                </h4>
+
+                {manualItems.map((item, index) => (
+                  <div key={index} className="grid grid-cols-4 gap-2">
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      value={item.description}
+                      onChange={(e) => {
+                        const updated = [...manualItems]
+                        updated[index].description = e.target.value
+                        setManualItems(updated)
+                      }}
+                      className={inputClass}
+                    />
+
+                    <input
+                      type="number"
+                      placeholder="Qty"
+                      value={item.qty}
+                      onChange={(e) => {
+                        const updated = [...manualItems]
+                        updated[index].qty = e.target.value
+                        setManualItems(updated)
+                      }}
+                      className={inputClass}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="$0"
+                      value={item.price ?? ""}
+                      onChange={(e) => {
+                        // ONLY allow whole numbers
+                        const raw = e.target.value.replace(/[^0-9]/g, "")
+
+                        const updated = [...manualItems]
+                        updated[index].price = raw
+                        setManualItems(updated)
+                      }}
+                      onBlur={() => {
+                        if (item.price !== "") {
+                          const updated = [...manualItems]
+                          updated[index].price = String(Number(item.price)) // ensure clean number
+                          setManualItems(updated)
+                        }
+                      }}
+                      className={inputClass}
+                    />
+                    <button
+                      onClick={() =>
+                        setManualItems(manualItems.filter((_, i) => i !== index))
+                      }
+                      className="text-red-500 text-sm"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+
+                <button
+                  onClick={() =>
+                    setManualItems([...manualItems, { description: "", qty: "", price: "" }])
+                  }
+                  className="text-blue-600 text-sm"
+                >
+                  + Add Item
+                </button>
+              </div>
             </div>
           </div>
           {((difficultTreeCount || 0) > totalTreeCount || (hazardTreeCount || 0) > totalTreeCount) && (
@@ -825,7 +929,7 @@ const inputClass =
 
                   <div className="flex justify-between text-gray-400">
                     <span>Discount</span>
-                    <span>({formatCurrency(discountAmount || 0)})</span>
+                    <span>({formatCurrency(Number(discountAmount) || 0)})</span>
                   </div>
 
                   <div className="flex justify-between">
