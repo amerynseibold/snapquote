@@ -1,45 +1,16 @@
-export type TreeCountsByHeight = {
-  "0-15 ft": number
-  "15-30 ft": number
-  "30-60 ft": number
-  "60+ ft": number
-}
+import type { PricingConfig, QuoteInput, QuoteResult } from "./types"
 
-export type ManualItem = {
-  description: string
-  qty: string | number
-  price: string | number
-}
+/* =========================================================
+   CALCULATE QUOTE
+========================================================= */
 
-export type QuoteInput = {
-  baseService: string
-  treeCountsByHeight: TreeCountsByHeight
-  difficultTreeCount: number
-  hazardTreeCount: number
-  stumpCount: number
-  haulOffIncluded: boolean
-  emergencyJob: boolean
-  discountAmount: number
-  manualItems?: ManualItem[]
-}
-
-export type PricingConfig = {
-  services: Record<string, number>
-  heightModifiers: Record<string, number>
-  conditionModifiers: {
-    difficultAccess: number
-    hazardTree: number
-    haulOff: number
-  }
-  settings: {
-    taxRate: number
-    emergencyRate: number
-    stumpBasePrice: number
-    additionalStumpPrice: number
-  }
-}
-
-export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
+export function calculateQuote(
+  input: QuoteInput,
+  pricing: PricingConfig
+): QuoteResult {
+  /* ---------------------------------------------------------
+     Input values
+  --------------------------------------------------------- */
   const {
     baseService,
     treeCountsByHeight,
@@ -52,11 +23,24 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
     manualItems = [],
   } = input
 
+  /* ---------------------------------------------------------
+     Pricing values
+  --------------------------------------------------------- */
   const basePrice = pricing.services[baseService] || 0
-  const { difficultAccess, hazardTree, haulOff } = pricing.conditionModifiers
-  const { taxRate, emergencyRate, stumpBasePrice, additionalStumpPrice } =
-    pricing.settings
 
+  const { difficultAccess, hazardTree, haulOff } =
+    pricing.conditionModifiers
+
+  const {
+    taxRate,
+    emergencyRate,
+    stumpBasePrice,
+    additionalStumpPrice,
+  } = pricing.settings
+
+  /* ---------------------------------------------------------
+     Base calculations
+  --------------------------------------------------------- */
   const totalTreeCount = Object.values(treeCountsByHeight).reduce(
     (sum, count) => sum + count,
     0
@@ -69,6 +53,11 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
     quantity: number | null
     total: number
   }[] = []
+
+
+  /* =========================================================
+     TREE SERVICE LINE ITEMS
+  ========================================================= */
 
   if (baseService !== "Stump Grinding") {
     Object.entries(treeCountsByHeight).forEach(([heightTier, count]) => {
@@ -87,14 +76,25 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
     })
   }
 
+
+  /* =========================================================
+     SURCHARGE / ADD-ON CALCULATIONS
+  ========================================================= */
+
   const difficultTotal = difficultAccess * difficultTreeCount
   const hazardTotal = hazardTree * hazardTreeCount
   const haulOffTotal = haulOffIncluded ? haulOff : 0
 
   let stumpTotal = 0
+
   if (stumpCount > 0) {
     stumpTotal = stumpBasePrice + (stumpCount - 1) * additionalStumpPrice
   }
+
+
+  /* =========================================================
+     SURCHARGE / ADD-ON LINE ITEMS
+  ========================================================= */
 
   if (difficultTotal > 0) {
     lineItems.push({
@@ -136,6 +136,11 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
     })
   }
 
+
+  /* =========================================================
+     MANUAL / ADDITIONAL LINE ITEMS
+  ========================================================= */
+
   manualItems
     .filter((item) => item.description && item.qty && item.price)
     .forEach((item) => {
@@ -153,13 +158,31 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
       })
     })
 
+
+  /* =========================================================
+     TOTALS
+  ========================================================= */
+
   const subtotal = lineItems.reduce((sum, item) => sum + item.total, 0)
+
   const safeDiscount = Math.min(discountAmount, subtotal)
+
   const subtotalAfterDiscount = subtotal - safeDiscount
-  const emergencyFee = emergencyJob ? subtotalAfterDiscount * emergencyRate : 0
+
+  const emergencyFee = emergencyJob
+    ? subtotalAfterDiscount * emergencyRate
+    : 0
+
   const adjustedSubtotal = subtotalAfterDiscount + emergencyFee
+
   const tax = adjustedSubtotal * taxRate
+
   const total = adjustedSubtotal + tax
+
+
+  /* =========================================================
+     SCOPE OF WORK
+  ========================================================= */
 
   let scopeOfWork = ""
 
@@ -199,6 +222,11 @@ export function calculateQuote(input: QuoteInput, pricing: PricingConfig) {
   if (emergencyJob) {
     scopeOfWork += " Emergency service included."
   }
+
+
+  /* =========================================================
+     RETURN QUOTE RESULT
+  ========================================================= */
 
   return {
     lineItems,
