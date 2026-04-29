@@ -31,7 +31,7 @@ type SavedQuote = {
 type TreeHeightTier = "0-15 ft" | "15-30 ft" | "30-60 ft" | "60+ ft"
 
 export default function Home() {
-  const [logoUrl, setLogoUrl] = useState("")
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [quoteNumber, setQuoteNumber] = useState("")
   const [customerName, setCustomerName] = useState("")
   const [customerPhone, setCustomerPhone] = useState("")
@@ -59,6 +59,7 @@ export default function Home() {
   const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([])
   const [selectedQuoteId, setSelectedQuoteId] = useState<number | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
+  const [logoFileName, setLogoFileName] = useState("")
 
   const formatDisplayDate = (dateString: string) => {
     if(!dateString) return ""
@@ -139,6 +140,7 @@ const inputClass =
   const handleLogoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0]
   if (!file) return
+  setLogoFileName(file.name)
 
   const fileExt = file.name.split(".").pop()
   const filePath = `company-logo.${fileExt}`
@@ -521,14 +523,16 @@ const inputClass =
                         className="max-w-[220px] text-sm text-gray-300 file:mr-3 file:rounded file:border-0 file:bg-gray-700 file:px-3 file:py-2 file:text-white"
                       />
 
-                      {logoUrl ? (
+                      {logoUrl || logoFileName ? (
                         <img
                           src={logoUrl}
                           alt="Logo preview"
                           className="h-9 w-9 rounded object-contain border border-gray-700 bg-black"
                         />
                       ) : (
-                        <span className="text-sm text-gray-500">No file chosen</span>
+                        <span className="text-sm text-gray-300">
+                          {logoFileName || "Logo uploaded"}
+                        </span>
                       )}
                     </div>
                   </div>
