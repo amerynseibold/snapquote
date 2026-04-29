@@ -792,15 +792,54 @@ const inputClass =
                 </table>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-2 print:mt-2 print:pt-2 print:space-y-1 print:break-inside-avoid">
-                <div className="flex justify-between text-gray-400"><span>Subtotal</span><span>{formatCurrency(result.subtotal)}</span></div>
-                <div className="flex justify-between text-gray-400"><span>Discount</span><span>({formatCurrency(discountAmount || 0)})</span></div>
-                <div className="flex justify-between"><span>Subtotal After Discount</span><span>{formatCurrency(result.subtotalAfterDiscount)}</span></div>
-                <div className="flex justify-between"><span>Emergency</span><span>{formatCurrency(result.emergencyFee)}</span></div>
-                <div className="flex justify-between font-medium border-t border-gray-700 pt-3 mt-2"><span>Adjusted Subtotal</span><span>{formatCurrency(result.adjustedSubtotal)}</span></div>
-                <div className="flex justify-between"><span>Tax</span><span>{formatCurrency(result.tax)}</span></div>
-                <div className="flex justify-between font-bold text-2xl print:text-xl border-t border-gray-700 pt-4 mt-3 print:pt-2 print:mt-2"><span>Grand Total</span><span>{formatCurrency(result.total)}</span></div>
-                <div className="hidden print:block text-right pt-4 text-[9px] text-gray-500 italic opacity-70"><span className="mr-2">Powered by</span><img src="/logo2.png" alt="SnapQuote Logo" className="inline-block h-3 w-auto opacity-70 align-middle" /></div>
+              <div className="mt-4 pt-3 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-2 print:mt-2 print:pt-2 print:space-y-1 print:break-inside-avoid print:flex print:justify-end">
+                <div className="w-full sm:w-80">
+
+                  <div className="flex justify-between text-gray-400">
+                    <span>Subtotal</span>
+                    <span>{formatCurrency(result.subtotal)}</span>
+                  </div>
+
+                  <div className="flex justify-between text-gray-400">
+                    <span>Discount</span>
+                    <span>({formatCurrency(discountAmount || 0)})</span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span>Subtotal After Discount</span>
+                    <span>{formatCurrency(result.subtotalAfterDiscount)}</span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span>Emergency</span>
+                    <span>{formatCurrency(result.emergencyFee)}</span>
+                  </div>
+
+                  <div className="flex justify-between font-medium border-t border-gray-700 pt-3 mt-2">
+                    <span>Adjusted Subtotal</span>
+                    <span>{formatCurrency(result.adjustedSubtotal)}</span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span>Tax</span>
+                    <span>{formatCurrency(result.tax)}</span>
+                  </div>
+
+                  <div className="flex justify-between font-bold text-2xl print:text-xl border-t border-gray-700 pt-4 mt-3 print:pt-2 print:mt-2">
+                    <span>Grand Total</span>
+                    <span>{formatCurrency(result.total)}</span>
+                  </div>
+
+                  <div className="hidden print:block text-right pt-4 text-[9px] text-gray-500 italic opacity-70">
+                    <span className="mr-2">Powered by</span>
+                    <img
+                      src="/logo2.png"
+                      alt="SnapQuote Logo"
+                      className="inline-block h-3 w-auto opacity-70 align-middle"
+                    />
+                  </div>
+
+                </div>
               </div>
             </div>
           ) : (
