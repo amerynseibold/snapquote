@@ -726,7 +726,7 @@ const inputClass =
 
         <section className="min-w-0 rounded-xl py-4 sm:py-6 px-0 sm:px-3 print:rounded-none print:py-0 print:px-0">
           {result ? (
-            <div className="quote-print-area w-full">
+            <div className="quote-print-area max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:w-full print:max-w-full md:print:w-[7in] md:print:max-w-[7in] print:mx-auto print:overflow-visible print:border-0 print:shadow-none print:rounded-none print:p-0 print:bg-white">
               {selectedQuoteId && <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">Editing Quote {quoteNumber}</div>}
               <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
                 <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm shadow-sm">New Quote</button>
