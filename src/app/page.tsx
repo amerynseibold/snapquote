@@ -117,8 +117,8 @@ export default function Home() {
     await fetchSavedQuotes()
   }
 
-  const inputClass =
-    "w-full h-12 bg-black text-white border border-gray-700 shadow-lg rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+const inputClass =
+  "w-full h-9 bg-black text-white border border-gray-700 rounded-md px-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
 
   const updateTreeCountByHeight = (tier: TreeHeightTier, value: string) => {
     setTreeCountsByHeight((prev) => ({
@@ -418,531 +418,391 @@ export default function Home() {
     }).format(value)
 
   return (
-    <main className="relative p-4 md:p-6 xl:p-10 pb-24 print:p-0 space-y-6 xl:space-y-8">
-      <div className="flex items-center gap-3 print:hidden mb-6">
-  <img
-    src="/logo.png"
-    alt="SnapQuote Logo"
-    className="h-18 w-auto"
-  />
-</div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr] gap-6 xl:gap-8">
-        <div className="space-y-4 print:hidden">
-          <div className="pb-3 mb-4 border-b border-gray-700">
-            <h2 className="text-xl font-semibold">Inputs</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 min-[500px]:grid-cols-2 xl:grid-cols-3 gap-3">
-            <div>
-              <label className="block mb-2">Quote Number</label>
-              <input
-                type="text"
-                value={quoteNumber}
-                onChange={(e) => setQuoteNumber(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2">Quote Date</label>
-              <input
-                type="date"
-                value={quoteDate}
-                onChange={(e) => setQuoteDate(e.target.value)}
-                className={`${inputClass} min-w-0 w-full appearance-none`}
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2">Customer Name</label>
-              <input
-                type="text"
-                placeholder="Enter Name"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-          </div>
-
-          <div className="mt-3">
-            <label className="block mb-2">Service Address</label>
-            <input
-              type="text"
-              placeholder="Enter Service Address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className={inputClass}
+    <main className="min-h-screen bg-black text-white p-3 md:p-4 xl:p-5 pb-20 print:p-0">
+      <div className="max-w-[1500px] mx-auto space-y-6 print:max-w-none print:space-y-0">
+        <div className="sticky top-0 z-40 bg-black/95 backdrop-blur border-b border-gray-800 px-4 py-3 flex justify-between items-center print:hidden">
+          <div className="flex items-center">
+            <img
+              src="/logo.png"
+              alt="SnapQuote Logo"
+              className="h-10 md:h-12 w-auto object-contain -ml-1"
             />
           </div>
 
-          <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
+          {quoteNumber && <span className="text-sm text-gray-400">{quoteNumber}</span>}
+        </div>
+
+        <section className="print:hidden bg-gray-950 border border-gray-800 rounded-xl p-4 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-800 pb-3">
             <div>
-              <label className="block mb-2">Customer Phone</label>
-              <input
-                type="tel"
-                placeholder="(555) 555-5555"
-                value={customerPhone}
-                onChange={(e) => setCustomerPhone(formatPhoneNumber(e.target.value))}
-                maxLength={14}
-                className={inputClass}
-              />
+              <h2 className="text-lg font-semibold">Quote Builder</h2>
+              <p className="text-xs text-gray-400 mt-1">Enter the job details, then review the quote preview below.</p>
             </div>
 
-            <div>
-              <label className="block mb-2">Customer Email</label>
-              <input
-                type="email"
-                placeholder="Enter Customer Email"
-                value={customerEmail}
-                onChange={(e) => setCustomerEmail(e.target.value)}
-                className={inputClass}
-              />
+            <div className="flex gap-2">
+              <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm">New Quote</button>
+              <button onClick={handleSaveQuote} disabled={!result} className="bg-green-600 hover:bg-green-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-4 py-2 rounded text-sm">Save Quote</button>
+              <button onClick={() => window.print()} disabled={!result} className="hidden sm:inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-4 py-2 rounded text-sm">Print / Save PDF</button>
             </div>
           </div>
 
-          <div>
-            <label className="block mb-2">Base Service</label>
-            <select
-              value={baseService}
-              onChange={(e) => setBaseService(e.target.value)}
-              className={inputClass}
-            >
-              <option value="" disabled>
-                Select Service...
-              </option>
-              <option>Tree Trimming</option>
-              <option>Tree Removal</option>
-              <option>Stump Grinding</option>
-            </select>
-          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-start">
 
-        {baseService !== "Stump Grinding" && (
-          <div>
-            <label className="block font-semibold mb-3">Trees by Height</label>
+            {/* LEFT COLUMN (Quote + Pricing stacked) */}
+            <div className="xl:col-span-3 space-y-3">
 
-            <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
-              {(["0-15 ft", "15-30 ft", "30-60 ft", "60+ ft"] as TreeHeightTier[]).map(
-                (tier) => (
-                  <div key={tier}>
-                    <label className="block mb-2 text-sm">{tier}</label>
+              {/* Quote Info */}
+              <div className="bg-gray-900 rounded-lg p-3 space-y-3">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">Quote Info</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                  <div>
+                    <label className="block mb-1 text-sm">Quote Number</label>
+                    <input
+                      type="text"
+                      value={quoteNumber}
+                      onChange={(e) => setQuoteNumber(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm">Quote Date</label>
+                    <input
+                      type="date"
+                      value={quoteDate}
+                      onChange={(e) => setQuoteDate(e.target.value)}
+                      className={`${inputClass} min-w-0 appearance-none`}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Pricing & Branding */}
+              <div className="bg-gray-900 rounded-lg p-3 space-y-3">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                  Pricing & Branding
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+                  <div>
+                    <label className="block mb-1 text-sm">Emergency</label>
+                    <select
+                      value={emergencyJob ? "yes" : "no"}
+                      onChange={(e) => setEmergencyJob(e.target.value === "yes")}
+                      className={inputClass}
+                    >
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block mb-1 text-sm">Discount</label>
                     <input
                       type="number"
-                      placeholder="#"
-                      min="0"
-                      value={treeCountsByHeight[tier]}
-                      onChange={(e) => updateTreeCountByHeight(tier, e.target.value)}
+                      placeholder="$"
+                      value={discountAmount}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setDiscountAmount(val === "" ? "" : Number(val))
+                      }}
                       onWheel={(e) => e.currentTarget.blur()}
                       className={inputClass}
                     />
                   </div>
-                )
-              )}
-            </div>
-          </div>
-        )}
- 
 
-        {baseService !== "Stump Grinding" && (
-          <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
-            <div>
-              <label className="block mb-2">Difficult Trees</label>
-              <input
-                type="number"
-                placeholder="#"
-                min="0"
-                value={difficultTreeCount}
-                onChange={(e) => {
-                  const val = e.target.value
-                  const num = Number(val)
-                  const maxTrees = totalTreeCount
-                  setDifficultTreeCount(Math.min(num, maxTrees))
-                }}
-                onWheel={(e) => e.currentTarget.blur()}
-                className={inputClass}
-              />
-            </div>
+                  <div className="sm:col-span-2">
+                    <label className="block mb-1 text-sm">Customer-Facing Logo</label>
 
-            <div>
-              <label className="block mb-2">Hazard Trees</label>
-              <input
-                type="number"
-                placeholder="#"
-                min="0"
-                value={hazardTreeCount}
-                onChange={(e) => {
-                  const val = e.target.value
-                  const num = Number(val)
-                  const maxTrees = totalTreeCount
-                  setHazardTreeCount(Math.min(num, maxTrees))
-                }}
-                onWheel={(e) => e.currentTarget.blur()}
-                className={inputClass}
-              />
-            </div>
-          </div>
-        )} 
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        className="max-w-[220px] text-sm text-gray-300 file:mr-3 file:rounded file:border-0 file:bg-gray-700 file:px-3 file:py-2 file:text-white"
+                      />
 
-          <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
-            <div>
-              <label className="block mb-2">Haul-Off</label>
-              <select
-                value={haulOffIncluded ? "yes" : "no"}
-                onChange={(e) => setHaulOffIncluded(e.target.value === "yes")}
-                className={inputClass}
-              >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block mb-2">Emergency</label>
-              <select
-                value={emergencyJob ? "yes" : "no"}
-                onChange={(e) => setEmergencyJob(e.target.value === "yes")}
-                className={inputClass}
-              >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 min-[500px]::grid-cols-2 gap-3">
-            <div>
-              <label className="block mb-2"># of Stumps</label>
-              <input
-                type="number"
-                min="0"
-                placeholder="#"
-                value={stumpCount}
-                onChange={(e) => {
-                  const val = e.target.value
-                  setStumpCount(val === "" ? "" : Number(val))
-                }}
-                onWheel={(e) => e.currentTarget.blur()}
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2">Discount</label>
-              <input
-                type="number"
-                placeholder="$"
-                value={discountAmount}
-                onChange={(e) => {
-                  const val = e.target.value
-                  setDiscountAmount(val === "" ? "" : Number(val))
-                }}
-                onWheel={(e) => e.currentTarget.blur()}
-                className={inputClass}
-              />
-            </div>
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-gray-700">
-            <p className="text-xs uppercase text-gray-400 mb-3">Branding</p>
-
-            <div className="flex items-center gap-4">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleLogoUpload}
-                className="text-sm"
-              />
-
-              {logoUrl && (
-                <img
-                  src={logoUrl}
-                  alt="Logo preview"
-                  className="h-10 w-auto object-contain"
-                />
-              )}
-            </div>
-          </div>
-
-          {((difficultTreeCount || 0) > totalTreeCount ||
-            (hazardTreeCount || 0) > totalTreeCount) && (
-            <div className="text-red-500 text-sm">
-              Counts cannot exceed total trees.
-            </div>
-          )}
-          
-           <div className="pt-6 border-t border-gray-700">
-              <h2 className="text-xl font-semibold mb-3">Quote History</h2>
-
-              {savedQuotes.length === 0 ? (
-                <p className="text-sm text-gray-400">No saved quotes yet.</p>
-              ) : (
-                <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
-                  {savedQuotes.map((quote) => (
-                    <div
-                      key={quote.id}
-                      onClick={() => loadQuote(quote)}
-                      className={`border rounded p-3 text-sm cursor-pointer transition ${
-                        selectedQuoteId === quote.id
-                          ? "border-blue-500 bg-blue-950/30"
-                          : "border-gray-700 hover:bg-gray-800"
-                      }`}
-                    >
-                      <div className="flex justify-between items-start font-semibold">
-                        <div>
-                          <span>{quote.quote_number}</span>
-                          <span className="ml-2">{formatCurrency(quote.total)}</span>
-                        </div>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setConfirmDeleteId(quote.id)
-                          }}
-                          className="text-xs text-red-400 hover:text-red-300 mr-2 hover:underline"
-
-                        >
-                          Delete
-                        </button>
-                        {confirmDeleteId === quote.id && (
-                          <div className="mt-2 flex items-center justify-between text-xs bg-gray-800 border border-gray-700 rounded px-2 py-1">
-                            <span className="text-gray-300">Are you sure?</span>
-
-                            <div className="flex gap-2">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  deleteQuote(quote.id)
-                                  setConfirmDeleteId(null)
-                                }}
-                                className="text-red-400 hover:text-red-300 ml-2"
-                              >
-                                Yes
-                              </button>
-
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  setConfirmDeleteId(null)
-                                }}
-                                className="text-gray-400 hover:text-white"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                        </div>
-
-                        <div className="text-gray-400 mt-1">
-                          {quote.customer_name || "No customer name"}
-                        </div>
-
-                        <div className="text-gray-500 text-xs">
-                          {quote.quote_date || "No date"}
-                        </div>
-                      </div>
-                    ))}
+                      {logoUrl ? (
+                        <img
+                          src={logoUrl}
+                          alt="Logo preview"
+                          className="h-9 w-9 rounded object-contain border border-gray-700 bg-black"
+                        />
+                      ) : (
+                        <span className="text-sm text-gray-500">No file chosen</span>
+                      )}
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
-          </div>
-
-        {result ? (
-          <div className="quote-print-area space-y-6 border rounded p-6 shadow-sm print:border-0 print:rounded-none print:shadow-none print:p-0 print:text-[12px] print:space-y-3">
-            {selectedQuoteId && (
-              <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">
-                Editing Quote {quoteNumber}
-              </div>
-            )}
-            <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
-              <button
-                onClick={handleNewQuote}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm"
-              >
-                New Quote
-              </button>
-
-              <button
-                onClick={handleSaveQuote}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
-              >
-                Save Quote
-              </button>
-
-              <button
-                onClick={() => window.print()}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm"
-              >
-                Print / Save PDF
-              </button>
             </div>
 
-            <div className="flex justify-between items-start mb-6 border-b border-gray-700 pb-5">
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold tracking-tight">
-                  Petra Services Complete Yard Care
-                </h1>
+            {/* MIDDLE COLUMN (Customer) */}
+            <div className="bg-gray-900 rounded-lg p-3 space-y-3 xl:col-span-3">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">Customer Info</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                <div>
+                  <label className="block mb-1 text-sm">Customer Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
 
-                  <div className="flex justify-between mt-6 text-sm border-t border-gray-700 pt-4">
+                <div>
+                  <label className="block mb-1 text-sm">Service Address</label>
+                  <input
+                    type="text"
+                    placeholder="Enter service address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
 
-                    {/* LEFT — Client */}
+                <div>
+                  <label className="block mb-1 text-sm">Customer Phone</label>
+                  <input
+                    type="tel"
+                    placeholder="(555) 555-5555"
+                    value={customerPhone}
+                    onChange={(e) =>
+                      setCustomerPhone(formatPhoneNumber(e.target.value))
+                    }
+                    maxLength={14}
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-sm">Customer Email</label>
+                  <input
+                    type="email"
+                    placeholder="Enter email"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN (Job Details) */}
+            <div className="bg-gray-900 rounded-lg p-3 space-y-3 xl:col-span-6">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">Job Details</h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                <div>
+                  <label className="block mb-1 text-sm">Base Service</label>
+                  <select
+                    value={baseService}
+                    onChange={(e) => setBaseService(e.target.value)}
+                    className={inputClass}
+                  >
+                    <option value="" disabled>
+                      Select service...
+                    </option>
+                    <option>Tree Trimming</option>
+                    <option>Tree Removal</option>
+                    <option>Stump Grinding</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-sm">Haul-Off</label>
+                  <select
+                    value={haulOffIncluded ? "yes" : "no"}
+                    onChange={(e) =>
+                      setHaulOffIncluded(e.target.value === "yes")
+                    }
+                    className={inputClass}
+                  >
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-sm"># of Stumps</label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="#"
+                    value={stumpCount}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setStumpCount(val === "" ? "" : Number(val))
+                    }}
+                    onWheel={(e) => e.currentTarget.blur()}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              {baseService !== "Stump Grinding" && (
+                <>
+                  <div>
+                    <label className="block font-semibold mb-3">Trees by Height</label>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {(["0-15 ft", "15-30 ft", "30-60 ft", "60+ ft"] as TreeHeightTier[]).map((tier) => (
+                        <div key={tier}>
+                          <label className="block mb-1 text-sm">{tier}</label>
+                          <input
+                            type="number"
+                            placeholder="#"
+                            min="0"
+                            value={treeCountsByHeight[tier]}
+                            onChange={(e) =>
+                              updateTreeCountByHeight(tier, e.target.value)
+                            }
+                            onWheel={(e) => e.currentTarget.blur()}
+                            className={inputClass}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block mb-1 text-sm">Difficult Trees</label>
+                      <input
+                        type="number"
+                        placeholder="#"
+                        min="0"
+                        value={difficultTreeCount}
+                        onChange={(e) => {
+                          const val = e.target.value
+                          const num = Number(val)
+                          const maxTrees = totalTreeCount
+                          setDifficultTreeCount(
+                            val === "" ? "" : Math.min(num, maxTrees)
+                          )
+                        }}
+                        onWheel={(e) => e.currentTarget.blur()}
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block mb-1 text-sm">Hazard Trees</label>
+                      <input
+                        type="number"
+                        placeholder="#"
+                        min="0"
+                        value={hazardTreeCount}
+                        onChange={(e) => {
+                          const val = e.target.value
+                          const num = Number(val)
+                          const maxTrees = totalTreeCount
+                          setHazardTreeCount(
+                            val === "" ? "" : Math.min(num, maxTrees)
+                          )
+                        }}
+                        onWheel={(e) => e.currentTarget.blur()}
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+          {((difficultTreeCount || 0) > totalTreeCount || (hazardTreeCount || 0) > totalTreeCount) && (
+            <div className="text-red-500 text-sm">Counts cannot exceed total trees.</div>
+          )}
+        </section>
+
+        <section className="min-w-0">
+          {result ? (
+            <div className="quote-print-area space-y-6 border border-gray-600 rounded p-4 md:p-6 shadow-sm overflow-x-auto print:overflow-visible print:border-0 print:rounded-none print:shadow-none print:p-0 print:text-[12px] print:space-y-3">
+              {selectedQuoteId && <div className="mb-3 text-sm text-blue-400 font-medium print:hidden">Editing Quote {quoteNumber}</div>}
+              <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
+                <button onClick={handleNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm">New Quote</button>
+                <button onClick={handleSaveQuote} className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm">Save Quote</button>
+                <button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm">Print / Save PDF</button>
+              </div>
+
+              <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6 mb-6 border-b border-gray-700 pb-5">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-2xl font-bold tracking-tight">Petra Services Complete Yard Care</h1>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-sm border-t border-gray-700 pt-4">
                     <div className="space-y-1.5">
                       <p className="text-gray-400 uppercase tracking-wide text-xs">Client</p>
                       <p className="font-medium">{customerName}</p>
-                      {address && (
-                        <>
-                          <p>{address.split(",")[0]}</p>
-                          <p>{address.split(",").slice(1).join(",").trim()}</p>
-                        </>
-                      )}
+                      {address && <><p>{address.split(",")[0]}</p><p>{address.split(",").slice(1).join(",").trim()}</p></>}
                     </div>
-
-                    {/* RIGHT — Quote + Contact */}
-                    <div className="text-right space-y-1.5">
-                      <p>
-                        <span className="text-gray-400 text-xs uppercase">Date:</span>{" "}
-                        {formatDisplayDate(quoteDate)}
-                      </p>
-                      <p>
-                        <span className="text-gray-400 text-xs uppercase">Quote #</span>{" "}
-                        <span className="font-medium">{quoteNumber}</span>
-                      </p>
-                   
-                      {customerPhone && (
-                        <p>
-                          <span className="text-gray-400 text-xs uppercase">Phone:</span>{" "}
-                          {customerPhone}
-                        </p>
-                      )}
-                      {customerEmail && (
-                        <p>
-                          <span className="text-gray-400 text-xs uppercase">Email:</span>{" "}
-                          {customerEmail}
-                        </p>
-                      )}
+                    <div className="md:text-right space-y-1.5">
+                      <p><span className="text-gray-400 text-xs uppercase">Date:</span> {formatDisplayDate(quoteDate)}</p>
+                      <p><span className="text-gray-400 text-xs uppercase">Quote #</span> <span className="font-medium">{quoteNumber}</span></p>
+                      {customerPhone && <p><span className="text-gray-400 text-xs uppercase">Phone:</span> {customerPhone}</p>}
+                      {customerEmail && <p><span className="text-gray-400 text-xs uppercase">Email:</span> {customerEmail}</p>}
                     </div>
-
                   </div>
-              </div>
-
-              {logoUrl && (
-                <div className="w-60 h-40 flex items-start justify-end mr-8">
-                  <img
-                    src={logoUrl}
-                    alt="Company logo"
-                    className="max-h-full max-w-full object-contain"
-                  />
                 </div>
-              )}
-            </div>
-
-            <div className="mt-4">
-              <p className="font-semibold text-base mb-1">Scope of Work:</p>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                {result?.scopeOfWork}
-              </p>
-            </div>
-
-            <div className="overflow-x-auto print:overflow-visible">
-             <table className="w-full min-w-[600px] print:min-w-0 text-sm border-collapse">
-                <thead>
-                  <tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide">
-                    <th className="text-left py-3">Item</th>
-                    <th className="text-left py-3">Description</th>
-                    <th className="text-center py-3">Qty</th>
-                    <th className="text-right py-3">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {result?.lineItems.map((item, index) => (
-                    <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40">
-                      <td className="py-3 print:py-1.5">{item.item}</td>
-                      <td className="py-3 print:py-1.5">{item.description}</td>
-                      <td className="py-3 print:py-1.5 text-center">{item.quantity ?? "-"}</td>
-                      <td className="py-3 print:py-1.5 text-right font-medium">
-                        {formatCurrency(item.total)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="mt-12 pt-6 border-t border-gray-700 w-80 ml-auto text-sm space-y-2 print:mt-4 print:pt-3 print:space-y-1 print:break-inside-avoid">
-              <div className="flex justify-between text-gray-400">
-                <span>Subtotal</span>
-                <span>{formatCurrency(result.subtotal)}</span>
+                {logoUrl && <div className="w-36 h-36 md:w-44 md:h-36 flex items-start justify-start md:justify-end shrink-0"><img src={logoUrl} alt="Company logo" className="max-h-full max-w-full object-contain" /></div>}
               </div>
 
-              <div className="flex justify-between text-gray-400">
-                <span>Discount</span>
-                <span>({formatCurrency(discountAmount || 0)})</span>
+              <div className="mt-4">
+                <p className="font-semibold text-base mb-1">Scope of Work:</p>
+                <p className="text-sm text-gray-400 leading-relaxed">{result?.scopeOfWork}</p>
               </div>
 
-              <div className="flex justify-between">
-                <span>Subtotal After Discount</span>
-                <span>{formatCurrency(result.subtotalAfterDiscount)}</span>
+              <div className="overflow-x-auto print:overflow-visible">
+                <table className="w-full min-w-[600px] print:min-w-0 text-sm border-collapse">
+                  <thead><tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wide"><th className="text-left py-3">Item</th><th className="text-left py-3">Description</th><th className="text-center py-3">Qty</th><th className="text-right py-3">Total</th></tr></thead>
+                  <tbody>
+                    {result?.lineItems.map((item, index) => (
+                      <tr key={index} className="border-b border-gray-800 hover:bg-gray-900/40"><td className="py-3 print:py-1.5">{item.item}</td><td className="py-3 print:py-1.5">{item.description}</td><td className="py-3 print:py-1.5 text-center">{item.quantity ?? "-"}</td><td className="py-3 print:py-1.5 text-right font-medium">{formatCurrency(item.total)}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
-              <div className="flex justify-between">
-                <span>Emergency</span>
-                <span>{formatCurrency(result.emergencyFee)}</span>
-              </div>
-
-              <div className="flex justify-between font-medium border-t border-gray-700 pt-3 mt-2">
-                <span>Adjusted Subtotal</span>
-                <span>{formatCurrency(result.adjustedSubtotal)}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>{formatCurrency(result.tax)}</span>
-              </div>
-
-              <div className="flex justify-between font-bold text-2xl print:text-xl border-t border-gray-700 pt-4 mt-3 print:pt-2 print:mt-2">
-                <span>Grand Total</span>
-                <span>{formatCurrency(result.total)}</span>
-              </div>
-
-              <div className="hidden print:block text-right pt-4 text-[9px] text-gray-500 italic opacity-70">
-                <span className="mr-2">Powered by</span>
-                <img
-                  src="/logo2.png"
-                  alt="SnapQuote Logo"
-                  className="inline-block h-3 w-auto opacity-70 align-middle"
-                />
+              <div className="mt-12 pt-6 border-t border-gray-700 w-full sm:w-80 sm:ml-auto text-sm space-y-2 print:mt-4 print:pt-3 print:space-y-1 print:break-inside-avoid">
+                <div className="flex justify-between text-gray-400"><span>Subtotal</span><span>{formatCurrency(result.subtotal)}</span></div>
+                <div className="flex justify-between text-gray-400"><span>Discount</span><span>({formatCurrency(discountAmount || 0)})</span></div>
+                <div className="flex justify-between"><span>Subtotal After Discount</span><span>{formatCurrency(result.subtotalAfterDiscount)}</span></div>
+                <div className="flex justify-between"><span>Emergency</span><span>{formatCurrency(result.emergencyFee)}</span></div>
+                <div className="flex justify-between font-medium border-t border-gray-700 pt-3 mt-2"><span>Adjusted Subtotal</span><span>{formatCurrency(result.adjustedSubtotal)}</span></div>
+                <div className="flex justify-between"><span>Tax</span><span>{formatCurrency(result.tax)}</span></div>
+                <div className="flex justify-between font-bold text-2xl print:text-xl border-t border-gray-700 pt-4 mt-3 print:pt-2 print:mt-2"><span>Grand Total</span><span>{formatCurrency(result.total)}</span></div>
+                <div className="hidden print:block text-right pt-4 text-[9px] text-gray-500 italic opacity-70"><span className="mr-2">Powered by</span><img src="/logo2.png" alt="SnapQuote Logo" className="inline-block h-3 w-auto opacity-70 align-middle" /></div>
               </div>
             </div>
+          ) : (
+            <div className="flex min-h-[320px] items-center justify-center border border-gray-700 rounded p-10 text-gray-400 text-center">Select a base service and enter the required quantity to preview the quote.</div>
+          )}
+        </section>
+
+        <section className="print:hidden bg-gray-950 border border-gray-800 rounded-xl p-3 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b border-gray-800 pb-4">
+            <div><h2 className="text-xl font-semibold">Quote History</h2><p className="text-sm text-gray-400 mt-1">Open, edit, or delete recent saved quotes.</p></div>
           </div>
-        ) : (
-          <div className="flex items-center justify-center border rounded p-10 text-gray-400">
-            Select a base service and enter the required quantity to preview the quote.
-          </div>
-        )}
+
+          {savedQuotes.length === 0 ? (
+            <p className="text-sm text-gray-400">No saved quotes yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              {savedQuotes.map((quote) => (
+                <div key={quote.id} onClick={() => loadQuote(quote)} className={`border rounded-lg p-4 text-sm cursor-pointer transition ${selectedQuoteId === quote.id ? "border-blue-500 bg-blue-950/30" : "border-gray-700 hover:bg-gray-900"}`}>
+                  <div className="flex justify-between items-start gap-3 font-semibold"><div><span>{quote.quote_number}</span><span className="ml-2 text-gray-300">{formatCurrency(quote.total)}</span></div><button onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(quote.id) }} className="text-xs text-red-400 hover:text-red-300 hover:underline">Delete</button></div>
+                  {confirmDeleteId === quote.id && <div className="mt-3 flex items-center justify-between text-xs bg-gray-800 border border-gray-700 rounded px-2 py-2"><span className="text-gray-300">Are you sure?</span><div className="flex gap-2"><button onClick={(e) => { e.stopPropagation(); deleteQuote(quote.id); setConfirmDeleteId(null) }} className="text-red-400 hover:text-red-300">Yes</button><button onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(null) }} className="text-gray-400 hover:text-white">Cancel</button></div></div>}
+                  <div className="text-gray-400 mt-2">{quote.customer_name || "No customer name"}</div>
+                  <div className="text-gray-500 text-xs mt-1">{quote.quote_date || "No date"}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
+
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-gray-800 p-3 flex gap-2 sm:hidden print:hidden">
-        <button
-          onClick={handleNewQuote}
-          className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-3 rounded text-sm font-medium"
-        >
-          New
-        </button>
-
-        <button
-          onClick={handleSaveQuote}
-          className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-3 rounded text-sm font-medium"
-        >
-          Save
-        </button>
-
-        <button
-          onClick={() => window.print()}
-          disabled={!result}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-3 py-3 rounded text-sm font-medium"
-        >
-          PDF
-        </button>
+        <button onClick={handleNewQuote} className="flex-1 active:scale-95 transition-transform duration-100 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm font-medium">New</button>
+        <button onClick={handleSaveQuote} disabled={!result} className="flex-1 active:scale-95 transition-transform duration-100 bg-green-600 hover:bg-green-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-3 py-2 rounded text-sm font-medium">Save</button>
+        <button onClick={() => window.print()} disabled={!result} className="flex-1 active:scale-95 transition-transform duration-100 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-3 py-2 rounded text-sm font-medium">Export</button>
       </div>
     </main>
   )
