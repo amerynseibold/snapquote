@@ -609,7 +609,7 @@ export function QuoteForm({
                     updated[index].description = e.target.value
                     setManualItems(updated)
                   }}
-                  className={inputClass}
+                  className={`${inputClass} text-sm sm:text-base py-1.5 sm:py-2`}
                 />
 
                 <input
@@ -621,7 +621,7 @@ export function QuoteForm({
                     updated[index].qty = e.target.value
                     setManualItems(updated)
                   }}
-                  className={inputClass}
+                  className={`${inputClass} text-sm sm:text-base py-1.5 sm:py-2`}
                 />
 
                 <input
