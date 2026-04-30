@@ -583,7 +583,7 @@ export function QuoteForm({
               Additional Items
             </h4>
 
-            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-2 text-[10px] sm:text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
+            <div className="grid grid-cols-[2fr_0.7fr_1fr_1fr_0.5fr] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
               <span>Description</span>
               <span>Qty</span>
               <span>Price</span>
@@ -594,7 +594,7 @@ export function QuoteForm({
             {manualItems.map((item, index) => (
               <div
                 key={index}
-                className={`grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-2 items-center pb-2 transition-colors duration-150 ${
+                className={`grid grid-cols-[2fr_0.7fr_1fr_1fr_auto] gap-2 items-center pb-2 transition-colors duration-150 ${
                   index !== manualItems.length - 1
                     ? "border-b border-gray-200"
                     : ""
@@ -609,8 +609,7 @@ export function QuoteForm({
                     updated[index].description = e.target.value
                     setManualItems(updated)
                   }}
-                  onFocus={(e) => e.target.select()}
-                  className={`${inputClass} text-sm sm:text-base py-1.5 sm:py-2 text-center min-w-0`}
+                  className={inputClass}
                 />
 
                 <input
@@ -622,7 +621,7 @@ export function QuoteForm({
                     updated[index].qty = e.target.value
                     setManualItems(updated)
                   }}
-                  className={`${inputClass} text-sm sm:text-base py-1.5 sm:py-2 text-center min-w-0`}
+                  className={inputClass}
                 />
 
                 <input
