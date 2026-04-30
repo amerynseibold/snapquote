@@ -584,7 +584,7 @@ export function QuoteForm({
             </h4>
 
             <div className="grid grid-cols-[2fr_0.7fr_1fr_1fr_0.5fr] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
-              <span>Sercive</span>
+              <span>Description</span>
               <span>Qty</span>
               <span>Price</span>
               <span className="text-right">Total</span>
@@ -602,7 +602,7 @@ export function QuoteForm({
               >
                 <input
                   type="text"
-                  placeholder="Description"
+                  placeholder="Service"
                   value={item.description}
                   onChange={(e) => {
                     const updated = [...manualItems]
