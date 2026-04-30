@@ -101,20 +101,19 @@ export function QuotePreview({
             <div className="grid grid-cols-[1fr_1fr_56px] sm:grid-cols-[1.2fr_1fr_120px] gap-2 sm:gap-8 border-t border-gray-700 pt-3 sm:pt-4 text-xs sm:text-sm">
 
               {/* CLIENT INFO */}
-              <div className="space-y-1.5">
+              <div className="space-y-1 text-xs sm:text-sm break-words">
                 <p className="text-gray-400 uppercase text-xs">Client</p>
                 <p className="font-medium">{customerName}</p>
 
                 {address && (
-                  <>
-                    <p>{address.split(",")[0]}</p>
-                    <p>{address.split(",").slice(1).join(",").trim()}</p>
-                  </>
+                  <p className="break-words leading-snug">
+                    {address}
+                  </p>
                 )}
               </div>
 
               {/* QUOTE DETAILS */}
-              <div className="space-y-1.5">
+              <div className="space-y-1 text-xs sm:text-sm break-words">
                 <p>
                   <span className="text-gray-400 text-xs uppercase">Date:</span>{" "}
                   {formatDisplayDate(quoteDate)}
