@@ -94,38 +94,66 @@ export function QuotePreview({
              HEADER (Company + Customer + Logo)
           ================================================= */}
           <div className="mb-4 border-b border-gray-700 pb-4">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-3 sm:mb-4">
-              {companyName}
-            </h1>
+            {/* Company name + quote metadata */}
+            <div className="mb-3 sm:mb-4 flex items-start justify-between gap-3">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+                {companyName}
+              </h1>
+
+              <div className="text-right text-[11px] sm:text-sm leading-snug shrink-0">
+                <p>
+                  <span className="text-gray-400 uppercase">Date:</span>{" "}
+                  {formatDisplayDate(quoteDate)}
+                </p>
+
+                <p>
+                  <span className="text-gray-400 uppercase">Quote #</span>{" "}
+                  <span className="font-medium">{quoteNumber}</span>
+                </p>
+              </div>
+            </div>
 
             <div className="grid grid-cols-[1fr_1fr_56px] sm:grid-cols-[1.2fr_1fr_120px] gap-2 sm:gap-8 border-t border-gray-700 pt-3 sm:pt-4 text-xs sm:text-sm">
 
               {/* CLIENT INFO */}
               <div className="space-y-1 text-xs sm:text-sm break-words">
-                <p className="text-gray-400 uppercase text-xs sm:text-sm">Client</p>
+                <p className="text-gray-400 uppercase text-[10px] sm:text-xs">
+                  Client
+                </p>
                 <p className="font-medium">{customerName}</p>
 
                 {address && (
-                  <p className="break-words leading-snug">
-                    {address}
-                  </p>
+                  <div className="leading-snug">
+                    <p className="break-words">
+                      {address.split(",")[0]}
+                    </p>
+
+                    {address.includes(",") && (
+                      <p className="break-words">
+                        {address.split(",").slice(1).join(",").trim()}
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
 
-              {/* QUOTE DETAILS */}
-              <div className="space-y-1 text-xs sm:text-sm break-words">
-                <p>
-                  <span className="text-gray-400 text-xs uppercase">Date:</span>{" "}
-                  {formatDisplayDate(quoteDate)}
+              {/* CONTACT INFO */}
+              <div className="space-y-1 text-xs sm:text-sm min-w-0">
+                <p className="text-gray-400 uppercase text-[10px] sm:text-xs">
+                  Contact
                 </p>
 
-                <p>
-                  <span className="text-gray-400 text-xs uppercase">Quote #</span>{" "}
-                  <span className="font-medium">{quoteNumber}</span>
-                </p>
+                {customerPhone && (
+                  <p className="break-words leading-snug">
+                    {customerPhone}
+                  </p>
+                )}
 
-                {customerPhone && <p>{customerPhone}</p>}
-                {customerEmail && <p>{customerEmail}</p>}
+                {customerEmail && (
+                  <p className="break-all leading-snug">
+                    {customerEmail}
+                  </p>
+                )}
               </div>
 
               {/* LOGO */}
@@ -181,7 +209,7 @@ export function QuotePreview({
           {/* =================================================
              TOTALS SUMMARY
           ================================================= */}
-          <div className="mt-4 text-sm space-y-2 max-w-sm ml-auto">
+          <div className="mt-6 text-sm space-y-2 max-w-sm ml-auto border-t pt-2">
             <div className="flex justify-between">
               <span>Subtotal</span>
               <span>{formatCurrency(result.subtotal)}</span>
@@ -215,6 +243,15 @@ export function QuotePreview({
             <div className="flex justify-between font-bold text-lg border-t pt-2">
               <span>Total</span>
               <span>{formatCurrency(result.total)}</span>
+            </div>
+            {/* Powered-by branding shown under quote totals */}
+            <div className="pt-2 text-right text-[8px] text-gray-500 italic opacity-70">
+              <span className="mr-2">Powered by</span>
+              <img
+                src="/logo2.png"
+                alt="SnapQuote Logo"
+                className="inline-block h-3 w-auto opacity-70 align-middle"
+              />
             </div>
           </div>
         </div>
