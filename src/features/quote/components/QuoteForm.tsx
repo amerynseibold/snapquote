@@ -583,18 +583,18 @@ export function QuoteForm({
               Additional Items
             </h4>
 
-            <div className="grid grid-cols-[2fr_0.8fr_1.2fr_1fr_70px] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
-              <span>Description</span>
-              <span>Qty</span>
-              <span>Price</span>
-              <span className="text-right">Total</span>
-              <span></span>
-            </div>
+           <div className="hidden min-[500px]:grid grid-cols-[2.2fr_0.65fr_0.8fr_0.9fr_60px] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
+            <span>Description</span>
+            <span>Qty</span>
+            <span>Price</span>
+            <span className="text-right">Total</span>
+            <span></span>
+          </div>
 
             {manualItems.map((item, index) => (
               <div
                 key={index}
-                className={`grid grid-cols-[2fr_0.8fr_1.2fr_1fr_70px] gap-2 items-center pb-2 transition-colors duration-150 ${
+                className={`grid grid-cols-[3fr_1fr] min-[500px]:grid-cols-[2.2fr_0.65fr_0.8fr_0.9fr_60px] gap-2 items-center pb-2 transition-colors duration-150 ${
                   index !== manualItems.length - 1
                     ? "border-b border-gray-200"
                     : ""
@@ -609,7 +609,7 @@ export function QuoteForm({
                     updated[index].description = e.target.value
                     setManualItems(updated)
                   }}
-                  className={`${inputClass} min-w-0 text-sm`}
+                  className={`${inputClass} min-w-0 text-sm col-span-1`}
                 />
 
                 <input
@@ -656,7 +656,7 @@ export function QuoteForm({
                   onClick={() =>
                     setManualItems(manualItems.filter((_, i) => i !== index))
                   }
-                  className="w-[60px] text-right text-red-400 text-xs hover:text-red-600"
+                  className="text-red-400 text-xs hover:text-red-600 text-right min-[500px]:text-right"
                 >
                   Remove
                 </button>
