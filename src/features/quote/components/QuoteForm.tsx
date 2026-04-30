@@ -625,13 +625,6 @@ export function QuoteForm({
                 Remove
               </button>
 
-              {/* Mobile labels for Qty / Price / Total */}
-              <div className="col-span-4 grid grid-cols-3 gap-2 text-[10px] uppercase text-gray-400">
-                <span>Qty</span>
-                <span>Price</span>
-                <span>Total</span>
-              </div>
-
               {/* Qty */}
               <input
                 type="number"
@@ -642,13 +635,13 @@ export function QuoteForm({
                   updated[index].qty = e.target.value
                   setManualItems(updated)
                 }}
-                className={`${inputClass} min-w-0 text-center text-sm`}
+                className={`${inputClass} min-w-0 text-sm`}
               />
 
               {/* Price */}
               <input
                 type="text"
-                placeholder="$0"
+                placeholder="Price $"
                 value={item.price ?? ""}
                 onChange={(e) => {
                   const raw = e.target.value.replace(/[^0-9]/g, "")
