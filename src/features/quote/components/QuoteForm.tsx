@@ -660,8 +660,10 @@ export function QuoteForm({
               />
 
               {/* Total */}
-              <div className="flex items-center justify-between text-sm font-medium text-gray-700">
-                <span className="text-gray-400 uppercase text-[10px]">Total</span>
+              <div className="col-span-2 flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700">
+                <span className="text-gray-400 uppercase text-[10px] tracking-wide">
+                  Total
+                </span>
                 <span>
                   {formatCurrency(
                     (Number(item.qty) || 0) * (Number(item.price) || 0)
