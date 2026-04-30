@@ -620,6 +620,13 @@ export function QuoteForm({
                 Remove
               </button>
 
+              {/* Mobile labels for Qty / Price / Total */}
+              <div className="col-span-4 grid grid-cols-3 gap-2 text-[10px] uppercase text-gray-400">
+                <span>Qty</span>
+                <span>Price</span>
+                <span className="text-right">Total</span>
+              </div>
+
               {/* Qty */}
               <input
                 type="number"
