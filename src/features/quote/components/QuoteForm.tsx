@@ -25,6 +25,7 @@ type QuoteFormProps = {
   stumpCount: number | ""
 
   haulOffIncluded: boolean
+  includeTax: boolean
   emergencyJob: boolean
   discountAmount: string
   logoUrl: string | null
@@ -57,6 +58,7 @@ type QuoteFormProps = {
   setStumpCount: (value: number | "") => void
 
   setHaulOffIncluded: (value: boolean) => void
+  setIncludeTax: (value: boolean) => void
   setEmergencyJob: (value: boolean) => void
   setDiscountAmount: (value: string) => void
 
@@ -111,6 +113,7 @@ export function QuoteForm({
   stumpCount,
 
   haulOffIncluded,
+  includeTax,
   emergencyJob,
   discountAmount,
   logoUrl,
@@ -139,6 +142,7 @@ export function QuoteForm({
   setStumpCount,
 
   setHaulOffIncluded,
+  setIncludeTax,
   setEmergencyJob,
   setDiscountAmount,
   setManualItems,
@@ -273,86 +277,38 @@ export function QuoteForm({
             </div>
           </div>
 
-          {/* Pricing & Branding */}
+          {/* Branding */}
           <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Pricing & Branding
+              Branding
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
-              <div>
-                <label className="block mb-1 text-sm">Emergency</label>
-                <select
-                  value={emergencyJob ? "yes" : "no"}
-                  onChange={(e) => setEmergencyJob(e.target.value === "yes")}
-                  className={inputClass}
-                >
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
+            <div>
+              <label className="block mb-1 text-sm">Customer-Facing Logo</label>
 
-              <div>
-                <label className="block mb-1 text-sm">Discount</label>
-                <input
-                  type="text"
-                  placeholder="$0"
-                  value={discountAmount}
-                  onChange={(e) => {
-                    const raw = e.target.value.replace(/[^0-9.]/g, "")
-                    const parts = raw.split(".")
-                    const cleaned =
-                      parts.length > 2 ? parts[0] + "." + parts[1] : raw
-                    const limited = cleaned.includes(".")
-                      ? cleaned.split(".")[0] +
-                        "." +
-                        cleaned.split(".")[1].slice(0, 2)
-                      : cleaned
-
-                    setDiscountAmount(limited)
-                  }}
-                  onBlur={() => {
-                    if (discountAmount !== "") {
-                      setDiscountAmount(Number(discountAmount).toFixed(2))
-                    }
-                  }}
-                  className={inputClass}
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block mb-1 text-sm">
-                  Customer-Facing Logo
+              <div className="flex items-center gap-3">
+                <label className="cursor-pointer rounded-md bg-gray-700 px-3 py-2 text-sm text-white hover:bg-gray-800 shadow-sm">
+                  Choose File
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                  />
                 </label>
 
-                <div className="flex items-center gap-3">
-                  <label className="cursor-pointer rounded-md bg-gray-700 px-3 py-2 text-sm text-white hover:bg-gray-800 shadow-sm">
-                    Choose File
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleLogoUpload}
-                      className="hidden"
+                {logoUrl ? (
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={logoUrl}
+                      alt="Logo preview"
+                      className="h-9 w-9 rounded object-contain border border-gray-300 bg-white"
                     />
-                  </label>
-
-                  {logoUrl ? (
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={logoUrl}
-                        alt="Logo preview"
-                        className="h-9 w-9 rounded object-contain border border-gray-300 bg-white"
-                      />
-                      <span className="text-sm text-gray-600">
-                        Logo uploaded
-                      </span>
-                    </div>
-                  ) : (
-                    <span className="text-sm text-gray-500">
-                      No file chosen
-                    </span>
-                  )}
-                </div>
+                    <span className="text-sm text-gray-600">Logo uploaded</span>
+                  </div>
+                ) : (
+                  <span className="text-sm text-gray-500">No file chosen</span>
+                )}
               </div>
             </div>
           </div>
@@ -737,6 +693,72 @@ export function QuoteForm({
           </div>
         </div>
       </div>
+
+      {/* =================================================
+          PRICING ADJUSTMENTS
+        ================================================= */}
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Pricing Adjustments
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Tax toggle */}
+            <div>
+              <label className="block mb-1 text-sm">Tax</label>
+              <select
+                value={includeTax ? "yes" : "no"}
+                onChange={(e) => setIncludeTax(e.target.value === "yes")}
+                className={inputClass}
+              >
+                <option value="yes">Include</option>
+                <option value="no">Exclude</option>
+              </select>
+            </div>
+
+            {/* Emergency toggle */}
+            <div>
+              <label className="block mb-1 text-sm">Emergency</label>
+              <select
+                value={emergencyJob ? "yes" : "no"}
+                onChange={(e) => setEmergencyJob(e.target.value === "yes")}
+                className={inputClass}
+              >
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+
+            {/* Discount input */}
+            <div>
+              <label className="block mb-1 text-sm">Discount</label>
+              <input
+                type="text"
+                placeholder="$0"
+                value={discountAmount}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9.]/g, "")
+                  const parts = raw.split(".")
+                  const cleaned =
+                    parts.length > 2 ? parts[0] + "." + parts[1] : raw
+                  const limited = cleaned.includes(".")
+                    ? cleaned.split(".")[0] +
+                      "." +
+                      cleaned.split(".")[1].slice(0, 2)
+                    : cleaned
+
+                  setDiscountAmount(limited)
+                }}
+                onBlur={() => {
+                  if (discountAmount !== "") {
+                    setDiscountAmount(Number(discountAmount).toFixed(2))
+                  }
+                }}
+                className={inputClass}
+              />
+            </div>
+          </div>
+        </div>
 
       {/* Validation warning */}
       {((difficultTreeCount || 0) > totalTreeCount ||

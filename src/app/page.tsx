@@ -44,6 +44,7 @@ export default function Home() {
   const [hazardTreeCount, setHazardTreeCount] = useState<number | "">("")
   const [stumpCount, setStumpCount] = useState<number | "">("")
   const [haulOffIncluded, setHaulOffIncluded] = useState(true)
+  const [includeTax, setIncludeTax] = useState(true)
   const [emergencyJob, setEmergencyJob] = useState(false)
   const [discountAmount, setDiscountAmount] = useState("")
   const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([])
@@ -395,6 +396,7 @@ export default function Home() {
         hazardTreeCount: hazardTreeCount || 0,
         stumpCount: stumpCount || 0,
         haulOffIncluded,
+        includeTax,
         emergencyJob,
         discountAmount: Number(discountAmount) || 0,
         manualItems,
@@ -607,6 +609,7 @@ export default function Home() {
           hazardTreeCount={hazardTreeCount}
           stumpCount={stumpCount}
           haulOffIncluded={haulOffIncluded}
+          includeTax={includeTax}
           emergencyJob={emergencyJob}
           discountAmount={discountAmount}
           logoUrl={logoUrl}
@@ -628,6 +631,7 @@ export default function Home() {
           setHazardTreeCount={setHazardTreeCount}
           setStumpCount={setStumpCount}
           setHaulOffIncluded={setHaulOffIncluded}
+          setIncludeTax={setIncludeTax}
           setEmergencyJob={setEmergencyJob}
           setDiscountAmount={setDiscountAmount}
           setManualItems={setManualItems}

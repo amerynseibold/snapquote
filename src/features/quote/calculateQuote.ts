@@ -18,6 +18,7 @@ export function calculateQuote(
     hazardTreeCount,
     stumpCount,
     haulOffIncluded,
+    includeTax,
     emergencyJob,
     discountAmount,
     manualItems = [],
@@ -175,53 +176,75 @@ export function calculateQuote(
 
   const adjustedSubtotal = subtotalAfterDiscount + emergencyFee
 
-  const tax = adjustedSubtotal * taxRate
+  const tax = input.includeTax
+    ? adjustedSubtotal * taxRate
+    : 0
 
   const total = adjustedSubtotal + tax
 
 
-  /* =========================================================
-     SCOPE OF WORK
-  ========================================================= */
+   /* =========================================================
+      SCOPE OF WORK (AUTO-GENERATED DESCRIPTION)
+    ========================================================= */
+    const scopeParts: string[] = []
 
-  let scopeOfWork = ""
-
-  if (baseService === "Stump Grinding") {
-    scopeOfWork = `Stump grinding for ${stumpCount} stump${
-      stumpCount > 1 ? "s" : ""
-    }.`
-  } else {
-    const heightSummary = Object.entries(treeCountsByHeight)
-      .filter(([, count]) => count > 0)
-      .map(([heightTier, count]) => {
-        return `${count} ${heightTier} tree${count > 1 ? "s" : ""}`
-      })
-      .join(", ")
-
-    scopeOfWork = `${baseService} for ${totalTreeCount} tree${
-      totalTreeCount > 1 ? "s" : ""
-    }${heightSummary ? ` (${heightSummary})` : ""}.`
-
-    if (difficultTreeCount > 0) {
-      scopeOfWork += ` Includes difficult access handling for ${difficultTreeCount} tree${
-        difficultTreeCount > 1 ? "s" : ""
-      }.`
+    // Base service
+    if (input.baseService) {
+      scopeParts.push(`${input.baseService} services`)
     }
 
-    if (hazardTreeCount > 0) {
-      scopeOfWork += ` Includes hazardous tree handling for ${hazardTreeCount} tree${
-        hazardTreeCount > 1 ? "s" : ""
-      }.`
+    // Tree counts by height
+    const treeDescriptions = Object.entries(input.treeCountsByHeight)
+      .filter(([_, count]) => Number(count) > 0)
+      .map(([height, count]) => `${count} tree(s) (${height})`)
+
+    if (treeDescriptions.length > 0) {
+      scopeParts.push(`including ${treeDescriptions.join(", ")}`)
     }
-  }
 
-  if (haulOffIncluded) {
-    scopeOfWork += " Haul-off service included."
-  }
+    // Special conditions
+    if (input.difficultTreeCount > 0) {
+      scopeParts.push(`${input.difficultTreeCount} difficult access tree(s)`)
+    }
 
-  if (emergencyJob) {
-    scopeOfWork += " Emergency service included."
-  }
+    if (input.hazardTreeCount > 0) {
+      scopeParts.push(`${input.hazardTreeCount} hazard tree(s)`)
+    }
+
+    // Stumps
+    if (input.stumpCount > 0) {
+      scopeParts.push(`stump grinding for ${input.stumpCount} stump(s)`)
+    }
+
+    // Haul-off
+    if (input.haulOffIncluded) {
+      scopeParts.push(`removal and haul-off of all debris`)
+    }
+
+    // Emergency
+    if (input.emergencyJob) {
+      scopeParts.push(`expedited/emergency service`)
+    }
+
+    // Manual items (additional work)
+    if (input.manualItems && input.manualItems.length > 0) {
+      const manualDescriptions = input.manualItems
+        .filter((item) => item.description && Number(item.qty) > 0)
+        .map(
+          (item) =>
+            `${item.qty} x ${item.description}`
+        )
+
+      if (manualDescriptions.length > 0) {
+        scopeParts.push(`additional services including ${manualDescriptions.join(", ")}`)
+      }
+    }
+
+    // Final formatted scope
+    const scopeOfWork =
+      scopeParts.length > 0
+        ? `This quote covers ${scopeParts.join(", ")}. All work will be completed in a safe and professional manner, with attention to detail and proper site cleanup upon completion.`
+        : ""
 
 
   /* =========================================================

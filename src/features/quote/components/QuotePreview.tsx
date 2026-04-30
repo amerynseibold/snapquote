@@ -226,7 +226,7 @@ export function QuotePreview({
             </div>
 
             <div className="flex justify-between">
-              <span>Emergency</span>
+              <span>Emergency (25%)</span>
               <span>{formatCurrency(result.emergencyFee)}</span>
             </div>
 
@@ -236,7 +236,7 @@ export function QuotePreview({
             </div>
 
             <div className="flex justify-between">
-              <span>Tax</span>
+              <span>Tax (8.25%)</span>
               <span>{formatCurrency(result.tax)}</span>
             </div>
 

@@ -23,6 +23,7 @@ export type QuoteInput = {
   hazardTreeCount: number
   stumpCount: number
   haulOffIncluded: boolean
+  includeTax: boolean
   emergencyJob: boolean
   discountAmount: number
   manualItems?: ManualItem[]
