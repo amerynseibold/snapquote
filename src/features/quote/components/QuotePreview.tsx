@@ -102,7 +102,7 @@ export function QuotePreview({
 
               {/* CLIENT INFO */}
               <div className="space-y-1 text-xs sm:text-sm break-words">
-                <p className="text-gray-400 uppercase text-xs">Client</p>
+                <p className="text-gray-400 uppercase text-xs sm:text-sm">Client</p>
                 <p className="font-medium">{customerName}</p>
 
                 {address && (
