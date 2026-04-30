@@ -505,7 +505,7 @@ export function QuoteForm({
           {baseService !== "Stump Grinding" && (
             <>
               <div>
-                <label className="block font-semibold mb-3">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
                   Trees by Height
                 </label>
 
