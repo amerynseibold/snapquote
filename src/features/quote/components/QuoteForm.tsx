@@ -609,6 +609,7 @@ export function QuoteForm({
                     updated[index].description = e.target.value
                     setManualItems(updated)
                   }}
+                  onFocus={(e) => e.target.select()}
                   className={`${inputClass} text-sm sm:text-base py-1.5 sm:py-2 text-center min-w-0`}
                 />
 
