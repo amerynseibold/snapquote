@@ -193,16 +193,33 @@ export function QuotePreview({
             </thead>
 
             <tbody>
-              {result.lineItems.map((item, index) => (
-                <tr key={index} className="border-b">
-                  <td>{item.item}</td>
-                  <td>{item.description}</td>
-                  <td className="text-center">{item.quantity ?? "-"}</td>
-                  <td className="text-right">
-                    {formatCurrency(item.total)}
-                  </td>
-                </tr>
-              ))}
+              {/* All NON-haul items first */}
+              {result.lineItems
+                .filter((item) => !item.item.toLowerCase().includes("haul"))
+                .map((item, index) => (
+                  <tr key={`main-${index}`} className="border-b">
+                    <td>{item.item}</td>
+                    <td>{item.description}</td>
+                    <td className="text-center">{item.quantity ?? "-"}</td>
+                    <td className="text-right">
+                      {formatCurrency(item.total)}
+                    </td>
+                  </tr>
+                ))}
+
+              {/* Haul-Off LAST */}
+              {result.lineItems
+                .filter((item) => item.item.toLowerCase().includes("haul"))
+                .map((item, index) => (
+                  <tr key={`haul-${index}`} className="border-b">
+                    <td>{item.item}</td>
+                    <td>{item.description}</td>
+                    <td className="text-center">{item.quantity ?? "-"}</td>
+                    <td className="text-right">
+                      {formatCurrency(item.total)}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 
@@ -226,7 +243,9 @@ export function QuotePreview({
             </div>
 
             <div className="flex justify-between">
-              <span>Emergency (25%)</span>
+              <span>Emergency{" "}
+              <span className="text-xs text-gray-400">(25%)</span>
+              </span>
               <span>{formatCurrency(result.emergencyFee)}</span>
             </div>
 
@@ -236,7 +255,9 @@ export function QuotePreview({
             </div>
 
             <div className="flex justify-between">
-              <span>Tax (8.25%)</span>
+              <span>Tax{" "}
+              <span className="text-xs text-gray-400">(8.25%)</span>
+              </span>
               <span>{formatCurrency(result.tax)}</span>
             </div>
 
