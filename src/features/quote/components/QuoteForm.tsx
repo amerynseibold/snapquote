@@ -578,6 +578,11 @@ export function QuoteForm({
           )}
 
           {/* Additional manual line items */}
+          <div className="mt-3 space-y-2"> 
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Additional Services
+            </h4> 
+          </div>        
 
           {/* Landscape / desktop header */}
           <div className="hidden sm:grid grid-cols-[2.2fr_0.65fr_0.8fr_0.9fr_60px] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
@@ -624,7 +629,7 @@ export function QuoteForm({
               <div className="col-span-4 grid grid-cols-3 gap-2 text-[10px] uppercase text-gray-400">
                 <span>Qty</span>
                 <span>Price</span>
-                <span className="text-right">Total</span>
+                <span>Total</span>
               </div>
 
               {/* Qty */}
@@ -692,7 +697,7 @@ export function QuoteForm({
                     updated[index].qty = e.target.value
                     setManualItems(updated)
                   }}
-                  className={`${inputClass} min-w-0 text-center text-sm`}
+                  className={`${inputClass} min-w-0 text-sm`}
                 />
 
                 <input
