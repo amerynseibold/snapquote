@@ -148,7 +148,7 @@ export default function Home() {
 
   // Shared input styling used throughout the form
   const inputClass =
-    "w-full h-9 bg-gray-50 text-gray-900 border border-gray-300 rounded-md px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    "w-full h-7 bg-gray-50 text-gray-900 border border-gray-300 rounded-md px-2.5 text-[13px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 
   // Updates the tree count for one height tier without affecting the others
   const updateTreeCountByHeight = (tier: TreeHeightTier, value: string) => {

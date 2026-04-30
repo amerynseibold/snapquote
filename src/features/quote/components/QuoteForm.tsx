@@ -236,7 +236,7 @@ export function QuoteForm({
       {/* =================================================
          FORM GRID
       ================================================= */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-start xl:[grid-auto-flow:dense]">
 
         {/* LEFT COLUMN: Quote Info + Branding */}
         <div className="xl:col-span-3 space-y-3">
@@ -318,7 +318,7 @@ export function QuoteForm({
         </div>
 
         {/* MIDDLE COLUMN: Customer Info */}
-        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 xl:col-span-3">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 xl:col-span-6">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Customer Info
           </h3>
@@ -447,135 +447,132 @@ export function QuoteForm({
         </div>
 
         {/* RIGHT COLUMN: Job Details + Additional Items */}
-        <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-3 shadow-sm xl:col-span-6 xl:min-h-[160px]">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-2 shadow-sm xl:col-span-6 xl:col-start-4 xl:max-w-[425px]">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Job Details
           </h3>
 
-          {/* Base job inputs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+        {/* Base job input */}
+        <div className="w-[350px]">
+          <label className="block mb-1 text-sm">Base Service</label>
+          <select
+            value={baseService}
+            onChange={(e) => setBaseService(e.target.value)}
+            className={inputClass}
+          >
+            <option value="" disabled>
+              Select service...
+            </option>
+            <option>Tree Trimming</option>
+            <option>Tree Removal</option>
+            <option>Stump Grinding</option>
+          </select>
+        </div>
+
+        {/* Tree-specific inputs hide when Stump Grinding is selected */}
+        {baseService !== "Stump Grinding" && (
+          <div className="grid grid-cols-1 sm:grid-cols-[auto_auto] justify-start gap-y-2 gap-x-12">
             <div>
-              <label className="block mb-1 text-sm">Base Service</label>
-              <select
-                value={baseService}
-                onChange={(e) => setBaseService(e.target.value)}
-                className={inputClass}
-              >
-                <option value="" disabled>
-                  Select service...
-                </option>
-                <option>Tree Trimming</option>
-                <option>Tree Removal</option>
-                <option>Stump Grinding</option>
-              </select>
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Trees by Height
+              </label>
+
+              <div className="grid grid-cols-2 gap-2 w-[200px]">
+                {(
+                  ["0-15 ft", "15-30 ft", "30-60 ft", "60+ ft"] as TreeHeightTier[]
+                ).map((tier) => (
+                  <div key={tier}>
+                    <label className="block mb-1 text-sm">{tier}</label>
+                    <input
+                      type="number"
+                      placeholder="#"
+                      min="0"
+                      value={treeCountsByHeight[tier]}
+                      onChange={(e) => updateTreeCountByHeight(tier, e.target.value)}
+                      onWheel={(e) => e.currentTarget.blur()}
+                      className={inputClass}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div>
-              <label className="block mb-1 text-sm">Haul-Off</label>
-              <select
-                value={haulOffIncluded ? "yes" : "no"}
-                onChange={(e) =>
-                  setHaulOffIncluded(e.target.value === "yes")
-                }
-                className={inputClass}
-              >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 sm:pt-[23px] w-[100px]">
+              <div>
+                <label className="block mb-1 text-sm">Difficult Trees</label>
+                <input
+                  type="number"
+                  placeholder="#"
+                  min="0"
+                  value={difficultTreeCount}
+                  onChange={(e) => {
+                    const val = e.target.value
+                    const num = Number(val)
+                    const maxTrees = totalTreeCount
 
-            <div>
-              <label className="block mb-1 text-sm"># of Stumps</label>
-              <input
-                type="number"
-                min="0"
-                placeholder="#"
-                value={stumpCount}
-                onChange={(e) => {
-                  const val = e.target.value
-                  setStumpCount(val === "" ? "" : Number(val))
-                }}
-                onWheel={(e) => e.currentTarget.blur()}
-                className={inputClass}
-              />
+                    setDifficultTreeCount(
+                      val === "" ? "" : Math.min(num, maxTrees)
+                    )
+                  }}
+                  onWheel={(e) => e.currentTarget.blur()}
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm">Hazard Trees</label>
+                <input
+                  type="number"
+                  placeholder="#"
+                  min="0"
+                  value={hazardTreeCount}
+                  onChange={(e) => {
+                    const val = e.target.value
+                    const num = Number(val)
+                    const maxTrees = totalTreeCount
+
+                    setHazardTreeCount(
+                      val === "" ? "" : Math.min(num, maxTrees)
+                    )
+                  }}
+                  onWheel={(e) => e.currentTarget.blur()}
+                  className={inputClass}
+                />
+              </div>
             </div>
           </div>
+        )}
 
-          {/* Tree-specific inputs hide when Stump Grinding is selected */}
-          {baseService !== "Stump Grinding" && (
-            <>
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Trees by Height
-                </label>
+        {/* Stumps + Haul-Off row */}
+        <div className="grid grid-cols-2 gap-x-6 w-[350px]">
+          <div>
+            <label className="block mb-1 text-sm"># of Stumps</label>
+            <input
+              type="number"
+              min="0"
+              placeholder="#"
+              value={stumpCount}
+              onChange={(e) => {
+                const val = e.target.value
+                setStumpCount(val === "" ? "" : Number(val))
+              }}
+              onWheel={(e) => e.currentTarget.blur()}
+              className={inputClass}
+            />
+          </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {(
-                    ["0-15 ft", "15-30 ft", "30-60 ft", "60+ ft"] as TreeHeightTier[]
-                  ).map((tier) => (
-                    <div key={tier}>
-                      <label className="block mb-1 text-sm">{tier}</label>
-                      <input
-                        type="number"
-                        placeholder="#"
-                        min="0"
-                        value={treeCountsByHeight[tier]}
-                        onChange={(e) =>
-                          updateTreeCountByHeight(tier, e.target.value)
-                        }
-                        onWheel={(e) => e.currentTarget.blur()}
-                        className={inputClass}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block mb-1 text-sm">Difficult Trees</label>
-                  <input
-                    type="number"
-                    placeholder="#"
-                    min="0"
-                    value={difficultTreeCount}
-                    onChange={(e) => {
-                      const val = e.target.value
-                      const num = Number(val)
-                      const maxTrees = totalTreeCount
-
-                      setDifficultTreeCount(
-                        val === "" ? "" : Math.min(num, maxTrees)
-                      )
-                    }}
-                    onWheel={(e) => e.currentTarget.blur()}
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <label className="block mb-1 text-sm">Hazard Trees</label>
-                  <input
-                    type="number"
-                    placeholder="#"
-                    min="0"
-                    value={hazardTreeCount}
-                    onChange={(e) => {
-                      const val = e.target.value
-                      const num = Number(val)
-                      const maxTrees = totalTreeCount
-
-                      setHazardTreeCount(
-                        val === "" ? "" : Math.min(num, maxTrees)
-                      )
-                    }}
-                    onWheel={(e) => e.currentTarget.blur()}
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            </>
-          )}
+          <div>
+            <label className="block mb-1 text-sm">Haul-Off</label>
+            <select
+              value={haulOffIncluded ? "yes" : "no"}
+              onChange={(e) => setHaulOffIncluded(e.target.value === "yes")}
+              className={inputClass}
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
 
           {/* Additional manual line items */}
           <div className="mt-3 space-y-2"> 
@@ -585,12 +582,19 @@ export function QuoteForm({
           </div>        
 
           {/* Landscape / desktop header */}
-          <div className="hidden sm:grid grid-cols-[2.2fr_0.65fr_0.8fr_0.9fr_60px] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
-            <span>Description</span>
-            <span>Qty</span>
-            <span>Price</span>
-            <span className="text-right">Total</span>
-            <span></span>
+          <div className="hidden sm:grid grid-cols-[3.75fr_1fr_1.2fr_1.2fr_1fr] gap-2 text-xs text-gray-400 uppercase pb-1">
+  
+            {/* Columns WITH border */}
+            <div className="col-span-4 grid grid-cols-[3.75fr_1fr_1.2fr_1.2fr] gap-2 border-b border-gray-200 pb-1">
+              <span>Description</span>
+              <span>Qty</span>
+              <span>Price</span>
+              <span className="text-right">Total</span>
+            </div>
+
+            {/* Remove column (no border) */}
+            <div></div>
+
           </div>
 
           {manualItems.map((item, index) => (
@@ -672,8 +676,8 @@ export function QuoteForm({
               </div>
             </div>
 
-              {/* Landscape / desktop row */}
-              <div className="hidden sm:grid grid-cols-[2.2fr_0.65fr_0.8fr_0.9fr_60px] gap-2 items-center">
+              {/* Landscape / desktop row */}        
+              <div className="hidden sm:grid grid-cols-[3.75fr_1fr_1.2fr_1.2fr_1fr] gap-2 items-center">
                 <input
                   type="text"
                   placeholder="Service"
@@ -726,7 +730,7 @@ export function QuoteForm({
                   onClick={() =>
                     setManualItems(manualItems.filter((_, i) => i !== index))
                   }
-                  className="text-right text-red-400 text-xs hover:text-red-600"
+                  className="text-[10px] text-red-400 hover:text-red-600 text-right"
                 >
                   Remove
                 </button>
@@ -749,69 +753,69 @@ export function QuoteForm({
 
       {/* =================================================
           PRICING ADJUSTMENTS
-        ================================================= */}
-        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-            Pricing Adjustments
-          </h3>
+      ================================================= */}
+      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-2 xl:w-[425px] xl:col-span-6 xl:col-start-7">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+          Pricing Adjustments
+        </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {/* Tax toggle */}
-            <div>
-              <label className="block mb-1 text-sm">Tax</label>
-              <select
-                value={includeTax ? "yes" : "no"}
-                onChange={(e) => setIncludeTax(e.target.value === "yes")}
-                className={inputClass}
-              >
-                <option value="yes">Include</option>
-                <option value="no">Exclude</option>
-              </select>
-            </div>
+        <div className="grid grid-cols-3 gap-2">
+          {/* Tax toggle */}
+          <div>
+            <label className="block mb-1 text-sm">Tax</label>
+            <select
+              value={includeTax ? "yes" : "no"}
+              onChange={(e) => setIncludeTax(e.target.value === "yes")}
+              className={inputClass}
+            >
+              <option value="yes">Include</option>
+              <option value="no">Exclude</option>
+            </select>
+          </div>
 
-            {/* Emergency toggle */}
-            <div>
-              <label className="block mb-1 text-sm">Emergency</label>
-              <select
-                value={emergencyJob ? "yes" : "no"}
-                onChange={(e) => setEmergencyJob(e.target.value === "yes")}
-                className={inputClass}
-              >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
-            </div>
+          {/* Emergency toggle */}
+          <div>
+            <label className="block mb-1 text-sm">Emergency</label>
+            <select
+              value={emergencyJob ? "yes" : "no"}
+              onChange={(e) => setEmergencyJob(e.target.value === "yes")}
+              className={inputClass}
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
 
-            {/* Discount input */}
-            <div>
-              <label className="block mb-1 text-sm">Discount</label>
-              <input
-                type="text"
-                placeholder="$0"
-                value={discountAmount}
-                onChange={(e) => {
-                  const raw = e.target.value.replace(/[^0-9.]/g, "")
-                  const parts = raw.split(".")
-                  const cleaned =
-                    parts.length > 2 ? parts[0] + "." + parts[1] : raw
-                  const limited = cleaned.includes(".")
-                    ? cleaned.split(".")[0] +
-                      "." +
-                      cleaned.split(".")[1].slice(0, 2)
-                    : cleaned
+          {/* Discount input */}
+          <div>
+            <label className="block mb-1 text-sm">Discount</label>
+            <input
+              type="text"
+              placeholder="$0"
+              value={discountAmount}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9.]/g, "")
+                const parts = raw.split(".")
+                const cleaned =
+                  parts.length > 2 ? parts[0] + "." + parts[1] : raw
+                const limited = cleaned.includes(".")
+                  ? cleaned.split(".")[0] +
+                    "." +
+                    cleaned.split(".")[1].slice(0, 2)
+                  : cleaned
 
-                  setDiscountAmount(limited)
-                }}
-                onBlur={() => {
-                  if (discountAmount !== "") {
-                    setDiscountAmount(Number(discountAmount).toFixed(2))
-                  }
-                }}
-                className={inputClass}
-              />
-            </div>
+                setDiscountAmount(limited)
+              }}
+              onBlur={() => {
+                if (discountAmount !== "") {
+                  setDiscountAmount(Number(discountAmount).toFixed(2))
+                }
+              }}
+              className={inputClass}
+            />
           </div>
         </div>
+      </div>
 
       {/* Validation warning */}
       {((difficultTreeCount || 0) > totalTreeCount ||
