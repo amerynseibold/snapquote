@@ -587,7 +587,7 @@ export function QuoteForm({
               <span>Description</span>
               <span>Qty</span>
               <span>Price</span>
-              <span className="text-right">Total</span>
+              <span className="text-right mr-1">Total</span>
               <span></span>
             </div>
 
@@ -656,7 +656,7 @@ export function QuoteForm({
                   onClick={() =>
                     setManualItems(manualItems.filter((_, i) => i !== index))
                   }
-                  className="text-red-400 text-xs hover:text-red-600"
+                  className="text-red-400 text-xs hover:text-red-600 mr-4"
                 >
                   Remove
                 </button>
