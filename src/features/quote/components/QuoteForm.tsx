@@ -583,7 +583,7 @@ export function QuoteForm({
               Additional Items
             </h4>
 
-            <div className="grid grid-cols-[2fr_0.7fr_1fr_1fr_0.5fr] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
+            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-2 text-[10px] sm:text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
               <span>Description</span>
               <span>Qty</span>
               <span>Price</span>
