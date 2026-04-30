@@ -584,10 +584,10 @@ export function QuoteForm({
             </h4>
 
             <div className="grid grid-cols-[2fr_0.7fr_1fr_1fr_0.5fr] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
-              <span>Description</span>
+              <span>Sercive</span>
               <span>Qty</span>
               <span>Price</span>
-              <span className="text-right mr-1">Total</span>
+              <span className="text-right">Total</span>
               <span></span>
             </div>
 
@@ -614,7 +614,7 @@ export function QuoteForm({
 
                 <input
                   type="number"
-                  placeholder="Qty"
+                  placeholder="#"
                   value={item.qty}
                   onChange={(e) => {
                     const updated = [...manualItems]
@@ -656,7 +656,7 @@ export function QuoteForm({
                   onClick={() =>
                     setManualItems(manualItems.filter((_, i) => i !== index))
                   }
-                  className="text-red-400 text-xs hover:text-red-600 mr-4"
+                  className="text-red-400 text-xs hover:text-red-600"
                 >
                   Remove
                 </button>
