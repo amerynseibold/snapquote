@@ -668,6 +668,7 @@ export function QuoteForm({
                   )}
                 </span>
               </div>
+            </div>
 
               {/* Landscape / desktop row */}
               <div className="hidden sm:grid grid-cols-[2.2fr_0.65fr_0.8fr_0.9fr_60px] gap-2 items-center">
