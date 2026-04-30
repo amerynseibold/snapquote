@@ -660,12 +660,14 @@ export function QuoteForm({
               />
 
               {/* Total */}
-              <div className="flex items-center justify-end text-sm font-medium text-gray-700">
-                {formatCurrency(
-                  (Number(item.qty) || 0) * (Number(item.price) || 0)
-                )}
+              <div className="flex items-center justify-between text-sm font-medium text-gray-700">
+                <span className="text-gray-400 uppercase text-[10px]">Total</span>
+                <span>
+                  {formatCurrency(
+                    (Number(item.qty) || 0) * (Number(item.price) || 0)
+                  )}
+                </span>
               </div>
-            </div>
 
               {/* Landscape / desktop row */}
               <div className="hidden sm:grid grid-cols-[2.2fr_0.65fr_0.8fr_0.9fr_60px] gap-2 items-center">
