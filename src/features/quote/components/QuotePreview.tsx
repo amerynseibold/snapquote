@@ -94,11 +94,11 @@ export function QuotePreview({
              HEADER (Company + Customer + Logo)
           ================================================= */}
           <div className="mb-4 border-b border-gray-700 pb-4">
-            <h1 className="text-2xl font-bold tracking-tight mb-4">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-3 sm:mb-4">
               {companyName}
             </h1>
 
-            <div className="grid grid-cols-[1fr_1fr_70px] sm:grid-cols-[1.2fr_1fr_120px] gap-3 sm:gap-8 border-t border-gray-700 pt-4">
+            <div className="grid grid-cols-[1fr_1fr_56px] sm:grid-cols-[1.2fr_1fr_120px] gap-2 sm:gap-8 border-t border-gray-700 pt-3 sm:pt-4 text-xs sm:text-sm">
 
               {/* CLIENT INFO */}
               <div className="space-y-1.5">
