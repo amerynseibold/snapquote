@@ -583,7 +583,7 @@ export function QuoteForm({
               Additional Items
             </h4>
 
-            <div className="grid grid-cols-[2fr_0.8fr_1fr_1fr_60px] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
+            <div className="grid grid-cols-[2fr_0.8fr_1.2fr_1fr_70px] gap-2 text-xs text-gray-400 uppercase border-b border-gray-200 pb-1">
               <span>Description</span>
               <span>Qty</span>
               <span>Price</span>
@@ -594,7 +594,7 @@ export function QuoteForm({
             {manualItems.map((item, index) => (
               <div
                 key={index}
-                className={`grid grid-cols-[2fr_0.8fr_1fr_1fr_60px] gap-2 items-center pb-2 transition-colors duration-150 ${
+                className={`grid grid-cols-[2fr_0.8fr_1.2fr_1fr_70px] gap-2 items-center pb-2 transition-colors duration-150 ${
                   index !== manualItems.length - 1
                     ? "border-b border-gray-200"
                     : ""
