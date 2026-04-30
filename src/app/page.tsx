@@ -64,6 +64,13 @@ export default function Home() {
   const [customerSearchResults, setCustomerSearchResults] = useState<Customer[]>([])
   const [isSearchingCustomers, setIsSearchingCustomers] = useState(false)
 
+  /* =========================================================
+   RECENT CUSTOMERS STATE
+   Stores the most recently updated customers for quick selection
+  ========================================================= */
+  const [recentCustomers, setRecentCustomers] = useState<Customer[]>([])
+
+
   // ============================================================
   // HELPERS: display formatting and small reusable utilities
   // ============================================================
@@ -216,6 +223,26 @@ export default function Home() {
       setCustomerSearchResults((data || []) as Customer[])
     }
 
+    /* =========================================================
+   RECENT CUSTOMERS
+   Loads the most recently updated customers for quick selection
+    ========================================================= */
+    const fetchRecentCustomers = async () => {
+      const { data, error } = await supabase
+        .from("customers")
+        .select("id, customer_name, customer_phone, customer_email, address")
+        .order("updated_at", { ascending: false })
+        .limit(5)
+
+      if (error) {
+        console.error("Error fetching recent customers:", error)
+        setRecentCustomers([])
+        return
+      }
+
+      setRecentCustomers((data || []) as Customer[])
+    }
+
   // ============================================================
   // SUPABASE ACTIONS: logo upload and quote history fetch
   // ============================================================
@@ -330,6 +357,7 @@ export default function Home() {
 
     fetchSuggestedQuoteNumber()
     fetchSavedQuotes()
+    fetchRecentCustomers()
   }, [])
 
   useEffect(() => {
@@ -414,7 +442,7 @@ export default function Home() {
     if (customerError) {
       console.error("Error saving customer:", JSON.stringify(customerError, null, 2))
     }
-    
+
     // ================= SAVE QUOTE =================
     const { error } = await supabase.from("quotes").upsert([
         {
@@ -613,6 +641,7 @@ export default function Home() {
           isSearchingCustomers={isSearchingCustomers}
           fetchCustomerSuggestions={fetchCustomerSuggestions}
           setCustomerSearchResults={setCustomerSearchResults}
+          recentCustomers={recentCustomers}
         />
         {/* Customer-facing quote preview / printable area */}
         <QuotePreview
@@ -650,9 +679,11 @@ export default function Home() {
       {/* Mobile action bar */}
         <MobileActionBar
           onNew={handleNewQuote}
+          onDuplicate={handleDuplicateQuote}
           onSave={handleSaveQuote}
           onPrint={() => window.print()}
           disabled={!result}
+          duplicateDisabled={!selectedQuoteId}
         />
       {/* Duplicate confirmation toast */}
         <DuplicateToast show={showDuplicateToast} />

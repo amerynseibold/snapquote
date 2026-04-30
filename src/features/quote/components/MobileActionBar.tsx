@@ -1,15 +1,19 @@
 type MobileActionBarProps = {
   onNew: () => void
+  onDuplicate: () => void
   onSave: () => void
   onPrint: () => void
   disabled: boolean
+  duplicateDisabled: boolean
 }
 
 export function MobileActionBar({
   onNew,
+  onDuplicate,
   onSave,
   onPrint,
   disabled,
+  duplicateDisabled,
 }: MobileActionBarProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 p-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] flex gap-2 sm:hidden print:hidden">
@@ -18,6 +22,14 @@ export function MobileActionBar({
         className="flex-1 active:scale-95 transition-transform duration-100 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm font-medium"
       >
         New
+      </button>
+
+      <button
+        onClick={onDuplicate}
+        disabled={duplicateDisabled}
+        className="flex-1 active:scale-95 transition-transform duration-100 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 text-gray-700 px-3 py-2 rounded text-sm font-medium"
+      >
+        Duplicate
       </button>
 
       <button
