@@ -9,7 +9,7 @@ import { TopBar } from "@/features/quote/components/TopBar"
 import { MobileActionBar } from "@/features/quote/components/MobileActionBar"
 import { DuplicateToast } from "@/features/quote/components/DuplicateToast"
 import { QuoteHistory } from "@/features/quote/components/QuoteHistory"
-import type { SavedQuote } from "@/features/quote/types"
+import type { Customer, SavedQuote } from "@/features/quote/types"
 import { QuotePreview } from "@/features/quote/components/QuotePreview"
 import { QuoteForm } from "@/features/quote/components/QuoteForm"
 
@@ -56,6 +56,13 @@ export default function Home() {
   const [manualItems, setManualItems] = useState([
     { description: "", qty: "", price: "" }
   ])
+
+  /* =========================================================
+   CUSTOMER AUTOFILL STATE
+   Stores matching customers while the user types a name
+  ========================================================= */
+  const [customerSearchResults, setCustomerSearchResults] = useState<Customer[]>([])
+  const [isSearchingCustomers, setIsSearchingCustomers] = useState(false)
 
   // ============================================================
   // HELPERS: display formatting and small reusable utilities
@@ -175,6 +182,39 @@ export default function Home() {
       style: "currency",
       currency: "USD",
     }).format(value)
+
+    /* =========================================================
+   CUSTOMER AUTOFILL SEARCH
+   Looks up saved customers by name as the user types
+    ========================================================= */
+    const fetchCustomerSuggestions = async (searchValue: string) => {
+      const trimmedSearch = searchValue.trim()
+
+      // Clear suggestions if the search is too short
+      if (trimmedSearch.length < 2) {
+        setCustomerSearchResults([])
+        return
+      }
+
+      setIsSearchingCustomers(true)
+
+      const { data, error } = await supabase
+        .from("customers")
+        .select("id, customer_name, customer_phone, customer_email, address")
+        .ilike("customer_name", `%${trimmedSearch}%`)
+        .order("updated_at", { ascending: false })
+        .limit(5)
+
+      setIsSearchingCustomers(false)
+
+      if (error) {
+        console.error("Error searching customers:", error)
+        setCustomerSearchResults([])
+        return
+      }
+
+      setCustomerSearchResults((data || []) as Customer[])
+    }
 
   // ============================================================
   // SUPABASE ACTIONS: logo upload and quote history fetch
@@ -341,6 +381,7 @@ export default function Home() {
   const handleSaveQuote = async () => {
     if (!result) return
 
+    // ================= VALIDATION =================
     if (!customerName || !customerName.trim()) {
       alert("Please enter a customer name before saving.")
       return
@@ -356,9 +397,26 @@ export default function Home() {
       return
     }
 
+    /* =========================================================
+      SAVE CUSTOMER FOR AUTOFILL
+      Runs BEFORE saving quote
+    ========================================================= */
+    const { error: customerError } = await supabase.from("customers").insert([
+      {
+        customer_name: customerName.trim(),
+        customer_phone: customerPhone.trim(),
+        customer_email: customerEmail.trim() || null,
+        address: address.trim(),
+        updated_at: new Date().toISOString(),
+      },
+    ])
 
-    const { error } = await supabase.from("quotes").upsert(
-      [
+    if (customerError) {
+      console.error("Error saving customer:", JSON.stringify(customerError, null, 2))
+    }
+    
+    // ================= SAVE QUOTE =================
+    const { error } = await supabase.from("quotes").upsert([
         {
           quote_number: quoteNumber,
           customer_name: customerName,
@@ -398,6 +456,7 @@ export default function Home() {
       return
     }
 
+    //Suggest next quote number for new quote  
     const { data: settingsData, error: settingsError } = await supabase
       .from("app_settings")
       .select("next_quote_number")
@@ -550,6 +609,10 @@ export default function Home() {
           handleSaveQuote={handleSaveQuote}
           formatPhoneNumber={formatPhoneNumber}
           formatCurrency={formatCurrency}
+          customerSearchResults={customerSearchResults}
+          isSearchingCustomers={isSearchingCustomers}
+          fetchCustomerSuggestions={fetchCustomerSuggestions}
+          setCustomerSearchResults={setCustomerSearchResults}
         />
         {/* Customer-facing quote preview / printable area */}
         <QuotePreview

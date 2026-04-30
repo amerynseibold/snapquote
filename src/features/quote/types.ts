@@ -97,3 +97,15 @@ export type QuoteResult = {
   total: number
   scopeOfWork: string
 }
+
+/* =========================================================
+   CUSTOMER TYPE
+   Used for autofill + customer lookup from Supabase
+========================================================= */
+export type Customer = {
+  id: number
+  customer_name: string
+  customer_phone: string | null
+  customer_email: string | null
+  address: string | null
+}
