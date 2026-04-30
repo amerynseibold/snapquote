@@ -192,24 +192,32 @@ export default function Home() {
     }).format(value)
 
     /* =========================================================
-   CUSTOMER AUTOFILL SEARCH
-   Looks up saved customers by name as the user types
+      CUSTOMER AUTOFILL SEARCH
+      Searches saved customers by name, email, address, or phone.
+      Prevents blank/short searches from returning unrelated customers.
     ========================================================= */
     const fetchCustomerSuggestions = async (searchValue: string) => {
       const trimmedSearch = searchValue.trim()
+      const normalizedPhoneSearch = searchValue.replace(/\D/g, "")
 
-      // Clear suggestions if the search is too short
-      if (trimmedSearch.length < 2) {
+      if (trimmedSearch.length < 2 && normalizedPhoneSearch.length < 3) {
         setCustomerSearchResults([])
         return
       }
 
       setIsSearchingCustomers(true)
 
+      const isPhoneSearch =
+        normalizedPhoneSearch.length >= 3 && /^\d+$/.test(normalizedPhoneSearch)
+
+      const searchFilter = isPhoneSearch
+        ? `customer_phone.ilike.%${normalizedPhoneSearch}%`
+        : `customer_name.ilike.%${trimmedSearch}%`
+
       const { data, error } = await supabase
         .from("customers")
         .select("id, customer_name, customer_phone, customer_email, address")
-        .ilike("customer_name", `%${trimmedSearch}%`)
+        .or(searchFilter)
         .order("updated_at", { ascending: false })
         .limit(5)
 
@@ -221,7 +229,56 @@ export default function Home() {
         return
       }
 
-      setCustomerSearchResults((data || []) as Customer[])
+    const filteredResults = ((data || []) as Customer[]).filter((customer) => {
+      const search = trimmedSearch.toLowerCase()
+      const phoneSearch = normalizedPhoneSearch
+
+      const nameMatch = customer.customer_name?.toLowerCase().includes(search)
+      const emailMatch = customer.customer_email?.toLowerCase().includes(search)
+      const addressMatch = customer.address?.toLowerCase().includes(search)
+      const phoneMatch = phoneSearch.length >= 3
+        ? customer.customer_phone?.replace(/\D/g, "").includes(phoneSearch)
+        : false
+
+      return nameMatch || emailMatch || addressMatch || phoneMatch
+    })
+
+    setCustomerSearchResults(filteredResults)
+    }
+
+    /* =========================================================
+      FIND CUSTOMER BY PHONE
+      Auto-fills customer details after the phone field loses focus
+    ========================================================= */
+    const findCustomerByPhone = async (phoneValue: string) => {
+      const normalizedPhone = phoneValue.replace(/\D/g, "")
+
+      if (normalizedPhone.length < 10) return
+
+      const { data, error } = await supabase
+        .from("customers")
+        .select("customer_name, customer_phone, customer_email, address")
+        .eq("customer_phone", normalizedPhone)
+        .order("updated_at", { ascending: false})
+        .limit(1)
+
+      if (error) {
+        console.error("Error finding customer by phone:", error)
+        return
+      }
+
+      if (data && data.length > 0) {
+        const customer = data[0]
+
+        setCustomerName(customer.customer_name || "")
+        setCustomerPhone(
+          customer.customer_phone
+            ? formatPhoneNumber(customer.customer_phone)
+            : ""
+        )
+        setCustomerEmail(customer.customer_email || "")
+        setAddress(customer.address || "")
+      }
     }
 
     /* =========================================================
@@ -428,21 +485,55 @@ export default function Home() {
     }
 
     /* =========================================================
-      SAVE CUSTOMER FOR AUTOFILL
-      Runs BEFORE saving quote
+      SAVE OR UPDATE CUSTOMER FOR AUTOFILL
+      Prevents duplicate customers by matching name + phone + address.
+      If a match exists, update it. If not, create a new customer.
     ========================================================= */
-    const { error: customerError } = await supabase.from("customers").insert([
-      {
-        customer_name: customerName.trim(),
-        customer_phone: customerPhone.trim(),
-        customer_email: customerEmail.trim() || null,
-        address: address.trim(),
-        updated_at: new Date().toISOString(),
-      },
-    ])
+    const trimmedCustomerName = customerName.trim()
+    const trimmedCustomerPhone = customerPhone.replace(/\D/g, "")
+    const trimmedCustomerEmail = customerEmail.trim()
+    const trimmedAddress = address.trim()
 
-    if (customerError) {
-      console.error("Error saving customer:", JSON.stringify(customerError, null, 2))
+    const { data: existingCustomers, error: findCustomerError } = await supabase
+      .from("customers")
+      .select("id")
+      .eq("customer_name", trimmedCustomerName)
+      .eq("customer_phone", trimmedCustomerPhone)
+      .eq("address", trimmedAddress)
+      .limit(1)
+
+    if (findCustomerError) {
+      console.error("Error checking existing customer:", findCustomerError)
+    } else if (existingCustomers && existingCustomers.length > 0) {
+      const existingCustomerId = existingCustomers[0].id
+
+      const { error: updateCustomerError } = await supabase
+        .from("customers")
+        .update({
+          customer_email: trimmedCustomerEmail || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", existingCustomerId)
+
+      if (updateCustomerError) {
+        console.error("Error updating existing customer:", updateCustomerError)
+      }
+    } else {
+      const { error: insertCustomerError } = await supabase
+        .from("customers")
+        .insert([
+          {
+            customer_name: trimmedCustomerName,
+            customer_phone: trimmedCustomerPhone,
+            customer_email: trimmedCustomerEmail || null,
+            address: trimmedAddress,
+            updated_at: new Date().toISOString(),
+          },
+        ])
+
+      if (insertCustomerError) {
+        console.error("Error saving new customer:", insertCustomerError)
+      }
     }
 
     // ================= SAVE QUOTE =================
@@ -640,6 +731,7 @@ export default function Home() {
           handleDuplicateQuote={handleDuplicateQuote}
           handleSaveQuote={handleSaveQuote}
           formatPhoneNumber={formatPhoneNumber}
+          findCustomerByPhone={findCustomerByPhone}
           formatCurrency={formatCurrency}
           customerSearchResults={customerSearchResults}
           isSearchingCustomers={isSearchingCustomers}

@@ -70,6 +70,8 @@ type QuoteFormProps = {
     }[]
   ) => void
 
+  findCustomerByPhone: (phoneValue: string) => void
+
   handleLogoUpload: (e: ChangeEvent<HTMLInputElement>) => void
   handleNewQuote: () => void
   handleDuplicateQuote: () => void
@@ -159,6 +161,7 @@ export function QuoteForm({
   recentCustomers,
   fetchCustomerSuggestions,
   setCustomerSearchResults,
+  findCustomerByPhone,
 }: QuoteFormProps) {
   const customerDropdownRef = useRef<HTMLDivElement | null>(null)
   const [isCustomerInputFocused, setIsCustomerInputFocused] = useState(false)
@@ -235,7 +238,7 @@ export function QuoteForm({
       ================================================= */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-start">
 
-        {/* LEFT COLUMN: Quote Info + Pricing / Branding */}
+        {/* LEFT COLUMN: Quote Info + Branding */}
         <div className="xl:col-span-3 space-y-3">
 
           {/* Quote Info */}
@@ -334,7 +337,7 @@ export function QuoteForm({
 
                       setCustomerName(value)
 
-                      if (value.length < 2) {
+                      if (value.trim().length < 2) {
                         setCustomerSearchResults([])
                         return
                       }
@@ -362,63 +365,43 @@ export function QuoteForm({
                   {/* =========================================================
                     CUSTOMER DROPDOWN (Search Results OR Recent Customers)
                   ========================================================= */}
+                  {/* Customer search results */}
                   {isCustomerInputFocused &&
                     !isSearchingCustomers &&
-                    (customerSearchResults.length > 0 || customerName.length < 2) && (
+                    customerName.trim().length >= 2 &&
+                    customerSearchResults.length > 0 && (
                       <div className="absolute z-30 mt-1 w-full overflow-hidden rounded-md border border-gray-200 bg-white shadow">
+                        {customerSearchResults.map((customer) => (
+                          <button
+                            key={customer.id}
+                            type="button"
+                            onClick={() => {
+                              setCustomerName(customer.customer_name)
+                              setCustomerPhone(
+                                customer.customer_phone
+                                  ? formatPhoneNumber(customer.customer_phone)
+                                  : ""
+                              )
+                              setCustomerEmail(customer.customer_email || "")
+                              setAddress(customer.address || "")
+                              setCustomerSearchResults([])
+                              setIsCustomerInputFocused(false)
+                            }}
+                            className="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
+                          >
+                            <div className="font-medium text-gray-900">
+                              {customer.customer_name}
+                            </div>
 
-                        {/* 🔍 SEARCH RESULTS */}
-                        {customerSearchResults.length > 0 ? (
-                          customerSearchResults.map((customer) => (
-                            <button
-                              key={customer.id}
-                              type="button"
-                              onClick={() => {
-                                setCustomerName(customer.customer_name)
-                                setCustomerPhone(customer.customer_phone || "")
-                                setCustomerEmail(customer.customer_email || "")
-                                setAddress(customer.address || "")
-                                setCustomerSearchResults([])
-                                setIsCustomerInputFocused(false)
-                              }}
-                              className="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
-                            >
-                              <div className="font-medium text-gray-900">
-                                {customer.customer_name}
-                              </div>
-
-                              <div className="text-xs text-gray-500">
-                                {customer.customer_phone || "No phone"} ·{" "}
-                                {customer.address || "No address"}
-                              </div>
-                            </button>
-                          ))
-                        ) : (
-                          /* 🕒 RECENT CUSTOMERS */
-                          recentCustomers.map((customer) => (
-                            <button
-                              key={customer.id}
-                              type="button"
-                              onClick={() => {
-                                setCustomerName(customer.customer_name)
-                                setCustomerPhone(customer.customer_phone || "")
-                                setCustomerEmail(customer.customer_email || "")
-                                setAddress(customer.address || "")
-                                setCustomerSearchResults([])
-                              }}
-                              className="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
-                            >
-                              <div className="font-medium text-gray-900">
-                                {customer.customer_name}
-                              </div>
-
-                              <div className="text-xs text-gray-500">
-                                {customer.customer_phone || "No phone"} ·{" "}
-                                {customer.address || "No address"}
-                              </div>
-                            </button>
-                          ))
-                        )}
+                            <div className="text-xs text-gray-500">
+                              {customer.customer_phone
+                                ? formatPhoneNumber(customer.customer_phone)
+                                : "No phone"}
+                              {customer.customer_email ? ` · ${customer.customer_email}` : ""}
+                              {customer.address ? ` · ${customer.address}` : ""}
+                            </div>
+                          </button>
+                        ))}
                       </div>
                   )}
                 </div>            
@@ -444,6 +427,7 @@ export function QuoteForm({
                 onChange={(e) =>
                   setCustomerPhone(formatPhoneNumber(e.target.value))
                 }
+                onBlur={() => findCustomerByPhone(customerPhone)}
                 maxLength={14}
                 className={inputClass}
               />
