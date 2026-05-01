@@ -796,6 +796,15 @@ export default function Home() {
         </div>
       </div>
 
+      {result && (
+        <div className="md:hidden fixed bottom-[72px] left-0 right-0 z-40 bg-white border-t border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm">
+          <span className="text-sm text-gray-500">Total</span>
+          <span className="text-lg font-semibold text-gray-900">
+            {formatCurrency(result.total)}
+          </span>
+        </div>
+      )}
+
       {/* Mobile action bar */}
       <MobileActionBar
         onNew={handleNewQuote}
