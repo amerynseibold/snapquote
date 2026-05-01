@@ -148,7 +148,7 @@ export default function Home() {
 
   // Shared input styling used throughout the form
   const inputClass =
-    "w-full h-7 bg-gray-50 text-gray-900 border border-gray-300 rounded-md px-2.5 text-[13px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    "w-full h-9 bg-gray-50 text-gray-900 border border-gray-300 rounded-md px-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 
   // Updates the tree count for one height tier without affecting the others
   const updateTreeCountByHeight = (tier: TreeHeightTier, value: string) => {
@@ -686,91 +686,96 @@ export default function Home() {
         {/* Sticky app header */}
         <TopBar quoteNumber={quoteNumber} />
         {/* Quote builder input form */}
-        <QuoteForm
-          companyName={companyName}
-          quoteNumber={quoteNumber}
-          quoteDate={quoteDate}
-          customerName={customerName}
-          customerPhone={customerPhone}
-          customerEmail={customerEmail}
-          address={address}
-          baseService={baseService}
-          treeCountsByHeight={treeCountsByHeight}
-          difficultTreeCount={difficultTreeCount}
-          hazardTreeCount={hazardTreeCount}
-          stumpCount={stumpCount}
-          haulOffIncluded={haulOffIncluded}
-          includeTax={includeTax}
-          emergencyJob={emergencyJob}
-          discountAmount={discountAmount}
-          logoUrl={logoUrl}
-          manualItems={manualItems}
-          totalTreeCount={totalTreeCount}
-          selectedQuoteId={selectedQuoteId}
-          result={result}
-          inputClass={inputClass}
-          setCompanyName={setCompanyName}
-          setQuoteNumber={setQuoteNumber}
-          setQuoteDate={setQuoteDate}
-          setCustomerName={setCustomerName}
-          setCustomerPhone={setCustomerPhone}
-          setCustomerEmail={setCustomerEmail}
-          setAddress={setAddress}
-          setBaseService={setBaseService}
-          updateTreeCountByHeight={updateTreeCountByHeight}
-          setDifficultTreeCount={setDifficultTreeCount}
-          setHazardTreeCount={setHazardTreeCount}
-          setStumpCount={setStumpCount}
-          setHaulOffIncluded={setHaulOffIncluded}
-          setIncludeTax={setIncludeTax}
-          setEmergencyJob={setEmergencyJob}
-          setDiscountAmount={setDiscountAmount}
-          setManualItems={setManualItems}
-          handleLogoUpload={handleLogoUpload}
-          handleNewQuote={handleNewQuote}
-          handleDuplicateQuote={handleDuplicateQuote}
-          handleSaveQuote={handleSaveQuote}
-          formatPhoneNumber={formatPhoneNumber}
-          findCustomerByPhone={findCustomerByPhone}
-          formatCurrency={formatCurrency}
-          customerSearchResults={customerSearchResults}
-          isSearchingCustomers={isSearchingCustomers}
-          fetchCustomerSuggestions={fetchCustomerSuggestions}
-          setCustomerSearchResults={setCustomerSearchResults}
-          recentCustomers={recentCustomers}
-        />
-        {/* Customer-facing quote preview / printable area */}
-        <QuotePreview
-          result={result}
-          selectedQuoteId={selectedQuoteId}
-          quoteNumber={quoteNumber}
-          companyName={companyName}
-          customerName={customerName}
-          customerPhone={customerPhone}
-          customerEmail={customerEmail}
-          address={address}
-          quoteDate={quoteDate}
-          logoUrl={logoUrl}
-          discountAmount={discountAmount}
-          onNewQuote={handleNewQuote}
-          onDuplicateQuote={handleDuplicateQuote}
-          onSaveQuote={handleSaveQuote}
-          onPrint={() => window.print()}
-          formatCurrency={formatCurrency}
-          formatDisplayDate={formatDisplayDate}
-        />
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-4 items-start">
+          <QuoteForm
+            companyName={companyName}
+            quoteNumber={quoteNumber}
+            quoteDate={quoteDate}
+            customerName={customerName}
+            customerPhone={customerPhone}
+            customerEmail={customerEmail}
+            address={address}
+            baseService={baseService}
+            treeCountsByHeight={treeCountsByHeight}
+            difficultTreeCount={difficultTreeCount}
+            hazardTreeCount={hazardTreeCount}
+            stumpCount={stumpCount}
+            haulOffIncluded={haulOffIncluded}
+            includeTax={includeTax}
+            emergencyJob={emergencyJob}
+            discountAmount={discountAmount}
+            logoUrl={logoUrl}
+            manualItems={manualItems}
+            totalTreeCount={totalTreeCount}
+            selectedQuoteId={selectedQuoteId}
+            result={result}
+            inputClass={inputClass}
+            setCompanyName={setCompanyName}
+            setQuoteNumber={setQuoteNumber}
+            setQuoteDate={setQuoteDate}
+            setCustomerName={setCustomerName}
+            setCustomerPhone={setCustomerPhone}
+            setCustomerEmail={setCustomerEmail}
+            setAddress={setAddress}
+            setBaseService={setBaseService}
+            updateTreeCountByHeight={updateTreeCountByHeight}
+            setDifficultTreeCount={setDifficultTreeCount}
+            setHazardTreeCount={setHazardTreeCount}
+            setStumpCount={setStumpCount}
+            setHaulOffIncluded={setHaulOffIncluded}
+            setIncludeTax={setIncludeTax}
+            setEmergencyJob={setEmergencyJob}
+            setDiscountAmount={setDiscountAmount}
+            setManualItems={setManualItems}
+            handleLogoUpload={handleLogoUpload}
+            handleNewQuote={handleNewQuote}
+            handleDuplicateQuote={handleDuplicateQuote}
+            handleSaveQuote={handleSaveQuote}
+            formatPhoneNumber={formatPhoneNumber}
+            findCustomerByPhone={findCustomerByPhone}
+            formatCurrency={formatCurrency}
+            customerSearchResults={customerSearchResults}
+            isSearchingCustomers={isSearchingCustomers}
+            fetchCustomerSuggestions={fetchCustomerSuggestions}
+            setCustomerSearchResults={setCustomerSearchResults}
+            recentCustomers={recentCustomers}
+          />
+                   
+          {/* Saved quote history */}
+          <QuoteHistory
+            savedQuotes={savedQuotes}
+            selectedQuoteId={selectedQuoteId}
+            confirmDeleteId={confirmDeleteId}
+            onLoadQuote={loadQuote}
+            onSetConfirmDeleteId={setConfirmDeleteId}
+            onDeleteQuote={deleteQuote}
+            formatCurrency={formatCurrency}
+          />
 
-        {/* Saved quote history */}
-       <QuoteHistory
-          savedQuotes={savedQuotes}
-          selectedQuoteId={selectedQuoteId}
-          confirmDeleteId={confirmDeleteId}
-          onLoadQuote={loadQuote}
-          onSetConfirmDeleteId={setConfirmDeleteId}
-          onDeleteQuote={deleteQuote}
-          formatCurrency={formatCurrency}
-        />
-      </div>
+
+          {/* Customer-facing quote preview / printable area */}
+          <QuotePreview
+            result={result}
+            selectedQuoteId={selectedQuoteId}
+            quoteNumber={quoteNumber}
+            companyName={companyName}
+            customerName={customerName}
+            customerPhone={customerPhone}
+            customerEmail={customerEmail}
+            address={address}
+            quoteDate={quoteDate}
+            logoUrl={logoUrl}
+            discountAmount={discountAmount}
+            onNewQuote={handleNewQuote}
+            onDuplicateQuote={handleDuplicateQuote}
+            onSaveQuote={handleSaveQuote}
+            onPrint={() => window.print()}
+            formatCurrency={formatCurrency}
+            formatDisplayDate={formatDisplayDate}
+          />
+
+        </div>
+      </div>  
 
       {/* Mobile action bar */}
         <MobileActionBar

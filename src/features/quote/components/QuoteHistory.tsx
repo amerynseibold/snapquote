@@ -23,8 +23,8 @@ export function QuoteHistory({
     <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-3 space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b border-gray-200 pb-4">
         <div>
-          <h2 className="text-xl font-semibold">Quote History</h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <h2 className="text-lg font-semibold">Quote History</h2>
+          <p className="text-xs text-gray-400 mt-1">
             Open, edit, or delete recent saved quotes.
           </p>
         </div>
@@ -33,7 +33,7 @@ export function QuoteHistory({
       {savedQuotes.length === 0 ? (
         <p className="text-sm text-gray-400">No saved quotes yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
           {savedQuotes.map((quote) => (
             <div
               key={quote.id}

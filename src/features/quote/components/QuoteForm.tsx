@@ -317,8 +317,11 @@ export function QuoteForm({
           </div>
         </div>
 
-        {/* MIDDLE COLUMN: Customer Info */}
-        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 xl:col-span-6">
+        {/* CENTER COLUMN: Customer + Job */}
+        <div className="xl:col-span-6 space-y-3">
+
+          {/* Customer Info */}
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Customer Info
           </h3>
@@ -446,8 +449,8 @@ export function QuoteForm({
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Job Details + Additional Items */}
-        <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-2 shadow-sm xl:col-span-6 xl:col-start-4 xl:max-w-[425px]">
+        {/* Job Details */}
+        <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-2 shadow-sm max-w-[425px]">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Job Details
           </h3>
@@ -816,6 +819,7 @@ export function QuoteForm({
           </div>
         </div>
       </div>
+    </div>
 
       {/* Validation warning */}
       {((difficultTreeCount || 0) > totalTreeCount ||
