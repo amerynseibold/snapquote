@@ -573,151 +573,78 @@ export function QuoteForm({
                 index !== manualItems.length - 1 ? "border-b border-gray-200" : ""
               } hover:bg-gray-50`}
             >
-            {/* Mobile portrait layout */}
-            <div className="grid grid-cols-4 gap-2 sm:hidden">
-              {/* Service (3/4 width) */}
-              <input
-                type="text"
-                placeholder="Service"
-                value={item.description}
-                onChange={(e) => {
-                  const updated = [...manualItems]
-                  updated[index].description = e.target.value
-                  setManualItems(updated)
-                }}
-                className={`${inputClass} col-span-3 min-w-0 text-sm`}
-              />
+        {/* Mobile portrait layout */}
+        <div className="sm:hidden rounded-lg border border-gray-200 bg-white p-3 space-y-3">
+          {/* Top row: Service + Remove */}
+          <div className="flex items-start gap-2">
+            <input
+              type="text"
+              placeholder="Service"
+              value={item.description}
+              onChange={(e) => {
+                const updated = [...manualItems]
+                updated[index].description = e.target.value
+                setManualItems(updated)
+              }}
+              className={`${inputClass} flex-1 min-w-0 text-sm`}
+            />
 
-              {/* Remove */}
-              <button
-                onClick={() =>
-                  setManualItems(manualItems.filter((_, i) => i !== index))
-                }
-                className="text-red-400 text-xs hover:text-red-600 text-right flex items-center justify-end"
-              >
-                Remove
-              </button>
-
-              {/* Qty */}
-              <input
-                type="number"
-                placeholder="Qty"
-                value={item.qty}
-                onChange={(e) => {
-                  const updated = [...manualItems]
-                  updated[index].qty = e.target.value
-                  setManualItems(updated)
-                }}
-                className={`${inputClass} min-w-0 text-sm`}
-              />
-
-              {/* Price */}
-              <input
-                type="text"
-                placeholder="Price $"
-                value={item.price ?? ""}
-                onChange={(e) => {
-                  const raw = e.target.value.replace(/[^0-9]/g, "")
-                  const updated = [...manualItems]
-                  updated[index].price = raw
-                  setManualItems(updated)
-                }}
-                onBlur={() => {
-                  if (item.price !== "") {
-                    const updated = [...manualItems]
-                    updated[index].price = String(Number(item.price))
-                    setManualItems(updated)
-                  }
-                }}
-                className={`${inputClass} min-w-0 text-sm`}
-              />
-
-              {/* Total */}
-              <div className="col-span-2 flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700">
-                <span className="text-gray-400 uppercase text-[10px] tracking-wide text-right">
-                  Total
-                </span>
-                <span>
-                  {formatCurrency(
-                    (Number(item.qty) || 0) * (Number(item.price) || 0)
-                  )}
-                </span>
-              </div>
-            </div>
-
-              {/* Landscape / desktop row */}        
-              <div className="hidden sm:grid grid-cols-[3.25fr_1fr_1.5fr_1.2fr_1fr] gap-2 items-center">
-                <input
-                  type="text"
-                  placeholder="Service"
-                  value={item.description}
-                  onChange={(e) => {
-                    const updated = [...manualItems]
-                    updated[index].description = e.target.value
-                    setManualItems(updated)
-                  }}
-                  className={`${inputClass} min-w-0 text-sm`}
-                />
-
-                <input
-                  type="number"
-                  placeholder="#"
-                  value={item.qty}
-                  onChange={(e) => {
-                    const updated = [...manualItems]
-                    updated[index].qty = e.target.value
-                    setManualItems(updated)
-                  }}
-                  className={`${inputClass} min-w-0 text-sm`}
-                />
-
-                <input
-                  type="text"
-                  placeholder="$0"
-                  value={item.price ?? ""}
-                  onChange={(e) => {
-                    const raw = e.target.value.replace(/[^0-9]/g, "")
-                    const updated = [...manualItems]
-                    updated[index].price = raw
-                    setManualItems(updated)
-                  }}
-                  onBlur={() => {
-                    if (item.price !== "") {
-                      const updated = [...manualItems]
-                      updated[index].price = String(Number(item.price))
-                      setManualItems(updated)
-                    }
-                  }}
-                  className={`${inputClass} min-w-0 text-sm`}
-                />
-
-                <div className="text-sm font-medium text-right text-gray-700">
-                  {formatCurrency((Number(item.qty) || 0) * (Number(item.price) || 0))}
-                </div>
-
-                <button
-                  onClick={() =>
-                    setManualItems(manualItems.filter((_, i) => i !== index))
-                  }
-                  className="text-[10px] text-red-400 hover:text-red-600 text-right"
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}            
-          <button
+            <button
               onClick={() =>
-                setManualItems([
-                  ...manualItems,
-                  { description: "", qty: "", price: "" },
-                ])
+                setManualItems(manualItems.filter((_, i) => i !== index))
               }
-              className="text-blue-600 text-sm"
+              className="shrink-0 rounded-md px-2 py-2 text-xs text-red-500 hover:text-red-700"
             >
-              + Add Item
+              Remove
             </button>
           </div>
+
+          {/* Bottom row: Qty, Price, Total */}
+          <div className="grid grid-cols-3 gap-2">
+            <input
+              type="number"
+              placeholder="Qty"
+              value={item.qty}
+              onChange={(e) => {
+                const updated = [...manualItems]
+                updated[index].qty = e.target.value
+                setManualItems(updated)
+              }}
+              className={`${inputClass} min-w-0 text-sm`}
+            />
+
+            <input
+              type="text"
+              placeholder="Price $"
+              value={item.price ?? ""}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9]/g, "")
+                const updated = [...manualItems]
+                updated[index].price = raw
+                setManualItems(updated)
+              }}
+              onBlur={() => {
+                if (item.price !== "") {
+                  const updated = [...manualItems]
+                  updated[index].price = String(Number(item.price))
+                  setManualItems(updated)
+                }
+              }}
+              className={`${inputClass} min-w-0 text-sm`}
+            />
+
+            <div className="flex flex-col justify-center rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-right">
+              <span className="text-[10px] uppercase tracking-wide text-gray-400">
+                Total
+              </span>
+              <span className="text-sm font-semibold text-gray-700">
+                {formatCurrency(
+                  (Number(item.qty) || 0) * (Number(item.price) || 0)
+                )}
+              </span>
+            </div>
+          </div>
+        </div>
 
       {/* =================================================
           PRICING ADJUSTMENTS
