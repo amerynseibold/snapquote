@@ -67,7 +67,7 @@ export function QuotePreview({
 
           {/* =================================================
              ACTION BUTTONS (DESKTOP ONLY)
-          ================================================= */}
+          =================================================
           <div className="hidden sm:flex sm:justify-end gap-3 mb-4 print:hidden">
             <button onClick={onNewQuote} className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm shadow-sm">
               New Quote
@@ -89,7 +89,7 @@ export function QuotePreview({
               Print / Save PDF
             </button>
           </div>
-
+ */}
           {/* =================================================
              HEADER (Company + Customer + Logo)
           ================================================= */}

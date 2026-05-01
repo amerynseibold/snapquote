@@ -198,39 +198,6 @@ export function QuoteForm({
             Enter the job details, then review quote preview below.
           </p>
         </div>
-
-        <div className="hidden sm:flex gap-2">
-          <button
-            onClick={handleNewQuote}
-            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm shadow-sm"
-          >
-            New Quote
-          </button>
-
-          <button
-            onClick={handleDuplicateQuote}
-            disabled={!selectedQuoteId}
-            className="bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 text-gray-700 px-3 py-1 rounded text-sm shadow-sm"
-          >
-            Duplicate Quote
-          </button>
-
-          <button
-            onClick={handleSaveQuote}
-            disabled={!result}
-            className="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-3 py-1 rounded text-sm shadow-sm"
-          >
-            Save Quote
-          </button>
-
-          <button
-            onClick={() => window.print()}
-            disabled={!result}
-            className="hidden sm:inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-3 py-1 rounded text-sm shadow-sm"
-          >
-            Print / Save PDF
-          </button>
-        </div>
       </div>
 
       {/* =================================================

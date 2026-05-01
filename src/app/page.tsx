@@ -686,7 +686,15 @@ export default function Home() {
     <main className="min-h-screen bg-[#f5f6f8] text-gray-900 p-2 sm:p-3 md:p-4 xl:p-5 pb-24 sm:pb-20 print:bg-white print:p-0">
       <div className="max-w-[1120px] mx-auto space-y-4 sm:space-y-5">
         {/* Sticky app header */}
-        <TopBar quoteNumber={quoteNumber} />
+        <TopBar
+          quoteNumber={quoteNumber}
+          onNew={handleNewQuote}
+          onDuplicate={handleDuplicateQuote}
+          onSave={handleSaveQuote}
+          onPrint={() => window.print()}
+          canDuplicate={!!selectedQuoteId}
+          canSave={!!result}
+        />
         <div className="grid grid-cols-1 xl:grid-cols-[800px_320px] gap-1 items-start">
           {/* Quote builder input form */}
           <QuoteForm
