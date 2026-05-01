@@ -186,7 +186,7 @@ export function QuoteForm({
     /* =====================================================
        QUOTE BUILDER FORM
     ===================================================== */
-    <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-3 sm:p-4 space-y-4 xl:max-w-760px]">
+    <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-3 sm:p-4 space-y-4 w-full">
       
       {/* =================================================
          FORM HEADER + DESKTOP ACTION BUTTONS
@@ -203,7 +203,7 @@ export function QuoteForm({
       {/* =================================================
          FORM GRID
       ================================================= */}
-      <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-3 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-4 xl:gap-3 items-start">
 
         {/* LEFT COLUMN: Quote Info + Branding + Cusomter Info*/}
         <div className="space-y-3 ">
@@ -282,7 +282,7 @@ export function QuoteForm({
           </div>
 
            {/* Customer Info */}
-          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 xl:max-w-[320px]">
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 w-full xl:max-w-[320px]">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Customer Info
           </h3>
@@ -416,13 +416,13 @@ export function QuoteForm({
         <div className="space-y-3">
 
         {/* Job Details */}
-        <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-2 shadow-sm max-w-[425px]">
+        <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-3 shadow-sm w-full xl:max-w-[425px]">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Job Details
           </h3>
 
         {/* Base job input */}
-        <div className="w-[350px]">
+        <div className="w-full xl:w-[350px]">
           <label className="block mb-1 text-sm text-gray-600">Base Service</label>
           <select
             value={baseService}
@@ -446,7 +446,7 @@ export function QuoteForm({
                 Trees by Height
               </label>
 
-              <div className="grid grid-cols-2 gap-2 w-[200px]">
+              <div className="grid grid-cols-2 gap-2 w-full sm:w-[200px]">
                 {(
                   ["0-15 ft", "15-30 ft", "30-60 ft", "60+ ft"] as TreeHeightTier[]
                 ).map((tier) => (
@@ -466,7 +466,7 @@ export function QuoteForm({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 sm:pt-[23px] w-[100px]">
+            <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 sm:pt-[23px] w-full sm:w-[100px]">
               <div>
                 <label className="block mb-1 text-sm text-gray-600">Difficult Trees</label>
                 <input
@@ -513,7 +513,7 @@ export function QuoteForm({
         )}
 
         {/* Stumps + Haul-Off row */}
-        <div className="grid grid-cols-2 gap-x-6 w-[350px]">
+        <div className="grid grid-cols-2 gap-2 w-full xl:w-[350px]">
           <div>
             <label className="block mb-1 text-sm text-gray-600"># of Stumps</label>
             <input
@@ -573,88 +573,161 @@ export function QuoteForm({
                 index !== manualItems.length - 1 ? "border-b border-gray-200" : ""
               } hover:bg-gray-50`}
             >
-        {/* Mobile portrait layout */}
-        <div className="sm:hidden rounded-lg border border-gray-200 bg-white p-3 space-y-3">
-          {/* Top row: Service + Remove */}
-          <div className="flex items-start gap-2">
-            <input
-              type="text"
-              placeholder="Service"
-              value={item.description}
-              onChange={(e) => {
-                const updated = [...manualItems]
-                updated[index].description = e.target.value
-                setManualItems(updated)
-              }}
-              className={`${inputClass} flex-1 min-w-0 text-sm`}
-            />
+            {/* Mobile portrait layout */}
+            <div className="grid grid-cols-4 gap-2 sm:hidden">
+              {/* Service (3/4 width) */}
+              <input
+                type="text"
+                placeholder="Service"
+                value={item.description}
+                onChange={(e) => {
+                  const updated = [...manualItems]
+                  updated[index].description = e.target.value
+                  setManualItems(updated)
+                }}
+                className={`${inputClass} col-span-3 min-w-0 text-sm`}
+              />
 
-            <button
+              {/* Remove */}
+              <button
+                onClick={() =>
+                  setManualItems(manualItems.filter((_, i) => i !== index))
+                }
+                className="text-red-400 text-xs hover:text-red-600 text-right flex items-center justify-end"
+              >
+                Remove
+              </button>
+
+              {/* Qty */}
+              <input
+                type="number"
+                placeholder="Qty"
+                value={item.qty}
+                onChange={(e) => {
+                  const updated = [...manualItems]
+                  updated[index].qty = e.target.value
+                  setManualItems(updated)
+                }}
+                className={`${inputClass} min-w-0 text-sm`}
+              />
+
+              {/* Price */}
+              <input
+                type="text"
+                placeholder="Price $"
+                value={item.price ?? ""}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, "")
+                  const updated = [...manualItems]
+                  updated[index].price = raw
+                  setManualItems(updated)
+                }}
+                onBlur={() => {
+                  if (item.price !== "") {
+                    const updated = [...manualItems]
+                    updated[index].price = String(Number(item.price))
+                    setManualItems(updated)
+                  }
+                }}
+                className={`${inputClass} min-w-0 text-sm`}
+              />
+
+              {/* Total */}
+              <div className="col-span-2 flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700">
+                <span className="text-gray-400 uppercase text-[10px] tracking-wide text-right">
+                  Total
+                </span>
+                <span>
+                  {formatCurrency(
+                    (Number(item.qty) || 0) * (Number(item.price) || 0)
+                  )}
+                </span>
+              </div>
+            </div>
+
+              {/* Landscape / desktop row */}        
+              <div className="hidden sm:grid grid-cols-[3.25fr_1fr_1.5fr_1.2fr_1fr] gap-2 items-center">
+                <input
+                  type="text"
+                  placeholder="Service"
+                  value={item.description}
+                  onChange={(e) => {
+                    const updated = [...manualItems]
+                    updated[index].description = e.target.value
+                    setManualItems(updated)
+                  }}
+                  className={`${inputClass} min-w-0 text-sm`}
+                />
+
+                <input
+                  type="number"
+                  placeholder="#"
+                  value={item.qty}
+                  onChange={(e) => {
+                    const updated = [...manualItems]
+                    updated[index].qty = e.target.value
+                    setManualItems(updated)
+                  }}
+                  className={`${inputClass} min-w-0 text-sm`}
+                />
+
+                <input
+                  type="text"
+                  placeholder="$0"
+                  value={item.price ?? ""}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/[^0-9]/g, "")
+                    const updated = [...manualItems]
+                    updated[index].price = raw
+                    setManualItems(updated)
+                  }}
+                  onBlur={() => {
+                    if (item.price !== "") {
+                      const updated = [...manualItems]
+                      updated[index].price = String(Number(item.price))
+                      setManualItems(updated)
+                    }
+                  }}
+                  className={`${inputClass} min-w-0 text-sm`}
+                />
+
+                <div className="text-sm font-medium text-right text-gray-700">
+                  {formatCurrency((Number(item.qty) || 0) * (Number(item.price) || 0))}
+                </div>
+
+                <button
+                  onClick={() =>
+                    setManualItems(manualItems.filter((_, i) => i !== index))
+                  }
+                  className="text-[10px] text-red-400 hover:text-red-600 text-right"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}            
+          <button
               onClick={() =>
-                setManualItems(manualItems.filter((_, i) => i !== index))
+                setManualItems([
+                  ...manualItems,
+                  { description: "", qty: "", price: "" },
+                ])
               }
-              className="shrink-0 rounded-md px-2 py-2 text-xs text-red-500 hover:text-red-700"
+              className="text-blue-600 text-sm"
             >
-              Remove
+              + Add Item
             </button>
           </div>
-
-          {/* Bottom row: Qty, Price, Total */}
-          <div className="grid grid-cols-3 gap-2">
-            <input
-              type="number"
-              placeholder="Qty"
-              value={item.qty}
-              onChange={(e) => {
-                const updated = [...manualItems]
-                updated[index].qty = e.target.value
-                setManualItems(updated)
-              }}
-              className={`${inputClass} min-w-0 text-sm`}
-            />
-
-            <input
-              type="text"
-              placeholder="Price $"
-              value={item.price ?? ""}
-              onChange={(e) => {
-                const raw = e.target.value.replace(/[^0-9]/g, "")
-                const updated = [...manualItems]
-                updated[index].price = raw
-                setManualItems(updated)
-              }}
-              onBlur={() => {
-                if (item.price !== "") {
-                  const updated = [...manualItems]
-                  updated[index].price = String(Number(item.price))
-                  setManualItems(updated)
-                }
-              }}
-              className={`${inputClass} min-w-0 text-sm`}
-            />
-
-            <div className="flex flex-col justify-center rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-right">
-              <span className="text-[10px] uppercase tracking-wide text-gray-400">
-                Total
-              </span>
-              <span className="text-sm font-semibold text-gray-700">
-                {formatCurrency(
-                  (Number(item.qty) || 0) * (Number(item.price) || 0)
-                )}
-              </span>
-            </div>
-          </div>
-        </div>
 
       {/* =================================================
           PRICING ADJUSTMENTS
       ================================================= */}
-      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-2 xl:max-w-[425px]">
+      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 w-full xl:max-w-[425px]">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
           Pricing Adjustments
         </h3>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2">
           {/* Tax toggle */}
           <div>
             <label className="block mb-1 text-sm text-gray-600">Tax</label>

@@ -16,7 +16,7 @@ export function MobileActionBar({
   duplicateDisabled,
 }: MobileActionBarProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 p-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] grid grid-cols-2 gap-2 sm:hidden print:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(15,23,42,0.08)] grid grid-cols-2 gap-2 md:hidden print:hidden">
       <button
         onClick={onNew}
         className="active:scale-95 transition-transform duration-100 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded text-sm font-medium"

@@ -18,9 +18,8 @@ export function TopBar({
   canSave,
 }: TopBarProps) {
   return (
-    <div className="sticky top-0 z-40 print:hidden bg-[#f5f6f8] py-2">
-      <div className="max-w-screen-xl mx-auto bg-white border border-gray-200 shadow-sm rounded-xl px-4 py-2 flex items-center">
-
+    <div className="hidden md:block sticky top-0 z-40 print:hidden bg-[#f5f6f8] py-2">
+      <div className="w-full max-w-screen-xl mx-auto bg-white border border-gray-200 shadow-sm rounded-xl px-4 py-2 flex items-center">
         {/* Left: Logo */}
         <img
           src="/SnapQuote (no bckgnd).png"
@@ -30,7 +29,6 @@ export function TopBar({
 
         {/* Right: Actions + Quote Number */}
         <div className="ml-auto flex items-center gap-3">
-
           {/* Buttons */}
           <div className="flex gap-2">
             <button
@@ -65,7 +63,9 @@ export function TopBar({
           </div>
 
           {/* Quote Number */}
-          <span className="text-sm text-gray-500">{quoteNumber}</span>
+          <span className="text-sm text-gray-500 whitespace-nowrap">
+            {quoteNumber}
+          </span>
         </div>
       </div>
     </div>

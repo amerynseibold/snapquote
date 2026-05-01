@@ -683,9 +683,9 @@ export default function Home() {
   // UI RENDER
   // ============================================================
   return (
-    <main className="min-h-screen bg-[#f5f6f8] text-gray-900 p-2 sm:p-3 md:p-4 xl:p-5 pb-24 sm:pb-20 print:bg-white print:p-0">
-      <div className="max-w-[1120px] mx-auto space-y-4 sm:space-y-5">
-        {/* Sticky app header */}
+    <main className="min-h-screen bg-[#f5f6f8] text-gray-900 p-2 sm:p-3 md:p-4 xl:p-5 pb-32 md:pb-6 print:bg-white print:p-0">
+      <div className="w-full max-w-[1120px] mx-auto space-y-4 sm:space-y-5 px-1 sm:px-0">
+        {/* Sticky app header - desktop only */}
         <TopBar
           quoteNumber={quoteNumber}
           onNew={handleNewQuote}
@@ -695,64 +695,71 @@ export default function Home() {
           canDuplicate={!!selectedQuoteId}
           canSave={!!result}
         />
-        <div className="grid grid-cols-1 xl:grid-cols-[800px_320px] gap-1 items-start">
+
+        {/* Main app layout
+            Mobile order: Form > Preview > History
+            Desktop order: Form > History > Preview
+        */}
+        <div className="grid grid-cols-1 xl:grid-cols-[800px_320px] gap-3 sm:gap-4 xl:gap-1 items-start">
           {/* Quote builder input form */}
-          <QuoteForm
-            companyName={companyName}
-            quoteNumber={quoteNumber}
-            quoteDate={quoteDate}
-            customerName={customerName}
-            customerPhone={customerPhone}
-            customerEmail={customerEmail}
-            address={address}
-            baseService={baseService}
-            treeCountsByHeight={treeCountsByHeight}
-            difficultTreeCount={difficultTreeCount}
-            hazardTreeCount={hazardTreeCount}
-            stumpCount={stumpCount}
-            haulOffIncluded={haulOffIncluded}
-            includeTax={includeTax}
-            emergencyJob={emergencyJob}
-            discountAmount={discountAmount}
-            logoUrl={logoUrl}
-            manualItems={manualItems}
-            totalTreeCount={totalTreeCount}
-            selectedQuoteId={selectedQuoteId}
-            result={result}
-            inputClass={inputClass}
-            setCompanyName={setCompanyName}
-            setQuoteNumber={setQuoteNumber}
-            setQuoteDate={setQuoteDate}
-            setCustomerName={setCustomerName}
-            setCustomerPhone={setCustomerPhone}
-            setCustomerEmail={setCustomerEmail}
-            setAddress={setAddress}
-            setBaseService={setBaseService}
-            updateTreeCountByHeight={updateTreeCountByHeight}
-            setDifficultTreeCount={setDifficultTreeCount}
-            setHazardTreeCount={setHazardTreeCount}
-            setStumpCount={setStumpCount}
-            setHaulOffIncluded={setHaulOffIncluded}
-            setIncludeTax={setIncludeTax}
-            setEmergencyJob={setEmergencyJob}
-            setDiscountAmount={setDiscountAmount}
-            setManualItems={setManualItems}
-            handleLogoUpload={handleLogoUpload}
-            handleNewQuote={handleNewQuote}
-            handleDuplicateQuote={handleDuplicateQuote}
-            handleSaveQuote={handleSaveQuote}
-            formatPhoneNumber={formatPhoneNumber}
-            findCustomerByPhone={findCustomerByPhone}
-            formatCurrency={formatCurrency}
-            customerSearchResults={customerSearchResults}
-            isSearchingCustomers={isSearchingCustomers}
-            fetchCustomerSuggestions={fetchCustomerSuggestions}
-            setCustomerSearchResults={setCustomerSearchResults}
-            recentCustomers={recentCustomers}
-          />
-                   
+          <div className="order-1 xl:order-1">
+            <QuoteForm
+              companyName={companyName}
+              quoteNumber={quoteNumber}
+              quoteDate={quoteDate}
+              customerName={customerName}
+              customerPhone={customerPhone}
+              customerEmail={customerEmail}
+              address={address}
+              baseService={baseService}
+              treeCountsByHeight={treeCountsByHeight}
+              difficultTreeCount={difficultTreeCount}
+              hazardTreeCount={hazardTreeCount}
+              stumpCount={stumpCount}
+              haulOffIncluded={haulOffIncluded}
+              includeTax={includeTax}
+              emergencyJob={emergencyJob}
+              discountAmount={discountAmount}
+              logoUrl={logoUrl}
+              manualItems={manualItems}
+              totalTreeCount={totalTreeCount}
+              selectedQuoteId={selectedQuoteId}
+              result={result}
+              inputClass={inputClass}
+              setCompanyName={setCompanyName}
+              setQuoteNumber={setQuoteNumber}
+              setQuoteDate={setQuoteDate}
+              setCustomerName={setCustomerName}
+              setCustomerPhone={setCustomerPhone}
+              setCustomerEmail={setCustomerEmail}
+              setAddress={setAddress}
+              setBaseService={setBaseService}
+              updateTreeCountByHeight={updateTreeCountByHeight}
+              setDifficultTreeCount={setDifficultTreeCount}
+              setHazardTreeCount={setHazardTreeCount}
+              setStumpCount={setStumpCount}
+              setHaulOffIncluded={setHaulOffIncluded}
+              setIncludeTax={setIncludeTax}
+              setEmergencyJob={setEmergencyJob}
+              setDiscountAmount={setDiscountAmount}
+              setManualItems={setManualItems}
+              handleLogoUpload={handleLogoUpload}
+              handleNewQuote={handleNewQuote}
+              handleDuplicateQuote={handleDuplicateQuote}
+              handleSaveQuote={handleSaveQuote}
+              formatPhoneNumber={formatPhoneNumber}
+              findCustomerByPhone={findCustomerByPhone}
+              formatCurrency={formatCurrency}
+              customerSearchResults={customerSearchResults}
+              isSearchingCustomers={isSearchingCustomers}
+              fetchCustomerSuggestions={fetchCustomerSuggestions}
+              setCustomerSearchResults={setCustomerSearchResults}
+              recentCustomers={recentCustomers}
+            />
+          </div>
+
           {/* Saved quote history */}
-          <div className="xl:sticky xl:top-20 xl:self-start">
+          <div className="order-3 xl:order-2 xl:sticky xl:top-20 xl:self-start">
             <QuoteHistory
               savedQuotes={savedQuotes}
               selectedQuoteId={selectedQuoteId}
@@ -764,42 +771,43 @@ export default function Home() {
             />
           </div>
 
-
           {/* Customer-facing quote preview / printable area */}
-          <QuotePreview
-            result={result}
-            selectedQuoteId={selectedQuoteId}
-            quoteNumber={quoteNumber}
-            companyName={companyName}
-            customerName={customerName}
-            customerPhone={customerPhone}
-            customerEmail={customerEmail}
-            address={address}
-            quoteDate={quoteDate}
-            logoUrl={logoUrl}
-            discountAmount={discountAmount}
-            onNewQuote={handleNewQuote}
-            onDuplicateQuote={handleDuplicateQuote}
-            onSaveQuote={handleSaveQuote}
-            onPrint={() => window.print()}
-            formatCurrency={formatCurrency}
-            formatDisplayDate={formatDisplayDate}
-          />
-
+          <div className="order-2 xl:order-3">
+            <QuotePreview
+              result={result}
+              selectedQuoteId={selectedQuoteId}
+              quoteNumber={quoteNumber}
+              companyName={companyName}
+              customerName={customerName}
+              customerPhone={customerPhone}
+              customerEmail={customerEmail}
+              address={address}
+              quoteDate={quoteDate}
+              logoUrl={logoUrl}
+              discountAmount={discountAmount}
+              onNewQuote={handleNewQuote}
+              onDuplicateQuote={handleDuplicateQuote}
+              onSaveQuote={handleSaveQuote}
+              onPrint={() => window.print()}
+              formatCurrency={formatCurrency}
+              formatDisplayDate={formatDisplayDate}
+            />
+          </div>
         </div>
-      </div> 
+      </div>
 
       {/* Mobile action bar */}
-        <MobileActionBar
-          onNew={handleNewQuote}
-          onDuplicate={handleDuplicateQuote}
-          onSave={handleSaveQuote}
-          onPrint={() => window.print()}
-          disabled={!result}
-          duplicateDisabled={!selectedQuoteId}
-        />
+      <MobileActionBar
+        onNew={handleNewQuote}
+        onDuplicate={handleDuplicateQuote}
+        onSave={handleSaveQuote}
+        onPrint={() => window.print()}
+        disabled={!result}
+        duplicateDisabled={!selectedQuoteId}
+      />
+
       {/* Duplicate confirmation toast */}
-        <DuplicateToast show={showDuplicateToast} />
+      <DuplicateToast show={showDuplicateToast} />
     </main>
   )
 }

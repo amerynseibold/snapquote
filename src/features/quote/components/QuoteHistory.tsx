@@ -21,7 +21,7 @@ export function QuoteHistory({
 }: QuoteHistoryProps) {
   return (
     <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-3 h-[calc(100vh-7rem)] flex flex-col overflow-hidden">
-      <div className="flex items-end justify-between border-b border-gray-200 pb-3 min-h-[64px]">
+      <div className="flex items-end justify-between border-b border-gray-200 pb-3 min-h-[68px]">
         <div>
           <h2 className="text-lg font-semibold">Quote History</h2>
           <p className="text-xs text-gray-400 mt-1">
