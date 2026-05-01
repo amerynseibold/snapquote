@@ -54,9 +54,9 @@ export default function Home() {
   const [showDuplicateToast, setShowDuplicateToast] = useState(false)
 
   // Manual line items added outside the calculated pricing rules
-  const [manualItems, setManualItems] = useState([
-    { description: "", qty: "", price: "" }
-  ])
+  const [manualItems, setManualItems] = useState<
+    { description: string; qty: string; price: string }[]
+  >([])
 
   /* =========================================================
    CUSTOMER AUTOFILL STATE
@@ -185,12 +185,14 @@ export default function Home() {
     return `(${part1}) ${part2}-${part3}`
   }
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(value)
-
+  const formatCurrency = (value: number) => {
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
+}
     /* =========================================================
       CUSTOMER AUTOFILL SEARCH
       Searches saved customers by name, email, address, or phone.
@@ -627,7 +629,7 @@ export default function Home() {
     setHaulOffIncluded(true)
     setEmergencyJob(false)
     setDiscountAmount("")
-    setManualItems([{ description: "", qty: "", price: "" }])
+    setManualItems([])
 
     setQuoteDate(new Date().toISOString().split("T")[0])
 
@@ -682,11 +684,11 @@ export default function Home() {
   // ============================================================
   return (
     <main className="min-h-screen bg-[#f5f6f8] text-gray-900 p-2 sm:p-3 md:p-4 xl:p-5 pb-24 sm:pb-20 print:bg-white print:p-0">
-      <div className="max-w-[1500px] mx-auto space-y-4 sm:space-y-5 print:max-w-none print:space-y-0">
+      <div className="max-w-[1120px] mx-auto space-y-4 sm:space-y-5">
         {/* Sticky app header */}
         <TopBar quoteNumber={quoteNumber} />
-        {/* Quote builder input form */}
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-4 items-start">
+        <div className="grid grid-cols-1 xl:grid-cols-[800px_320px] gap-1 items-start">
+          {/* Quote builder input form */}
           <QuoteForm
             companyName={companyName}
             quoteNumber={quoteNumber}
@@ -742,15 +744,17 @@ export default function Home() {
           />
                    
           {/* Saved quote history */}
-          <QuoteHistory
-            savedQuotes={savedQuotes}
-            selectedQuoteId={selectedQuoteId}
-            confirmDeleteId={confirmDeleteId}
-            onLoadQuote={loadQuote}
-            onSetConfirmDeleteId={setConfirmDeleteId}
-            onDeleteQuote={deleteQuote}
-            formatCurrency={formatCurrency}
-          />
+          <div className="xl:sticky xl:top-20 xl:self-start">
+            <QuoteHistory
+              savedQuotes={savedQuotes}
+              selectedQuoteId={selectedQuoteId}
+              confirmDeleteId={confirmDeleteId}
+              onLoadQuote={loadQuote}
+              onSetConfirmDeleteId={setConfirmDeleteId}
+              onDeleteQuote={deleteQuote}
+              formatCurrency={formatCurrency}
+            />
+          </div>
 
 
           {/* Customer-facing quote preview / printable area */}
@@ -775,7 +779,7 @@ export default function Home() {
           />
 
         </div>
-      </div>  
+      </div> 
 
       {/* Mobile action bar */}
         <MobileActionBar

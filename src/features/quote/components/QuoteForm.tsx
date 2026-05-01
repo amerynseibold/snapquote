@@ -186,23 +186,23 @@ export function QuoteForm({
     /* =====================================================
        QUOTE BUILDER FORM
     ===================================================== */
-    <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-3 sm:p-4 space-y-4">
+    <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-3 sm:p-4 space-y-4 xl:max-w-760px]">
       
       {/* =================================================
          FORM HEADER + DESKTOP ACTION BUTTONS
       ================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 border-b border-gray-200 pb-3">
+      <div className="flex items-end justify-between border-b border-gray-200 pb-3 min-h-[64px]">
         <div>
           <h2 className="text-lg font-semibold">Quote Builder</h2>
           <p className="text-xs text-gray-400 mt-1">
-            Enter the job details, then review the quote preview below.
+            Enter the job details, then review quote preview below.
           </p>
         </div>
 
         <div className="hidden sm:flex gap-2">
           <button
             onClick={handleNewQuote}
-            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm shadow-sm"
+            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm shadow-sm"
           >
             New Quote
           </button>
@@ -210,7 +210,7 @@ export function QuoteForm({
           <button
             onClick={handleDuplicateQuote}
             disabled={!selectedQuoteId}
-            className="bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 text-gray-700 px-4 py-2 rounded text-sm shadow-sm"
+            className="bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 text-gray-700 px-3 py-1 rounded text-sm shadow-sm"
           >
             Duplicate Quote
           </button>
@@ -218,7 +218,7 @@ export function QuoteForm({
           <button
             onClick={handleSaveQuote}
             disabled={!result}
-            className="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-4 py-2 rounded text-sm shadow-sm"
+            className="bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-3 py-1 rounded text-sm shadow-sm"
           >
             Save Quote
           </button>
@@ -226,7 +226,7 @@ export function QuoteForm({
           <button
             onClick={() => window.print()}
             disabled={!result}
-            className="hidden sm:inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-4 py-2 rounded text-sm shadow-sm"
+            className="hidden sm:inline-block bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white px-3 py-1 rounded text-sm shadow-sm"
           >
             Print / Save PDF
           </button>
@@ -236,10 +236,10 @@ export function QuoteForm({
       {/* =================================================
          FORM GRID
       ================================================= */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-start xl:[grid-auto-flow:dense]">
+      <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-3 items-start">
 
-        {/* LEFT COLUMN: Quote Info + Branding */}
-        <div className="xl:col-span-3 space-y-3">
+        {/* LEFT COLUMN: Quote Info + Branding + Cusomter Info*/}
+        <div className="space-y-3 ">
 
           {/* Quote Info */}
           <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3">
@@ -247,9 +247,9 @@ export function QuoteForm({
               Quote Info
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
-              <div className="sm:col-span-2 lg:col-span-1">
-                <label className="block mb-1 text-sm">Company Name</label>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2">
+                <label className="block mb-1 text-sm text-gray-600">Company Name</label>
                 <input
                   type="text"
                   value={companyName}
@@ -259,7 +259,7 @@ export function QuoteForm({
               </div>
 
               <div>
-                <label className="block mb-1 text-sm">Quote Number</label>
+                <label className="block mb-1 text-sm text-gray-600">Quote Number</label>
                 <input
                   type="text"
                   value={quoteNumber}
@@ -269,7 +269,7 @@ export function QuoteForm({
               </div>
 
               <div>
-                <label className="block mb-1 text-sm">Quote Date</label>
+                <label className="block mb-1 text-sm text-gray-600">Quote Date</label>
                 <input
                   type="date"
                   value={quoteDate}
@@ -281,16 +281,14 @@ export function QuoteForm({
           </div>
 
           {/* Branding */}
-          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3">
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-1">
             <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
               Branding
             </h3>
 
             <div>
-              <label className="block mb-1 text-sm">Customer-Facing Logo</label>
-
               <div className="flex items-center gap-3">
-                <label className="cursor-pointer rounded-md bg-gray-700 px-3 py-2 text-sm text-white hover:bg-gray-800 shadow-sm">
+                <label className="cursor-pointer rounded-md bg-gray-700 px-3 py-1 text-sm text-white hover:bg-gray-800 shadow-sm">
                   Choose File
                   <input
                     type="file"
@@ -305,7 +303,7 @@ export function QuoteForm({
                     <img
                       src={logoUrl}
                       alt="Logo preview"
-                      className="h-9 w-9 rounded object-contain border border-gray-300 bg-white"
+                      className="h-7 w-7 rounded object-contain border border-gray-300 bg-white"
                     />
                     <span className="text-sm text-gray-600">Logo uploaded</span>
                   </div>
@@ -315,20 +313,16 @@ export function QuoteForm({
               </div>
             </div>
           </div>
-        </div>
 
-        {/* CENTER COLUMN: Customer + Job */}
-        <div className="xl:col-span-6 space-y-3">
-
-          {/* Customer Info */}
-          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3">
+           {/* Customer Info */}
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 xl:max-w-[320px]">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Customer Info
           </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block mb-1 text-sm">Customer Name</label>
+              <label className="block mb-1 text-sm text-gray-600">Customer Name</label>
                 {/* Customer name input + autofill dropdown */}
                 <div className="relative" ref={customerDropdownRef}>
                   <input
@@ -411,18 +405,7 @@ export function QuoteForm({
               </div>
 
             <div>
-              <label className="block mb-1 text-sm">Service Address</label>
-              <input
-                type="text"
-                placeholder="Enter service address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 text-sm">Customer Phone</label>
+              <label className="block mb-1 text-sm text-gray-600">Customer Phone</label>
               <input
                 type="tel"
                 placeholder="(555) 555-5555"
@@ -435,9 +418,20 @@ export function QuoteForm({
                 className={inputClass}
               />
             </div>
+            
+            <div className="col-span-2">
+              <label className="block mb-1 text-sm text-gray-600">Service Address</label>
+              <input
+                type="text"
+                placeholder="Enter service address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className={inputClass}
+              />
+            </div>
 
-            <div>
-              <label className="block mb-1 text-sm">Customer Email</label>
+            <div className="col-span-2">
+              <label className="block mb-1 text-sm text-gray-600">Customer Email</label>
               <input
                 type="email"
                 placeholder="Enter email"
@@ -448,6 +442,11 @@ export function QuoteForm({
             </div>
           </div>
         </div>
+      </div>
+
+
+        {/* RIGHT COLUMN: Job Details */}
+        <div className="space-y-3">
 
         {/* Job Details */}
         <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-2 shadow-sm max-w-[425px]">
@@ -457,7 +456,7 @@ export function QuoteForm({
 
         {/* Base job input */}
         <div className="w-[350px]">
-          <label className="block mb-1 text-sm">Base Service</label>
+          <label className="block mb-1 text-sm text-gray-600">Base Service</label>
           <select
             value={baseService}
             onChange={(e) => setBaseService(e.target.value)}
@@ -485,7 +484,7 @@ export function QuoteForm({
                   ["0-15 ft", "15-30 ft", "30-60 ft", "60+ ft"] as TreeHeightTier[]
                 ).map((tier) => (
                   <div key={tier}>
-                    <label className="block mb-1 text-sm">{tier}</label>
+                    <label className="block mb-1 text-sm text-gray-600">{tier}</label>
                     <input
                       type="number"
                       placeholder="#"
@@ -502,7 +501,7 @@ export function QuoteForm({
 
             <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 sm:pt-[23px] w-[100px]">
               <div>
-                <label className="block mb-1 text-sm">Difficult Trees</label>
+                <label className="block mb-1 text-sm text-gray-600">Difficult Trees</label>
                 <input
                   type="number"
                   placeholder="#"
@@ -523,7 +522,7 @@ export function QuoteForm({
               </div>
 
               <div>
-                <label className="block mb-1 text-sm">Hazard Trees</label>
+                <label className="block mb-1 text-sm text-gray-600">Hazard Trees</label>
                 <input
                   type="number"
                   placeholder="#"
@@ -549,7 +548,7 @@ export function QuoteForm({
         {/* Stumps + Haul-Off row */}
         <div className="grid grid-cols-2 gap-x-6 w-[350px]">
           <div>
-            <label className="block mb-1 text-sm"># of Stumps</label>
+            <label className="block mb-1 text-sm text-gray-600"># of Stumps</label>
             <input
               type="number"
               min="0"
@@ -565,7 +564,7 @@ export function QuoteForm({
           </div>
 
           <div>
-            <label className="block mb-1 text-sm">Haul-Off</label>
+            <label className="block mb-1 text-sm text-gray-600">Haul-Off</label>
             <select
               value={haulOffIncluded ? "yes" : "no"}
               onChange={(e) => setHaulOffIncluded(e.target.value === "yes")}
@@ -585,10 +584,10 @@ export function QuoteForm({
           </div>        
 
           {/* Landscape / desktop header */}
-          <div className="hidden sm:grid grid-cols-[3.75fr_1fr_1.2fr_1.2fr_1fr] gap-2 text-xs text-gray-400 uppercase pb-1">
+          <div className="hidden sm:grid grid-cols-[3.25fr_1fr_1.5fr_1.2fr_1fr] gap-2 text-xs text-gray-400 uppercase pb-1">
   
             {/* Columns WITH border */}
-            <div className="col-span-4 grid grid-cols-[3.75fr_1fr_1.2fr_1.2fr] gap-2 border-b border-gray-200 pb-1">
+            <div className="col-span-4 grid grid-cols-[3.25fr_1fr_1.5fr_1.2fr] gap-2 border-b border-gray-200 pb-1">
               <span>Description</span>
               <span>Qty</span>
               <span>Price</span>
@@ -668,7 +667,7 @@ export function QuoteForm({
 
               {/* Total */}
               <div className="col-span-2 flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700">
-                <span className="text-gray-400 uppercase text-[10px] tracking-wide">
+                <span className="text-gray-400 uppercase text-[10px] tracking-wide text-right">
                   Total
                 </span>
                 <span>
@@ -680,7 +679,7 @@ export function QuoteForm({
             </div>
 
               {/* Landscape / desktop row */}        
-              <div className="hidden sm:grid grid-cols-[3.75fr_1fr_1.2fr_1.2fr_1fr] gap-2 items-center">
+              <div className="hidden sm:grid grid-cols-[3.25fr_1fr_1.5fr_1.2fr_1fr] gap-2 items-center">
                 <input
                   type="text"
                   placeholder="Service"
@@ -752,12 +751,11 @@ export function QuoteForm({
               + Add Item
             </button>
           </div>
-        </div>
 
       {/* =================================================
           PRICING ADJUSTMENTS
       ================================================= */}
-      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-2 xl:w-[425px] xl:col-span-6 xl:col-start-7">
+      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-2 xl:max-w-[425px]">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
           Pricing Adjustments
         </h3>
@@ -765,7 +763,7 @@ export function QuoteForm({
         <div className="grid grid-cols-3 gap-2">
           {/* Tax toggle */}
           <div>
-            <label className="block mb-1 text-sm">Tax</label>
+            <label className="block mb-1 text-sm text-gray-600">Tax</label>
             <select
               value={includeTax ? "yes" : "no"}
               onChange={(e) => setIncludeTax(e.target.value === "yes")}
@@ -778,7 +776,7 @@ export function QuoteForm({
 
           {/* Emergency toggle */}
           <div>
-            <label className="block mb-1 text-sm">Emergency</label>
+            <label className="block mb-1 text-sm text-gray-600">Emergency</label>
             <select
               value={emergencyJob ? "yes" : "no"}
               onChange={(e) => setEmergencyJob(e.target.value === "yes")}
@@ -791,7 +789,7 @@ export function QuoteForm({
 
           {/* Discount input */}
           <div>
-            <label className="block mb-1 text-sm">Discount</label>
+            <label className="block mb-1 text-sm text-gray-600">Discount</label>
             <input
               type="text"
               placeholder="$0"
@@ -811,7 +809,7 @@ export function QuoteForm({
               }}
               onBlur={() => {
                 if (discountAmount !== "") {
-                  setDiscountAmount(Number(discountAmount).toFixed(2))
+                  setDiscountAmount(Number(discountAmount).toFixed(0))
                 }
               }}
               className={inputClass}
@@ -820,6 +818,7 @@ export function QuoteForm({
         </div>
       </div>
     </div>
+  </div>  
 
       {/* Validation warning */}
       {((difficultTreeCount || 0) > totalTreeCount ||
