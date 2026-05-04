@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# System / shell history
+.bash_history
+.python_history
+.node_repl_history
+.gitconfig
+.lesshst
+
+# Windows junk
+Thumbs.db
