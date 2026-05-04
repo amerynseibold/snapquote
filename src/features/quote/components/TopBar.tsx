@@ -20,7 +20,7 @@ export function TopBar({
   return (
     <>
       {/* Mobile header */}
-      <div className="md:hidden sticky top-0 z-40 print:hidden bg-[#f5f6f8] px-3 py-2">
+      <div className="md:hidden sticky top-0 z-40 print:hidden bg-[#f5f6f8] py-2">
         <div className="bg-white border border-gray-200 shadow-sm rounded-xl px-3 py-2 flex items-center justify-between">
           <img
             src="/SnapQuote (no bckgnd).png"

@@ -683,8 +683,8 @@ export default function Home() {
   // UI RENDER
   // ============================================================
   return (
-    <main className="min-h-screen bg-[#f5f6f8] text-gray-900 p-2 sm:p-3 md:p-4 xl:p-5 pb-32 md:pb-6 print:bg-white print:p-0">
-      <div className="w-full max-w-[1120px] mx-auto space-y-4 sm:space-y-5 px-1 sm:px-0">
+    <main className="min-h-screen bg-[#f5f6f8] text-gray-900 px-3 py-2 sm:p-3 md:p-4 xl:p-5 pb-32 md:pb-6 print:bg-white print:p-0">
+      <div className="w-full max-w-[1120px] mx-auto space-y-4 sm:space-y-5">
         {/* Sticky app header - desktop only */}
         <TopBar
           quoteNumber={quoteNumber}
