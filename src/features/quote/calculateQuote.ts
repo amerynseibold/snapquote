@@ -189,14 +189,14 @@ export function calculateQuote(
     const scopeParts: string[] = []
 
     // Base service
-    if (input.baseService) {
+    if (input.baseService && input.baseService !== "Stump Grinding") {
       scopeParts.push(`${input.baseService} services`)
     }
 
     // Tree counts by height
     const treeDescriptions = Object.entries(input.treeCountsByHeight)
       .filter(([_, count]) => Number(count) > 0)
-      .map(([height, count]) => `${count} tree(s) (${height})`)
+      .map(([height, count]) => `${count} ${Number(count) === 1 ? "tree" : "trees"} (${height})`)
 
     if (treeDescriptions.length > 0) {
       scopeParts.push(`including ${treeDescriptions.join(", ")}`)
@@ -204,16 +204,24 @@ export function calculateQuote(
 
     // Special conditions
     if (input.difficultTreeCount > 0) {
-      scopeParts.push(`${input.difficultTreeCount} difficult access tree(s)`)
-    }
+      scopeParts.push(`${input.difficultTreeCount} difficult access ${
+                        input.difficultTreeCount === 1 ? "tree" : "trees"
+                      }`)
+                    }
 
     if (input.hazardTreeCount > 0) {
-      scopeParts.push(`${input.hazardTreeCount} hazard tree(s)`)
+      scopeParts.push(`${input.hazardTreeCount} Hazard trees ${
+                        input.hazardTreeCount === 1 ? "tree" : "trees"
+                      }`)
     }
 
     // Stumps
     if (input.stumpCount > 0) {
-      scopeParts.push(`stump grinding for ${input.stumpCount} stump(s)`)
+      scopeParts.push(
+        `stump grinding for ${input.stumpCount} ${
+          input.stumpCount === 1 ? "stump" : "stumps"
+        }`
+      )
     }
 
     // Haul-off

@@ -9,7 +9,6 @@ import type { Customer } from "../types"
 ========================================================= */
 
 type QuoteFormProps = {
-  companyName: string
   quoteNumber: string
   quoteDate: string
 
@@ -28,7 +27,7 @@ type QuoteFormProps = {
   includeTax: boolean
   emergencyJob: boolean
   discountAmount: string
-  logoUrl: string | null
+
 
   manualItems: {
     description: string
@@ -42,7 +41,6 @@ type QuoteFormProps = {
 
   inputClass: string
 
-  setCompanyName: (value: string) => void
   setQuoteNumber: (value: string) => void
   setQuoteDate: (value: string) => void
 
@@ -72,7 +70,6 @@ type QuoteFormProps = {
 
   findCustomerByPhone: (phoneValue: string) => void
 
-  handleLogoUpload: (e: ChangeEvent<HTMLInputElement>) => void
   handleNewQuote: () => void
   handleDuplicateQuote: () => void
   handleSaveQuote: () => void
@@ -99,7 +96,6 @@ type QuoteFormProps = {
 ========================================================= */
 
 export function QuoteForm({
-  companyName,
   quoteNumber,
   quoteDate,
 
@@ -118,7 +114,6 @@ export function QuoteForm({
   includeTax,
   emergencyJob,
   discountAmount,
-  logoUrl,
 
   manualItems,
 
@@ -128,7 +123,6 @@ export function QuoteForm({
 
   inputClass,
 
-  setCompanyName,
   setQuoteNumber,
   setQuoteDate,
 
@@ -149,7 +143,6 @@ export function QuoteForm({
   setDiscountAmount,
   setManualItems,
 
-  handleLogoUpload,
   handleNewQuote,
   handleDuplicateQuote,
   handleSaveQuote,
@@ -182,12 +175,30 @@ export function QuoteForm({
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
+
+  useEffect(() => {
+    if ((difficultTreeCount || 0) > totalTreeCount) {
+      setDifficultTreeCount(totalTreeCount)
+    }
+
+    if ((hazardTreeCount || 0) > totalTreeCount) {
+      setHazardTreeCount(totalTreeCount)
+    }
+  }, [
+    totalTreeCount,
+    difficultTreeCount,
+    hazardTreeCount,
+    setDifficultTreeCount,
+    setHazardTreeCount,
+  ])
+
   return (
     /* =====================================================
        QUOTE BUILDER FORM
     ===================================================== */
     <section className="print:hidden bg-white border border-gray-200 shadow-sm rounded-xl p-3 sm:p-4 space-y-4 w-full">
       
+
       {/* =================================================
          FORM HEADER + DESKTOP ACTION BUTTONS
       ================================================= */}
@@ -205,7 +216,7 @@ export function QuoteForm({
       ================================================= */}
       <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-4 xl:gap-3 items-start">
 
-        {/* LEFT COLUMN: Quote Info + Branding + Cusomter Info*/}
+        {/* LEFT COLUMN: Quote Info + Cusomter Info*/}
         <div className="space-y-3 ">
 
           {/* Quote Info */}
@@ -215,16 +226,6 @@ export function QuoteForm({
             </h3>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2">
-                <label className="block mb-1 text-sm text-gray-600">Company Name</label>
-                <input
-                  type="text"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
-
               <div>
                 <label className="block mb-1 text-sm text-gray-600">Quote Number</label>
                 <input
@@ -243,40 +244,6 @@ export function QuoteForm({
                   onChange={(e) => setQuoteDate(e.target.value)}
                   className={`${inputClass} min-w-0 appearance-none`}
                 />
-              </div>
-            </div>
-          </div>
-
-          {/* Branding */}
-          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-1">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Branding
-            </h3>
-
-            <div>
-              <div className="flex items-center gap-3">
-                <label className="cursor-pointer rounded-md bg-gray-700 px-3 py-1 text-sm text-white hover:bg-gray-800 shadow-sm">
-                  Choose File
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="hidden"
-                  />
-                </label>
-
-                {logoUrl ? (
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={logoUrl}
-                      alt="Logo preview"
-                      className="h-7 w-7 rounded object-contain border border-gray-300 bg-white"
-                    />
-                    <span className="text-sm text-gray-600">Logo uploaded</span>
-                  </div>
-                ) : (
-                  <span className="text-sm text-gray-500">No file chosen</span>
-                )}
               </div>
             </div>
           </div>
@@ -442,9 +409,18 @@ export function QuoteForm({
         {baseService !== "Stump Grinding" && (
           <div className="grid grid-cols-1 sm:grid-cols-[auto_auto] justify-start gap-y-2 gap-x-12">
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Trees by Height
-              </label>
+              <div className="flex items-center gap-3">
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Trees by Height
+                </label>
+
+                <span className="hidden md:block text-xs text-gray-500">
+                  {totalTreeCount} total
+                </span>
+              </div>
+              <div className="mt-1 mb-2 rounded-md bg-gray-50 border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 md:hidden">
+                Trees: {totalTreeCount} total
+              </div>
 
               <div className="grid grid-cols-2 gap-2 w-full sm:w-[200px]">
                 {(
@@ -461,6 +437,28 @@ export function QuoteForm({
                       onWheel={(e) => e.currentTarget.blur()}
                       className={inputClass}
                     />
+
+                    <div className="mt-1 flex gap-1 md:hidden">
+                      {[-1, 1, 5].map((val) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            const current = Number(treeCountsByHeight[tier]) || 0
+                            const next = Math.max(0, current + val)
+                            updateTreeCountByHeight(tier, String(next))
+                          }}
+                          className={`flex-1 rounded-md border py-2 text-sm font-semibold shadow-sm active:scale-95 ${
+                            val < 0
+                              ? "border-red-200 bg-red-50 text-red-600 active:bg-red-100"
+                              : "border-gray-300 bg-gray-100 text-gray-800 active:bg-gray-200"
+                          }`}
+                        >
+                          {val > 0 ? `+${val}` : val}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -475,6 +473,7 @@ export function QuoteForm({
                   min="0"
                   value={difficultTreeCount}
                   onChange={(e) => {
+                    e.preventDefault()
                     const val = e.target.value
                     const num = Number(val)
                     const maxTrees = totalTreeCount
@@ -486,6 +485,26 @@ export function QuoteForm({
                   onWheel={(e) => e.currentTarget.blur()}
                   className={inputClass}
                 />
+                <div className="mt-1 flex gap-1 md:hidden">
+                  {[-1, 1, 5].map((val) => (
+                    <button
+                      key={val}
+                      type="button"
+                      onClick={() => {
+                        const current = Number(difficultTreeCount) || 0
+                        const next = Math.max(0, Math.min(totalTreeCount, current + val))
+                        setDifficultTreeCount(next)
+                      }}
+                      className={`flex-1 rounded-md border py-2 text-sm font-semibold shadow-sm active:scale-95 ${
+                        val < 0
+                          ? "border-red-200 bg-red-50 text-red-600 active:bg-red-100"
+                          : "border-gray-300 bg-gray-100 text-gray-800 active:bg-gray-200"
+                      }`}
+                    >
+                      {val > 0 ? `+${val}` : val}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div>
@@ -496,6 +515,7 @@ export function QuoteForm({
                   min="0"
                   value={hazardTreeCount}
                   onChange={(e) => {
+                    e.preventDefault()
                     const val = e.target.value
                     const num = Number(val)
                     const maxTrees = totalTreeCount
@@ -507,6 +527,26 @@ export function QuoteForm({
                   onWheel={(e) => e.currentTarget.blur()}
                   className={inputClass}
                 />
+                <div className="mt-1 flex gap-1 md:hidden">
+                  {[-1, 1, 5].map((val) => (
+                    <button
+                      key={val}
+                      type="button"
+                      onClick={() => {
+                        const current = Number(hazardTreeCount) || 0
+                        const next = Math.max(0, Math.min(totalTreeCount, current + val))
+                        setHazardTreeCount(next)
+                      }}
+                      className={`flex-1 rounded-md border py-2 text-sm font-semibold shadow-sm active:scale-95 ${
+                        val < 0
+                          ? "border-red-200 bg-red-50 text-red-600 active:bg-red-100"
+                          : "border-gray-300 bg-gray-100 text-gray-800 active:bg-gray-200"
+                      }`}
+                    >
+                      {val > 0 ? `+${val}` : val}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -522,12 +562,33 @@ export function QuoteForm({
               placeholder="#"
               value={stumpCount}
               onChange={(e) => {
+                e.preventDefault()
                 const val = e.target.value
                 setStumpCount(val === "" ? "" : Number(val))
               }}
               onWheel={(e) => e.currentTarget.blur()}
               className={inputClass}
             />
+            <div className="mt-1 flex gap-1 md:hidden">
+              {[-1, 1, 5].map((val) => (
+                <button
+                  key={val}
+                  type="button"
+                  onClick={() => {
+                    const current = Number(stumpCount) || 0
+                    const next = Math.max(0, current + val)
+                    setStumpCount(next)
+                  }}
+                  className={`flex-1 rounded-md border py-2 text-sm font-semibold shadow-sm active:scale-95 ${
+                    val < 0
+                      ? "border-red-200 bg-red-50 text-red-600 active:bg-red-100"
+                      : "border-gray-300 bg-gray-100 text-gray-800 active:bg-gray-200"
+                  }`}
+                >
+                  {val > 0 ? `+${val}` : val}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>

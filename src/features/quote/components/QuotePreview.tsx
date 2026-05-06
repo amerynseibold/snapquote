@@ -8,6 +8,9 @@ type QuotePreviewProps = {
   selectedQuoteId: number | null
   quoteNumber: string
   companyName: string
+  companyPhone: string
+  companyEmail: string
+  companyAddress:string
   customerName: string
   customerPhone: string
   customerEmail: string
@@ -32,6 +35,9 @@ export function QuotePreview({
   selectedQuoteId,
   quoteNumber,
   companyName,
+  companyPhone,
+  companyEmail,
+  companyAddress,
   customerName,
   customerPhone,
   customerEmail,
@@ -91,14 +97,40 @@ export function QuotePreview({
           </div>
  */}
           {/* =================================================
-             HEADER (Company + Customer + Logo)
+            HEADER (Company + Customer + Logo)
           ================================================= */}
           <div className="mb-4 border-b border-gray-700 pb-4">
-            {/* Company name + quote metadata */}
-            <div className="mb-3 sm:mb-4 flex items-start justify-between gap-3">
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-                {companyName}
-              </h1>
+            {/* Top row: company branding + quote metadata */}
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3">
+                {logoUrl && (
+                  <img
+                    src={logoUrl}
+                    alt="Company logo"
+                    className="h-20 w-20 sm:h-24 sm:w-24 object-contain"
+                  />
+                )}
+
+                <div className="space-y-1">
+                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+                    {companyName}
+                  </h1>
+
+                  {(companyPhone || companyEmail) && (
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      {companyPhone}
+                      {companyPhone && companyEmail ? " • " : ""}
+                      {companyEmail}
+                    </p>
+                  )}
+
+                  {companyAddress && (
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      {companyAddress}
+                    </p>
+                  )}
+                </div>
+              </div>
 
               <div className="text-right text-[11px] sm:text-sm leading-snug shrink-0">
                 <p>
@@ -113,10 +145,10 @@ export function QuotePreview({
               </div>
             </div>
 
-            <div className="grid grid-cols-[1fr_1fr_56px] sm:grid-cols-[1.2fr_1fr_120px] gap-2 sm:gap-8 border-t border-gray-700 pt-3 sm:pt-4 text-xs sm:text-sm">
-
+            {/* Bottom row: customer info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-700 pt-3 sm:pt-4 text-xs sm:text-sm">
               {/* CLIENT INFO */}
-              <div className="space-y-1 text-xs sm:text-sm break-words">
+              <div className="space-y-1 break-words">
                 <p className="text-gray-400 uppercase text-[10px] sm:text-xs">
                   Client
                 </p>
@@ -137,34 +169,14 @@ export function QuotePreview({
                 )}
               </div>
 
-              {/* CONTACT INFO */}
-              <div className="space-y-1 text-xs sm:text-sm min-w-0">
+              {/* CUSTOMER CONTACT INFO */}
+              <div className="space-y-1">
                 <p className="text-gray-400 uppercase text-[10px] sm:text-xs">
                   Contact
                 </p>
 
-                {customerPhone && (
-                  <p className="break-words leading-snug">
-                    {customerPhone}
-                  </p>
-                )}
-
-                {customerEmail && (
-                  <p className="break-all leading-snug">
-                    {customerEmail}
-                  </p>
-                )}
-              </div>
-
-              {/* LOGO */}
-              <div className="flex justify-end items-center">
-                {logoUrl && (
-                  <img
-                    src={logoUrl}
-                    alt="Company logo"
-                    className="max-h-24 object-contain"
-                  />
-                )}
+                {customerPhone && <p>{customerPhone}</p>}
+                {customerEmail && <p>{customerEmail}</p>}
               </div>
             </div>
           </div>
@@ -172,8 +184,10 @@ export function QuotePreview({
           {/* =================================================
              SCOPE OF WORK
           ================================================= */}
-          <div>
-            <p className="font-semibold">Scope of Work:</p>
+          <div className="mt-6">
+            <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-2">
+              Scope of Work
+            </p>
             <p className="text-sm text-gray-400">
               {result.scopeOfWork}
             </p>
@@ -182,7 +196,7 @@ export function QuotePreview({
           {/* =================================================
              LINE ITEMS TABLE
           ================================================= */}
-          <table className="w-full text-sm border-collapse mt-3">
+          <table className="w-full text-sm border-collapse mt-6">
             <thead>
               <tr className="border-b text-gray-400 text-xs uppercase">
                 <th className="text-left">Item</th>
@@ -226,30 +240,30 @@ export function QuotePreview({
           {/* =================================================
              TOTALS SUMMARY
           ================================================= */}
-          <div className="mt-6 text-sm space-y-2 max-w-sm ml-auto border-t pt-2">
-            <div className="flex justify-between">
+          <div className="mt-8 text-sm space-y-2 max-w-sm ml-auto border-t border-gray-300 pt-4">
+            <div className="flex justify-between text-gray-700">
               <span>Subtotal</span>
               <span>{formatCurrency(result.subtotal)}</span>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between text-gray-700">
               <span>Discount</span>
               <span>({formatCurrency(Number(discountAmount) || 0)})</span>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between text-gray-700">
               <span>After Discount</span>
               <span>{formatCurrency(result.subtotalAfterDiscount)}</span>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between text-gray-700">
               <span>Emergency{" "}
               <span className="text-xs text-gray-400">(25%)</span>
               </span>
               <span>{formatCurrency(result.emergencyFee)}</span>
             </div>
 
-            <div className="flex justify-between font-medium border-t pt-2">
+            <div className="flex justify-between font-medium text-gray-900 border-t pt-2">
               <span>Adjusted Subtotal</span>
               <span>{formatCurrency(result.adjustedSubtotal)}</span>
             </div>
@@ -261,7 +275,7 @@ export function QuotePreview({
               <span>{formatCurrency(result.tax)}</span>
             </div>
 
-            <div className="flex justify-between font-bold text-lg border-t pt-2">
+            <div className="flex justify-between rounded-lg bg-gray-100 px-3 py-2 font-bold text-lg border-t">
               <span>Total</span>
               <span>{formatCurrency(result.total)}</span>
             </div>

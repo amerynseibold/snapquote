@@ -22,6 +22,9 @@ export default function Home() {
   // ============================================================
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [companyName, setCompanyName] = useState("Petra Services Complete Yard Care")
+  const [companyPhone, setCompanyPhone] = useState("")
+  const [companyEmail, setCompanyEmail] = useState("")
+  const [companyAddress, setCompanyAddress] = useState("")
   const [quoteNumber, setQuoteNumber] = useState("")
   const [customerName, setCustomerName] = useState("")
   const [customerPhone, setCustomerPhone] = useState("")
@@ -52,6 +55,7 @@ export default function Home() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
   const [logoFileName, setLogoFileName] = useState("")
   const [showDuplicateToast, setShowDuplicateToast] = useState(false)
+  const [activePage, setActivePage] = useState<"quotes" | "settings">("quotes")
 
   // Manual line items added outside the calculated pricing rules
   const [manualItems, setManualItems] = useState<
@@ -148,7 +152,7 @@ export default function Home() {
 
   // Shared input styling used throughout the form
   const inputClass =
-  "w-full h-11 rounded-md border border-gray-300 bg-white px-3 text-base text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 md:h-10 md:text-sm"
+  "w-full h-12 rounded-md border border-gray-300 bg-white px-3 text-base text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 md:h-10 md:text-sm"
 
   // Updates the tree count for one height tier without affecting the others
   const updateTreeCountByHeight = (tier: TreeHeightTier, value: string) => {
@@ -284,8 +288,8 @@ export default function Home() {
     }
 
     /* =========================================================
-   RECENT CUSTOMERS
-   Loads the most recently updated customers for quick selection
+     RECENT CUSTOMERS
+     Loads the most recently updated customers for quick selection
     ========================================================= */
     const fetchRecentCustomers = async () => {
       const { data, error } = await supabase
@@ -306,13 +310,34 @@ export default function Home() {
   // ============================================================
   // SUPABASE ACTIONS: logo upload and quote history fetch
   // ============================================================
+  
+    const handleSaveCompanySettings = async () => {
+      const { error } = await supabase
+        .from("app_settings")
+        .update({
+          company_name: companyName,
+          company_phone: companyPhone,
+          company_email: companyEmail,
+          company_address: companyAddress,
+        })
+        .eq("id", 1)
+
+      if (error) {
+        console.error("Error saving company settings:", error)
+        alert("Failed to save company settings.")
+        return
+      }
+
+      alert("Company settings saved successfully.")
+    }
+  
   const handleLogoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     setLogoFileName(file.name)
 
     const fileExt = file.name.split(".").pop()
-    const filePath = `company-logo.${fileExt}`
+    const filePath = `company-logo-${Date.now()}.${fileExt}`
 
     const { error: uploadError } = await supabase.storage
       .from("logos")
@@ -397,7 +422,7 @@ export default function Home() {
     const fetchSuggestedQuoteNumber = async () => {
       const { data, error } = await supabase
         .from("app_settings")
-        .select("next_quote_number, logo_url")
+        .select("next_quote_number, logo_url, company_name, company_phone, company_email, company_address")
         .eq("id", 1)
         .single()
 
@@ -412,6 +437,10 @@ export default function Home() {
         if (data.logo_url) {
           setLogoUrl(data.logo_url)
         }
+        if (data.company_name) setCompanyName(data.company_name)
+        if (data.company_phone) setCompanyPhone(data.company_phone)
+        if (data.company_email) setCompanyEmail(data.company_email)
+        if (data.company_address) setCompanyAddress(data.company_address)
       }
     }
 
@@ -428,8 +457,8 @@ export default function Home() {
         "30-60 ft": "",
         "60+ ft": "",
       })
-      setDifficultTreeCount("")
-      setHazardTreeCount("")
+      setDifficultTreeCount(0)
+      setHazardTreeCount(0)
     }
   }, [baseService])
 
@@ -685,7 +714,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#f5f6f8] text-gray-900 px-3 py-2 sm:p-3 md:p-4 xl:p-5 pb-32 md:pb-6 print:bg-white print:p-0">
       <div className="w-full max-w-[1120px] mx-auto space-y-4 sm:space-y-5">
-        {/* Sticky app header - desktop only */}
+        {/* =========================================================
+          STICKY APP HEADER
+        ========================================================= */}
         <TopBar
           quoteNumber={quoteNumber}
           onNew={handleNewQuote}
@@ -696,124 +727,307 @@ export default function Home() {
           canSave={!!result}
         />
 
-        {/* Main app layout
-            Mobile order: Form > Preview > History
-            Desktop order: Form > History > Preview
-        */}
-        <div className="grid grid-cols-1 xl:grid-cols-[800px_320px] gap-3 sm:gap-4 xl:gap-1 items-start">
-          {/* Quote builder input form */}
-          <div className="order-1 xl:order-1">
-            <QuoteForm
-              companyName={companyName}
-              quoteNumber={quoteNumber}
-              quoteDate={quoteDate}
-              customerName={customerName}
-              customerPhone={customerPhone}
-              customerEmail={customerEmail}
-              address={address}
-              baseService={baseService}
-              treeCountsByHeight={treeCountsByHeight}
-              difficultTreeCount={difficultTreeCount}
-              hazardTreeCount={hazardTreeCount}
-              stumpCount={stumpCount}
-              haulOffIncluded={haulOffIncluded}
-              includeTax={includeTax}
-              emergencyJob={emergencyJob}
-              discountAmount={discountAmount}
-              logoUrl={logoUrl}
-              manualItems={manualItems}
-              totalTreeCount={totalTreeCount}
-              selectedQuoteId={selectedQuoteId}
-              result={result}
-              inputClass={inputClass}
-              setCompanyName={setCompanyName}
-              setQuoteNumber={setQuoteNumber}
-              setQuoteDate={setQuoteDate}
-              setCustomerName={setCustomerName}
-              setCustomerPhone={setCustomerPhone}
-              setCustomerEmail={setCustomerEmail}
-              setAddress={setAddress}
-              setBaseService={setBaseService}
-              updateTreeCountByHeight={updateTreeCountByHeight}
-              setDifficultTreeCount={setDifficultTreeCount}
-              setHazardTreeCount={setHazardTreeCount}
-              setStumpCount={setStumpCount}
-              setHaulOffIncluded={setHaulOffIncluded}
-              setIncludeTax={setIncludeTax}
-              setEmergencyJob={setEmergencyJob}
-              setDiscountAmount={setDiscountAmount}
-              setManualItems={setManualItems}
-              handleLogoUpload={handleLogoUpload}
-              handleNewQuote={handleNewQuote}
-              handleDuplicateQuote={handleDuplicateQuote}
-              handleSaveQuote={handleSaveQuote}
-              formatPhoneNumber={formatPhoneNumber}
-              findCustomerByPhone={findCustomerByPhone}
-              formatCurrency={formatCurrency}
-              customerSearchResults={customerSearchResults}
-              isSearchingCustomers={isSearchingCustomers}
-              fetchCustomerSuggestions={fetchCustomerSuggestions}
-              setCustomerSearchResults={setCustomerSearchResults}
-              recentCustomers={recentCustomers}
-            />
-          </div>
+        {/* =========================================================
+          NAVIGATION MENU
+          Switches between Quotes and Settings views
+        ========================================================= */}
+        <div className="print:hidden flex gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-sm">
+          <button
+            type="button"
+            onClick={() => setActivePage("quotes")}
+            className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium ${
+              activePage === "quotes"
+                ? "bg-gray-900 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            Quotes
+          </button>
 
-          {/* Saved quote history */}
-          <div className="order-3 xl:order-2 xl:sticky xl:top-20 xl:self-start">
-            <QuoteHistory
-              savedQuotes={savedQuotes}
-              selectedQuoteId={selectedQuoteId}
-              confirmDeleteId={confirmDeleteId}
-              onLoadQuote={loadQuote}
-              onSetConfirmDeleteId={setConfirmDeleteId}
-              onDeleteQuote={deleteQuote}
-              formatCurrency={formatCurrency}
-            />
-          </div>
-
-          {/* Customer-facing quote preview / printable area */}
-          <div className="order-2 xl:order-3">
-            <QuotePreview
-              result={result}
-              selectedQuoteId={selectedQuoteId}
-              quoteNumber={quoteNumber}
-              companyName={companyName}
-              customerName={customerName}
-              customerPhone={customerPhone}
-              customerEmail={customerEmail}
-              address={address}
-              quoteDate={quoteDate}
-              logoUrl={logoUrl}
-              discountAmount={discountAmount}
-              onNewQuote={handleNewQuote}
-              onDuplicateQuote={handleDuplicateQuote}
-              onSaveQuote={handleSaveQuote}
-              onPrint={() => window.print()}
-              formatCurrency={formatCurrency}
-              formatDisplayDate={formatDisplayDate}
-            />
-          </div>
+          <button
+            type="button"
+            onClick={() => setActivePage("settings")}
+            className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium ${
+              activePage === "settings"
+                ? "bg-gray-900 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            Settings
+          </button>
         </div>
+
+        {/* =========================================================
+          QUOTES PAGE
+          Shows quote builder, quote preview, and saved history
+        ========================================================= */}
+        {activePage === "quotes" && (
+          <div className="grid grid-cols-1 xl:grid-cols-[800px_320px] gap-3 sm:gap-4 xl:gap-1 items-start">
+            {/* Quote builder input form */}
+            <div className="order-1 xl:order-1">
+              <QuoteForm
+                quoteNumber={quoteNumber}
+                quoteDate={quoteDate}
+                customerName={customerName}
+                customerPhone={customerPhone}
+                customerEmail={customerEmail}
+                address={address}
+                baseService={baseService}
+                treeCountsByHeight={treeCountsByHeight}
+                difficultTreeCount={difficultTreeCount}
+                hazardTreeCount={hazardTreeCount}
+                stumpCount={stumpCount}
+                haulOffIncluded={haulOffIncluded}
+                includeTax={includeTax}
+                emergencyJob={emergencyJob}
+                discountAmount={discountAmount}
+                manualItems={manualItems}
+                totalTreeCount={totalTreeCount}
+                selectedQuoteId={selectedQuoteId}
+                result={result}
+                inputClass={inputClass}
+                setQuoteNumber={setQuoteNumber}
+                setQuoteDate={setQuoteDate}
+                setCustomerName={setCustomerName}
+                setCustomerPhone={setCustomerPhone}
+                setCustomerEmail={setCustomerEmail}
+                setAddress={setAddress}
+                setBaseService={setBaseService}
+                updateTreeCountByHeight={updateTreeCountByHeight}
+                setDifficultTreeCount={setDifficultTreeCount}
+                setHazardTreeCount={setHazardTreeCount}
+                setStumpCount={setStumpCount}
+                setHaulOffIncluded={setHaulOffIncluded}
+                setIncludeTax={setIncludeTax}
+                setEmergencyJob={setEmergencyJob}
+                setDiscountAmount={setDiscountAmount}
+                setManualItems={setManualItems}
+                handleNewQuote={handleNewQuote}
+                handleDuplicateQuote={handleDuplicateQuote}
+                handleSaveQuote={handleSaveQuote}
+                formatPhoneNumber={formatPhoneNumber}
+                findCustomerByPhone={findCustomerByPhone}
+                formatCurrency={formatCurrency}
+                customerSearchResults={customerSearchResults}
+                isSearchingCustomers={isSearchingCustomers}
+                fetchCustomerSuggestions={fetchCustomerSuggestions}
+                setCustomerSearchResults={setCustomerSearchResults}
+                recentCustomers={recentCustomers}
+              />
+            </div>
+
+            {/* Saved quote history */}
+            <div className="order-3 xl:order-2 xl:sticky xl:top-20 xl:self-start">
+              <QuoteHistory
+                savedQuotes={savedQuotes}
+                selectedQuoteId={selectedQuoteId}
+                confirmDeleteId={confirmDeleteId}
+                onLoadQuote={loadQuote}
+                onSetConfirmDeleteId={setConfirmDeleteId}
+                onDeleteQuote={deleteQuote}
+                formatCurrency={formatCurrency}
+              />
+            </div>
+
+            {/* Customer-facing quote preview / printable area */}
+            <div className="order-2 xl:order-3">
+              <QuotePreview
+                result={result}
+                selectedQuoteId={selectedQuoteId}
+                quoteNumber={quoteNumber}
+                companyName={companyName}
+                companyPhone={companyPhone}
+                companyEmail={companyEmail}
+                companyAddress={companyAddress}
+                customerName={customerName}
+                customerPhone={customerPhone}
+                customerEmail={customerEmail}
+                address={address}
+                quoteDate={quoteDate}
+                logoUrl={logoUrl}
+                discountAmount={discountAmount}
+                onNewQuote={handleNewQuote}
+                onDuplicateQuote={handleDuplicateQuote}
+                onSaveQuote={handleSaveQuote}
+                onPrint={() => window.print()}
+                formatCurrency={formatCurrency}
+                formatDisplayDate={formatDisplayDate}
+              />
+            </div>
+          </div>
+        )}
+
+       {/* =========================================================
+          SETTINGS PAGE
+          Company info and future app settings
+        ========================================================= */}
+        {activePage === "settings" && (
+          <section className="print:hidden rounded-xl border border-gray-200 bg-white p-4 shadow-sm space-y-4">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Company Settings
+              </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Manage company information that appears on quotes and invoices.
+              </p>
+            </div>
+
+            {/* =========================================================
+              COMPANY PROFILE SETTINGS
+              Controls branding and company info shown on customer quotes
+            ========================================================= */}
+            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Company Information
+              </h3>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Company name */}
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Company Name
+                </label>
+                <input
+                  type="text"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  className={inputClass}
+                  placeholder="Enter company name"
+                />
+              </div>
+
+              {/* Company phone */}
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Company Phone
+                </label>
+                <input
+                  type="tel"
+                  value={companyPhone}
+                  onChange={(e) => setCompanyPhone(formatPhoneNumber(e.target.value))}
+                  className={inputClass}
+                  placeholder="Enter company phone"
+                />
+              </div>
+
+              {/* Company email */}
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Company Email
+                </label>
+                <input
+                  type="email"
+                  value={companyEmail}
+                  onChange={(e) => setCompanyEmail(e.target.value)}
+                  className={inputClass}
+                  placeholder="Enter company email"
+                />
+              </div>
+
+              {/* Company address */}
+              <div className="lg:col-span-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Company Address
+                </label>
+                <input
+                  type="text"
+                  value={companyAddress}
+                  onChange={(e) => setCompanyAddress(e.target.value)}
+                  className={inputClass}
+                  placeholder="Enter company address"
+                />
+              </div>
+            </div>
+
+              {/* Company logo */}
+              <div className="lg:col-span-2 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                  Branding
+                </h3>
+
+                <div className="flex items-center gap-4">
+                  <input
+                    id="logo-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      console.log("Logo input changed")
+                      handleLogoUpload(e)
+                    }}
+                    className="hidden"
+                  />
+
+                  <label
+                    htmlFor="logo-upload"
+                    className="inline-flex h-11 cursor-pointer items-center rounded-lg bg-gray-800 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-900"
+                  >
+                    Choose File
+                  </label>
+
+                  {logoUrl && (
+                    <img
+                      src={logoUrl}
+                      alt="Company logo preview"
+                      className="h-12 w-12 rounded-md border border-gray-200 bg-white object-contain p-1"
+                    />
+                  )}
+
+                  <span className="text-sm text-gray-600">
+                    {logoUrl ? "Logo uploaded" : "No logo uploaded"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Save company settings */}
+          <div className="flex justify-end border-t border-gray-200 pt-4">
+            <button
+              type="button"
+              onClick={handleSaveCompanySettings}
+              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800"
+            >
+              Save Company Settings
+            </button>
+          </div>
+          </section>
+        )}
       </div>
 
-      {result && (
-        <div className="md:hidden fixed bottom-[72px] left-0 right-0 z-40 bg-white border-t border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm">
-          <span className="text-sm text-gray-500">Total</span>
-          <span className="text-lg font-semibold text-gray-900">
-            {formatCurrency(result.total)}
-          </span>
+      {/* =========================================================
+        MOBILE STICKY TOTAL
+        Only shows on Quotes page when a quote result exists
+      ========================================================= */}
+      {activePage === "quotes" && result && (
+        <div className="md:hidden fixed bottom-[calc(82px+16px)] left-0 right-0 z-40 px-3 pb-2">
+          <div className="mx-auto flex max-w-[1120px] items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-lg">
+            <span className="text-sm font-medium text-gray-500">
+              Estimated Total
+            </span>
+
+            <span
+              key={result.total}
+              className="text-xl font-semibold text-gray-900 transition-all duration-200 animate-pulse"
+            >
+              {formatCurrency(result.total)}
+            </span>
+          </div>
         </div>
       )}
 
-      {/* Mobile action bar */}
-      <MobileActionBar
-        onNew={handleNewQuote}
-        onDuplicate={handleDuplicateQuote}
-        onSave={handleSaveQuote}
-        onPrint={() => window.print()}
-        disabled={!result}
-        duplicateDisabled={!selectedQuoteId}
-      />
+      {/* =========================================================
+        MOBILE ACTION BAR
+        Only shows on Quotes page
+      ========================================================= */}
+      {activePage === "quotes" && (
+        <MobileActionBar
+          onNew={handleNewQuote}
+          onDuplicate={handleDuplicateQuote}
+          onSave={handleSaveQuote}
+          onPrint={() => window.print()}
+          disabled={!result}
+          duplicateDisabled={!selectedQuoteId}
+        />
+      )}
 
       {/* Duplicate confirmation toast */}
       <DuplicateToast show={showDuplicateToast} />
