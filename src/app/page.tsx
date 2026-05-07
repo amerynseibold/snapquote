@@ -16,6 +16,8 @@ import { QuoteForm } from "@/features/quote/components/QuoteForm"
 
 type TreeHeightTier = "0-15 ft" | "15-30 ft" | "30-60 ft" | "60+ ft"
 
+const DEFAULT_NOTES ="Estimate valid for 14 days.\nWork dates subject to weather and scheduling availability.\nPayment due upon completion unless otherwise agreed in writing."
+
 export default function Home() {
   // ============================================================
   // STATE: company branding, quote info, customer info, job inputs
@@ -50,16 +52,22 @@ export default function Home() {
   const [includeTax, setIncludeTax] = useState(true)
   const [emergencyJob, setEmergencyJob] = useState(false)
   const [discountAmount, setDiscountAmount] = useState("")
+  const [notes, setNotes] = useState(DEFAULT_NOTES)
   const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([])
   const [selectedQuoteId, setSelectedQuoteId] = useState<number | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
   const [logoFileName, setLogoFileName] = useState("")
   const [showDuplicateToast, setShowDuplicateToast] = useState(false)
-  const [activePage, setActivePage] = useState<"quotes" | "settings">("quotes")
+  const [activePage, setActivePage] = useState<"quotes" | "history" | "settings">("quotes")
 
   // Manual line items added outside the calculated pricing rules
   const [manualItems, setManualItems] = useState<
-    { description: string; qty: string; price: string }[]
+    {
+      description: string
+      details: string
+      qty: string
+      price: string
+    }[]
   >([])
 
   /* =========================================================
@@ -91,6 +99,8 @@ export default function Home() {
   // SAVED QUOTE ACTIONS: load, delete, and refresh quote history
   // ============================================================
   const loadQuote = (quote: SavedQuote) => {
+     //return to Quotes tab
+    setActivePage("quotes")
     setSelectedQuoteId(quote.id)
     setQuoteNumber(quote.quote_number)
     setCustomerName(quote.customer_name || "")
@@ -98,8 +108,6 @@ export default function Home() {
     setCustomerEmail(quote.customer_email || "")
     setAddress(quote.address || "")
     setQuoteDate(quote.quote_date || "")
-
-
     setBaseService(quote.base_service)
     setTreeCountsByHeight({
       "0-15 ft": quote.tree_count_0_15 || "",
@@ -107,24 +115,22 @@ export default function Home() {
       "30-60 ft": quote.tree_count_30_60 || "",
       "60+ ft": quote.tree_count_60_plus || "",
     })
-
     setDifficultTreeCount(quote.difficult_tree_count)
     setHazardTreeCount(quote.hazard_tree_count)
     setStumpCount(quote.stump_count)
-
     setHaulOffIncluded(quote.haul_off_included)
     setEmergencyJob(quote.emergency_job)
-
     setDiscountAmount(quote.discount_amount ? String(quote.discount_amount) : "")
-
+    setNotes(quote.notes || DEFAULT_NOTES)
     setManualItems(
       quote.manual_items && quote.manual_items.length > 0
         ? quote.manual_items.map((item) => ({
-          description: item.description || "",
-          qty: String(item.qty || ""),
-          price: String(item.price || ""),
-        }))
-        : [{ description: "", qty: "", price: "" }]
+            description: item.description || "",
+            details: "details" in item ? item.details || "" : "",
+            qty: String(item.qty || ""),
+            price: String(item.price || ""),
+          }))
+        : []
     )
 
   }
@@ -392,6 +398,7 @@ export default function Home() {
   haul_off_included,
   emergency_job,
   discount_amount,
+  notes,
   total,
   manual_items
 `)
@@ -588,8 +595,9 @@ export default function Home() {
           haul_off_included: haulOffIncluded,
           emergency_job: emergencyJob,
           discount_amount: Number(discountAmount) || 0,
+          notes: notes,
           manual_items: manualItems.filter(
-            (item) => item.description || item.qty || item.price
+            (item) => item.description || item.details || item.qty || item.price
           ),
           subtotal: result.subtotal,
           subtotal_after_discount: result.subtotalAfterDiscount,
@@ -638,6 +646,9 @@ export default function Home() {
   }
 
   const handleNewQuote = async () => {
+    //return to Quotes tab
+    setActivePage("quotes")
+    
     // clear all inputs
     setSelectedQuoteId(null)
     setConfirmDeleteId(null)
@@ -746,6 +757,18 @@ export default function Home() {
 
           <button
             type="button"
+            onClick={() => setActivePage("history")}
+            className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium ${
+              activePage === "history"
+                ? "bg-gray-900 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            History
+          </button>
+
+          <button
+            type="button"
             onClick={() => setActivePage("settings")}
             className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium ${
               activePage === "settings"
@@ -757,14 +780,16 @@ export default function Home() {
           </button>
         </div>
 
+
+
         {/* =========================================================
           QUOTES PAGE
-          Shows quote builder, quote preview, and saved history
+          Shows quote builder & quote preview
         ========================================================= */}
         {activePage === "quotes" && (
-          <div className="grid grid-cols-1 xl:grid-cols-[800px_320px] gap-3 sm:gap-4 xl:gap-1 items-start">
+          <div className="space-y-6">
             {/* Quote builder input form */}
-            <div className="order-1 xl:order-1">
+            <div>
               <QuoteForm
                 quoteNumber={quoteNumber}
                 quoteDate={quoteDate}
@@ -782,6 +807,7 @@ export default function Home() {
                 emergencyJob={emergencyJob}
                 discountAmount={discountAmount}
                 manualItems={manualItems}
+                notes={notes}
                 totalTreeCount={totalTreeCount}
                 selectedQuoteId={selectedQuoteId}
                 result={result}
@@ -802,6 +828,7 @@ export default function Home() {
                 setEmergencyJob={setEmergencyJob}
                 setDiscountAmount={setDiscountAmount}
                 setManualItems={setManualItems}
+                setNotes={setNotes}
                 handleNewQuote={handleNewQuote}
                 handleDuplicateQuote={handleDuplicateQuote}
                 handleSaveQuote={handleSaveQuote}
@@ -816,21 +843,8 @@ export default function Home() {
               />
             </div>
 
-            {/* Saved quote history */}
-            <div className="order-3 xl:order-2 xl:sticky xl:top-20 xl:self-start">
-              <QuoteHistory
-                savedQuotes={savedQuotes}
-                selectedQuoteId={selectedQuoteId}
-                confirmDeleteId={confirmDeleteId}
-                onLoadQuote={loadQuote}
-                onSetConfirmDeleteId={setConfirmDeleteId}
-                onDeleteQuote={deleteQuote}
-                formatCurrency={formatCurrency}
-              />
-            </div>
-
             {/* Customer-facing quote preview / printable area */}
-            <div className="order-2 xl:order-3">
+            <div>
               <QuotePreview
                 result={result}
                 selectedQuoteId={selectedQuoteId}
@@ -846,6 +860,7 @@ export default function Home() {
                 quoteDate={quoteDate}
                 logoUrl={logoUrl}
                 discountAmount={discountAmount}
+                notes={notes}
                 onNewQuote={handleNewQuote}
                 onDuplicateQuote={handleDuplicateQuote}
                 onSaveQuote={handleSaveQuote}
@@ -854,6 +869,26 @@ export default function Home() {
                 formatDisplayDate={formatDisplayDate}
               />
             </div>
+          </div>
+        )}
+
+        {/* =================================================
+            HISTORY PAGE
+        ================================================= */}
+        {activePage === "history" && (
+          <div className="space-y-6">
+
+            {/* Saved quotes list + load/delete actions */}
+            <QuoteHistory
+              savedQuotes={savedQuotes}
+              selectedQuoteId={selectedQuoteId}
+              confirmDeleteId={confirmDeleteId}
+              onLoadQuote={loadQuote}
+              onSetConfirmDeleteId={setConfirmDeleteId}
+              onDeleteQuote={deleteQuote}
+              formatCurrency={formatCurrency}
+            />
+            
           </div>
         )}
 
@@ -876,12 +911,12 @@ export default function Home() {
               COMPANY PROFILE SETTINGS
               Controls branding and company info shown on customer quotes
             ========================================================= */}
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 space-y-5 pb-4">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
                 Company Information
               </h3>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Company name */}
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -940,12 +975,12 @@ export default function Home() {
             </div>
 
               {/* Company logo */}
-              <div className="lg:col-span-2 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+              <div className="md:col-span-2 rounded-lg border border-gray-200 bg-white p-4">
                 <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
                   Branding
                 </h3>
 
-                <div className="flex items-center gap-4">
+               <div className="flex flex-wrap items-center gap-3">
                   <input
                     id="logo-upload"
                     type="file"
@@ -980,8 +1015,7 @@ export default function Home() {
             </div>
 
             {/* Save company settings */}
-          <div className="flex justify-end border-t border-gray-200 pt-4">
-            <button
+          <div className="flex justify-end border-t border-gray-200 pt-4">            <button
               type="button"
               onClick={handleSaveCompanySettings}
               className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800"

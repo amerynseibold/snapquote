@@ -18,6 +18,7 @@ type QuotePreviewProps = {
   quoteDate: string
   logoUrl: string | null
   discountAmount: string
+  notes: string
   onNewQuote: () => void
   onDuplicateQuote: () => void
   onSaveQuote: () => void
@@ -45,6 +46,7 @@ export function QuotePreview({
   quoteDate,
   logoUrl,
   discountAmount,
+  notes,
   onNewQuote,
   onDuplicateQuote,
   onSaveQuote,
@@ -62,7 +64,7 @@ export function QuotePreview({
         /* =================================================
            PRINTABLE QUOTE CONTAINER
         ================================================= */
-        <div className="quote-print-area max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:w-full print:max-w-full md:print:w-[7in] md:print:max-w-[7in] print:mx-auto print:overflow-visible print:border-0 print:shadow-none print:rounded-none print:p-0 print:bg-white">
+        <div className="quote-print-area max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:w-full print:max-w-full md:print:w-[7in] md:print:max-w-[7in] print:mx-auto print:overflow-visible print:border-0 print:shadow-none print:rounded-none print:p-4 print:bg-white print:text-[12px]">
 
           {/* EDIT MODE INDICATOR */}
           {selectedQuoteId && (
@@ -101,18 +103,18 @@ export function QuotePreview({
           ================================================= */}
           <div className="mb-4 border-b border-gray-700 pb-4">
             {/* Top row: company branding + quote metadata */}
-            <div className="mb-4 flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
+            <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between print:flex-row print:items-start print:justify-between">
+              <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-start print:flex-row min-w-0">
                 {logoUrl && (
                   <img
                     src={logoUrl}
                     alt="Company logo"
-                    className="h-20 w-20 sm:h-24 sm:w-24 object-contain"
+                    className="h-20 w-20 sm:h-20 sm:w-20 object-contain"
                   />
                 )}
 
-                <div className="space-y-1">
-                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+                <div className="space-y-1 min-w-0">
+                  <h1 className="text-xl sm:text-2xl print:text-xl font-bold tracking-tight leading-tight">
                     {companyName}
                   </h1>
 
@@ -132,7 +134,7 @@ export function QuotePreview({
                 </div>
               </div>
 
-              <div className="text-right text-[11px] sm:text-sm leading-snug shrink-0">
+              <div className="text-left sm:text-right print:text-right text-[11px] sm:text-sm leading-snug shrink-0">
                 <p>
                   <span className="text-gray-400 uppercase">Date:</span>{" "}
                   {formatDisplayDate(quoteDate)}
@@ -146,7 +148,7 @@ export function QuotePreview({
             </div>
 
             {/* Bottom row: customer info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-700 pt-3 sm:pt-4 text-xs sm:text-sm">
+            <div className="grid grid-cols-2 gap-4 border-t border-gray-700 pt-3 sm:pt-4 text-xs sm:text-sm">
               {/* CLIENT INFO */}
               <div className="space-y-1 break-words">
                 <p className="text-gray-400 uppercase text-[10px] sm:text-xs">
@@ -184,7 +186,7 @@ export function QuotePreview({
           {/* =================================================
              SCOPE OF WORK
           ================================================= */}
-          <div className="mt-6">
+          <div className="mt-6 print:mt-4">
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-2">
               Scope of Work
             </p>
@@ -240,7 +242,7 @@ export function QuotePreview({
           {/* =================================================
              TOTALS SUMMARY
           ================================================= */}
-          <div className="mt-8 text-sm space-y-2 max-w-sm ml-auto border-t border-gray-300 pt-4">
+          <div className="mt-6 print:mt-4 text-sm print:text-[11px] space-y-2 print:space-y-1 max-w-sm ml-auto border-t border-gray-300 pt-4 print:pt-2">
             <div className="flex justify-between text-gray-700">
               <span>Subtotal</span>
               <span>{formatCurrency(result.subtotal)}</span>
@@ -279,6 +281,27 @@ export function QuotePreview({
               <span>Total</span>
               <span>{formatCurrency(result.total)}</span>
             </div>
+
+            {/* =================================================
+              NOTES / TERMS
+              Optional customer-facing notes, payment terms,
+              scheduling details, exclusions, etc.
+            ================================================= */}
+            {notes && (
+              <div className="mt-6 border-t border-gray-300 pt-4">
+                
+                {/* Section title */}
+                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                  Notes / Terms
+                </p>
+
+                {/* Notes content */}
+                <p className="whitespace-pre-line text-sm text-gray-700">
+                  {notes}
+                </p>
+              </div>
+            )}
+
             {/* Powered-by branding shown under quote totals */}
             <div className="pt-2 text-right text-[8px] text-gray-500 italic opacity-70">
               <span className="mr-2">Powered by</span>
@@ -291,6 +314,8 @@ export function QuotePreview({
           </div>
         </div>
       ) : (
+        
+
         /* =================================================
            EMPTY STATE
         ================================================= */

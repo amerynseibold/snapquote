@@ -31,10 +31,12 @@ type QuoteFormProps = {
 
   manualItems: {
     description: string
+    details: string
     qty: string
     price: string
   }[]
 
+  notes: string
   totalTreeCount: number
   selectedQuoteId: number | null
   result: unknown
@@ -63,11 +65,13 @@ type QuoteFormProps = {
   setManualItems: (
     value: {
       description: string
+      details: string
       qty: string
       price: string
     }[]
   ) => void
 
+  setNotes: (value: string) => void
   findCustomerByPhone: (phoneValue: string) => void
 
   handleNewQuote: () => void
@@ -116,6 +120,7 @@ export function QuoteForm({
   discountAmount,
 
   manualItems,
+  notes,
 
   totalTreeCount,
   selectedQuoteId,
@@ -142,6 +147,7 @@ export function QuoteForm({
   setEmergencyJob,
   setDiscountAmount,
   setManualItems,
+  setNotes,
 
   handleNewQuote,
   handleDuplicateQuote,
@@ -192,6 +198,23 @@ export function QuoteForm({
     setHazardTreeCount,
   ])
 
+  /* =========================================================
+   MOBILE DEFAULT COLLAPSED SECTIONS
+  ========================================================= */
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setShowCustomerInfo(false)
+      setShowJobDetails(false)
+      setShowPricingAdjustments(false)
+      setShowNotesTerms(false)
+    }
+  }, [])
+
+  const [showCustomerInfo, setShowCustomerInfo] = useState(true)
+  const [showJobDetails, setShowJobDetails] = useState(true)
+  const [showPricingAdjustments, setShowPricingAdjustments] = useState(true)
+  const [showNotesTerms, setShowNotesTerms] = useState(true)
+
   return (
     /* =====================================================
        QUOTE BUILDER FORM
@@ -214,7 +237,7 @@ export function QuoteForm({
       {/* =================================================
          FORM GRID
       ================================================= */}
-      <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-4 xl:gap-3 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[320px_425px_1fr] gap-4 xl:gap-3 items-start">
 
         {/* LEFT COLUMN: Quote Info + Cusomter Info*/}
         <div className="space-y-3 ">
@@ -249,12 +272,27 @@ export function QuoteForm({
           </div>
 
            {/* Customer Info */}
-          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 w-full xl:max-w-[320px]">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-            Customer Info
-          </h3>
+                  <div
+            className={`bg-white border border-gray-200 rounded-lg shadow-sm w-full xl:max-w-[320px] ${
+              showCustomerInfo ? "p-3 space-y-3" : "px-3 py-2"
+            }`}
+          >
+            <button
+              type="button"
+              onClick={() => setShowCustomerInfo(!showCustomerInfo)}
+              className="flex w-full items-center justify-between"
+            >
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Customer Info
+              </h3>
 
-          <div className="grid grid-cols-2 gap-3">
+              <span className="text-lg leading-none text-gray-400">
+                {showCustomerInfo ? "⌄" : "›"}
+              </span>
+            </button>
+
+          {showCustomerInfo && (
+            <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block mb-1 text-sm text-gray-600">Customer Name</label>
                 {/* Customer name input + autofill dropdown */}
@@ -375,18 +413,36 @@ export function QuoteForm({
               />
             </div>
           </div>
+          )}
         </div>
       </div>
 
 
-        {/* RIGHT COLUMN: Job Details */}
+        {/* CENTER COLUMN: Job Details */}
         <div className="space-y-3">
 
         {/* Job Details */}
-        <div className="bg-white border border-gray-200 rounded-lg p-3 space-y-3 shadow-sm w-full xl:max-w-[425px]">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-            Job Details
-          </h3>
+        <div
+            className={`bg-white border border-gray-200 rounded-lg shadow-sm w-full xl:max-w-[425px] ${
+              showJobDetails ? "p-3 space-y-3" : "px-3 py-2"
+            }`}
+          >
+          <button
+            type="button"
+            onClick={() => setShowJobDetails(!showJobDetails)}
+            className="flex w-full items-center justify-between"
+          >
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Job Details
+            </h3>
+
+            <span className="text-lg leading-none text-gray-400">
+              {showJobDetails ? "⌄" : "›"}
+            </span>
+          </button>
+
+    {showJobDetails && (
+      <>  
 
         {/* Base job input */}
         <div className="w-full xl:w-[350px]">
@@ -604,18 +660,18 @@ export function QuoteForm({
           </div>
         </div>
 
+
           {/* Additional manual line items */}
-          <div className="mt-3 space-y-2"> 
+          <div className="mt-3 space-y-2">
             <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
               Additional Services
-            </h4> 
-          </div>        
+            </h4>
 
           {/* Landscape / desktop header */}
-          <div className="hidden sm:grid grid-cols-[3.25fr_1fr_1.5fr_1.2fr_1fr] gap-2 text-xs text-gray-400 uppercase pb-1">
+          <div className="hidden sm:grid grid-cols-[3.25fr_1.1fr_1.5fr_1.2fr_1fr] gap-2 text-xs text-gray-400 uppercase pb-1">
   
             {/* Columns WITH border */}
-            <div className="col-span-4 grid grid-cols-[3.25fr_1fr_1.5fr_1.2fr] gap-2 border-b border-gray-200 pb-1">
+            <div className="col-span-4 grid grid-cols-[3.25fr_1.1fr_1.5fr_1.2fr] gap-2 border-b border-gray-200 pb-1">
               <span>Description</span>
               <span>Qty</span>
               <span>Price</span>
@@ -707,7 +763,7 @@ export function QuoteForm({
             </div>
 
               {/* Landscape / desktop row */}        
-              <div className="hidden sm:grid grid-cols-[3.25fr_1fr_1.5fr_1.2fr_1fr] gap-2 items-center">
+              <div className="hidden sm:grid grid-cols-[3.25fr_1.1fr_1.5fr_1.2fr_1fr] gap-2 items-center">
                 <input
                   type="text"
                   placeholder="Service"
@@ -722,7 +778,7 @@ export function QuoteForm({
 
                 <input
                   type="number"
-                  placeholder="#"
+                  placeholder="Qty"
                   value={item.qty}
                   onChange={(e) => {
                     const updated = [...manualItems]
@@ -765,13 +821,24 @@ export function QuoteForm({
                   Remove
                 </button>
               </div>
+              {/* Optional details for this additional service */}
+              <textarea
+                value={item.details}
+                onChange={(e) => {
+                  const updated = [...manualItems]
+                  updated[index].details = e.target.value
+                  setManualItems(updated)
+                }}
+                placeholder="Optional details for this service"
+                className={`${inputClass} mt-2 min-h-[72px] resize-y text-sm`}
+              />
             </div>
           ))}            
           <button
               onClick={() =>
                 setManualItems([
                   ...manualItems,
-                  { description: "", qty: "", price: "" },
+                  { description: "", details: "", qty: "", price: "" },
                 ])
               }
               className="text-blue-600 text-sm"
@@ -779,15 +846,39 @@ export function QuoteForm({
               + Add Item
             </button>
           </div>
+          </>
+        )}
+      </div>   
+    </div>  
+      
+      {/* RIGHT SUPPORT COLUMN: Pricing + Notes */}
+      <div className="space-y-3">
 
       {/* =================================================
           PRICING ADJUSTMENTS
       ================================================= */}
-      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-3 space-y-3 w-full xl:max-w-[425px]">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Pricing Adjustments
-        </h3>
+        <div
+            className={`bg-white border border-gray-200 rounded-lg shadow-sm w-full xl:max-w-[425px] ${
+              showPricingAdjustments ? "p-3 space-y-3" : "px-3 py-2"
+            }`}
+          >
+        <button
+          type="button"
+          onClick={() =>
+            setShowPricingAdjustments(!showPricingAdjustments)
+          }
+          className="flex w-full items-center justify-between"
+        >
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Pricing Adjustments
+          </h3>
 
+          <span className="text-lg leading-none text-gray-400">
+            {showPricingAdjustments ? "⌄" : "›"}
+          </span>
+        </button>
+        {showPricingAdjustments && (
+          <>
         <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2">
           {/* Tax toggle */}
           <div>
@@ -844,9 +935,51 @@ export function QuoteForm({
             />
           </div>
         </div>
+        </>
+        )}
       </div>
+
+      {/* =========================================================
+        NOTES / TERMS
+      ========================================================= */}
+      <div
+        className={`bg-white border border-gray-200 rounded-lg shadow-sm w-full xl:max-w-[425px] ${
+          showNotesTerms ? "p-3 space-y-3" : "px-3 py-2"
+        }`}
+      >
+        <button
+          type="button"
+          onClick={() => setShowNotesTerms(!showNotesTerms)}
+          className="flex w-full items-center justify-between"
+        >
+          <div className="text-left">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Notes / Terms
+            </h3>
+
+            {showNotesTerms && (
+              <p className="mt-1 text-xs text-gray-500">
+                Add payment terms, scheduling notes, exclusions, or other customer-facing details.
+              </p>
+            )}
+          </div>
+
+          <span className="text-lg leading-none text-gray-400">
+            {showNotesTerms ? "⌄" : "›"}
+          </span>
+        </button>
+
+        {showNotesTerms && (
+          <textarea
+            value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Example: Payment due upon completion. Customer responsible for irrigation marking."
+          className={`${inputClass} min-h-[120px] resize-y`}
+        />
+        )}
+      </div>   
     </div>
-  </div>  
+  </div>
 
       {/* Validation warning */}
       {((difficultTreeCount || 0) > totalTreeCount ||

@@ -150,9 +150,9 @@ export function calculateQuote(
 
       if (quantity <= 0 || rate <= 0) return
 
-      lineItems.push({
-        item: "Additional",
-        description: item.description,
+        lineItems.push({
+        item: item.description || "Additional Service",
+        description: item.details || "Additional service",
         rate,
         quantity,
         total: quantity * rate,
@@ -237,17 +237,13 @@ export function calculateQuote(
     // Manual items (additional work)
     if (input.manualItems && input.manualItems.length > 0) {
       const manualDescriptions = input.manualItems
-        .filter((item) => item.description && Number(item.qty) > 0)
-        .map(
-          (item) =>
-            `${item.qty} x ${item.description}`
-        )
+        .filter((item) => item.details && Number(item.qty) > 0)
+        .map((item) => item.details.toLowerCase())
 
       if (manualDescriptions.length > 0) {
-        scopeParts.push(`additional services including ${manualDescriptions.join(", ")}`)
+        scopeParts.push(manualDescriptions.join(", "))
       }
     }
-
     // Final formatted scope
     const scopeOfWork =
       scopeParts.length > 0

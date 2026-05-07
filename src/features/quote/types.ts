@@ -12,6 +12,7 @@ export type TreeCountsByHeight = Record<TreeHeightTier, number>
 
 export type ManualItem = {
   description: string
+  details: string
   qty: string | number
   price: string | number
 }
@@ -70,9 +71,11 @@ export type SavedQuote = {
   haul_off_included: boolean
   emergency_job: boolean
   discount_amount: number
+  notes?: string | null
   total: number
   manual_items: {
     description: string
+    details: string
     qty: string | number
     price: string | number
   }[] | null
