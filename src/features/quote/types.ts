@@ -2,6 +2,8 @@
    QUOTE TYPES
 ========================================================= */
 
+export type QuoteStatus = "Draft" | "Sent" | "Approved" | "Paid"
+
 export type TreeHeightTier =
   | "0-15 ft"
   | "15-30 ft"
@@ -79,6 +81,7 @@ export type SavedQuote = {
     qty: string | number
     price: string | number
   }[] | null
+  status?: QuoteStatus | null
 }
 
 /* =========================================================

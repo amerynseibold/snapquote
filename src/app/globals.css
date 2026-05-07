@@ -114,6 +114,12 @@ input[type="number"] {
     min-width: 0 !important;
   }
 
+  /* Prevent sections from splitting across pages */
+  .break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
   /* Remove interactive elements */
   input,
   select,

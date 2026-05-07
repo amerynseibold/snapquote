@@ -64,7 +64,7 @@ export function QuotePreview({
         /* =================================================
            PRINTABLE QUOTE CONTAINER
         ================================================= */
-        <div className="quote-print-area max-w-[850px] mx-auto space-y-4 border border-gray-200 bg-white text-black p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:w-full print:max-w-full md:print:w-[7in] md:print:max-w-[7in] print:mx-auto print:overflow-visible print:border-0 print:shadow-none print:rounded-none print:p-4 print:bg-white print:text-[12px]">
+        <div className="quote-print-area max-w-[850px] mx-auto space-y-3 border border-gray-200 bg-white text-black p-5 md:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.18)] rounded-sm print:w-[7in] print:max-w-[7in] print:mx-auto print:overflow-visible print:border-0 print:shadow-none print:rounded-none print:p-2 print:bg-white print:text-[10px] print:leading-tight">
 
           {/* EDIT MODE INDICATOR */}
           {selectedQuoteId && (
@@ -103,7 +103,7 @@ export function QuotePreview({
           ================================================= */}
           <div className="mb-4 border-b border-gray-700 pb-4">
             {/* Top row: company branding + quote metadata */}
-            <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between print:flex-row print:items-start print:justify-between">
+            <div className="mb-4 bg-gray-100 px-4 py-4 print:px-3 print:py-3 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between print:flex-row print:items-start print:justify-between">
               <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-start print:flex-row min-w-0">
                 {logoUrl && (
                   <img
@@ -119,7 +119,7 @@ export function QuotePreview({
                   </h1>
 
                   {(companyPhone || companyEmail) && (
-                    <p className="text-xs sm:text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm">
                       {companyPhone}
                       {companyPhone && companyEmail ? " • " : ""}
                       {companyEmail}
@@ -127,23 +127,39 @@ export function QuotePreview({
                   )}
 
                   {companyAddress && (
-                    <p className="text-xs sm:text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm">
                       {companyAddress}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="text-left sm:text-right print:text-right text-[11px] sm:text-sm leading-snug shrink-0">
-                <p>
-                  <span className="text-gray-400 uppercase">Date:</span>{" "}
-                  {formatDisplayDate(quoteDate)}
-                </p>
+              <div className="shrink-0 text-left sm:text-right print:text-right">
+                <div className="space-y-1 text-[11px] sm:text-sm">
+                  
+                  {/* DATE */}
+                  <div className="flex items-center justify-start gap-1.5 sm:justify-end">
+                    <span className="min-w-[52px] text-right text-gray-400 uppercase tracking-noraml">
+                      Date
+                    </span>
 
-                <p>
-                  <span className="text-gray-400 uppercase">Quote #</span>{" "}
-                  <span className="font-medium">{quoteNumber}</span>
-                </p>
+                    <span className="font-medium">
+                      {formatDisplayDate(quoteDate)}
+                    </span>
+                  </div>
+
+                  {/* QUOTE NUMBER */}
+                  <div className="flex items-center justify-start gap-1.5 sm:justify-end">
+                    <span className="min-w-[52px] text-right text-gray-400 uppercase tracking-normal">
+                      Quote #
+                    </span>
+
+                    <span className="font-medium">
+                      {quoteNumber}
+                    </span>
+                  </div>
+
+                </div>
               </div>
             </div>
 
@@ -151,7 +167,7 @@ export function QuotePreview({
             <div className="grid grid-cols-2 gap-4 border-t border-gray-700 pt-3 sm:pt-4 text-xs sm:text-sm">
               {/* CLIENT INFO */}
               <div className="space-y-1 break-words">
-                <p className="text-gray-400 uppercase text-[10px] sm:text-xs">
+                <p className="text-gray-500 font-semibold uppercase text-[10px] sm:text-xs">
                   Client
                 </p>
                 <p className="font-medium">{customerName}</p>
@@ -173,7 +189,7 @@ export function QuotePreview({
 
               {/* CUSTOMER CONTACT INFO */}
               <div className="space-y-1">
-                <p className="text-gray-400 uppercase text-[10px] sm:text-xs">
+                <p className="text-gray-500 font-semibold uppercase text-[10px] sm:text-xs">
                   Contact
                 </p>
 
@@ -190,7 +206,7 @@ export function QuotePreview({
             <p className="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-2">
               Scope of Work
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-xs text-black">
               {result.scopeOfWork}
             </p>
           </div>
@@ -200,7 +216,7 @@ export function QuotePreview({
           ================================================= */}
           <table className="w-full text-sm border-collapse mt-6">
             <thead>
-              <tr className="border-b text-gray-400 text-xs uppercase">
+              <tr className="border-b border-black text-gray-500 text-xs uppercase">
                 <th className="text-left">Item</th>
                 <th className="text-left">Description</th>
                 <th className="text-center">Qty</th>
@@ -213,7 +229,7 @@ export function QuotePreview({
               {result.lineItems
                 .filter((item) => !item.item.toLowerCase().includes("haul"))
                 .map((item, index) => (
-                  <tr key={`main-${index}`} className="border-b">
+                  <tr key={`main-${index}`} className="border-b border-gray-300">
                     <td>{item.item}</td>
                     <td>{item.description}</td>
                     <td className="text-center">{item.quantity ?? "-"}</td>
@@ -227,7 +243,7 @@ export function QuotePreview({
               {result.lineItems
                 .filter((item) => item.item.toLowerCase().includes("haul"))
                 .map((item, index) => (
-                  <tr key={`haul-${index}`} className="border-b">
+                  <tr key={`haul-${index}`} className="border-b border-gray-300">
                     <td>{item.item}</td>
                     <td>{item.description}</td>
                     <td className="text-center">{item.quantity ?? "-"}</td>
@@ -240,9 +256,9 @@ export function QuotePreview({
           </table>
 
           {/* =================================================
-             TOTALS SUMMARY
-          ================================================= */}
-          <div className="mt-6 print:mt-4 text-sm print:text-[11px] space-y-2 print:space-y-1 max-w-sm ml-auto border-t border-gray-300 pt-4 print:pt-2">
+            TOTALS SUMMARY
+          ================================================== */}
+          <div className="mt-6 print:mt-4 text-sm print:text-[11px] space-y-2 print:space-y-1 w-full max-w-[280px] ml-auto pt-4 print:pt-2">
             <div className="flex justify-between text-gray-700">
               <span>Subtotal</span>
               <span>{formatCurrency(result.subtotal)}</span>
@@ -259,9 +275,11 @@ export function QuotePreview({
             </div>
 
             <div className="flex justify-between text-gray-700">
-              <span>Emergency{" "}
-              <span className="text-xs text-gray-400">(25%)</span>
+              <span>
+                Emergency{" "}
+                <span className="text-[10px] text-gray-500">(25%)</span>
               </span>
+
               <span>{formatCurrency(result.emergencyFee)}</span>
             </div>
 
@@ -271,46 +289,46 @@ export function QuotePreview({
             </div>
 
             <div className="flex justify-between">
-              <span>Tax{" "}
-              <span className="text-xs text-gray-400">(8.25%)</span>
+              <span>
+                Tax{" "}
+                <span className="text-[10px] text-gray-500">(8.25%)</span>
               </span>
+
               <span>{formatCurrency(result.tax)}</span>
             </div>
 
-            <div className="flex justify-between rounded-lg bg-gray-100 px-3 py-2 font-bold text-lg border-t">
+            <div className="flex justify-between bg-gray-100 px-3 py-2 font-bold text-lg border-t">
               <span>Total</span>
               <span>{formatCurrency(result.total)}</span>
             </div>
+          </div>
 
-            {/* =================================================
-              NOTES / TERMS
-              Optional customer-facing notes, payment terms,
-              scheduling details, exclusions, etc.
-            ================================================= */}
-            {notes && (
-              <div className="mt-6 border-t border-gray-300 pt-4">
-                
-                {/* Section title */}
-                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
-                  Notes / Terms
-                </p>
+          {/* =================================================
+            NOTES / TERMS
+          ================================================== */}
+          {notes && (
+            <div className="mt-4 print:mt-3 border-t border-black pt-3 print:pt-2 break-inside-avoid">
+              {/* Section title */}
+              <p className="mb-2 print:mb-1 text-sm print:text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                Notes / Terms
+              </p>
 
-                {/* Notes content */}
-                <p className="whitespace-pre-line text-sm text-gray-700">
-                  {notes}
-                </p>
-              </div>
-            )}
-
-            {/* Powered-by branding shown under quote totals */}
-            <div className="pt-2 text-right text-[8px] text-gray-500 italic opacity-70">
-              <span className="mr-2">Powered by</span>
-              <img
-                src="/logo2.png"
-                alt="SnapQuote Logo"
-                className="inline-block h-3 w-auto opacity-70 align-middle"
-              />
+              {/* Notes content */}
+              <p className="whitespace-pre-line text-xs print:text-[11px] print:leading-snug text-black">
+                {notes}
+              </p>
             </div>
+          )}
+
+          {/* Powered-by branding shown under quote totals */}
+          <div className="pt-2 text-right text-[8px] text-gray-500 italic opacity-70">
+            <span className="mr-2">Powered by</span>
+
+            <img
+              src="/logo2.png"
+              alt="SnapQuote Logo"
+              className="inline-block h-3 w-auto opacity-70 align-middle"
+            />
           </div>
         </div>
       ) : (

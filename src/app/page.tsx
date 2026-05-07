@@ -9,7 +9,7 @@ import { TopBar } from "@/features/quote/components/TopBar"
 import { MobileActionBar } from "@/features/quote/components/MobileActionBar"
 import { DuplicateToast } from "@/features/quote/components/DuplicateToast"
 import { QuoteHistory } from "@/features/quote/components/QuoteHistory"
-import type { Customer, SavedQuote } from "@/features/quote/types"
+import type { Customer, SavedQuote, QuoteStatus } from "@/features/quote/types"
 import { QuotePreview } from "@/features/quote/components/QuotePreview"
 import { QuoteForm } from "@/features/quote/components/QuoteForm"
 
@@ -59,6 +59,7 @@ export default function Home() {
   const [logoFileName, setLogoFileName] = useState("")
   const [showDuplicateToast, setShowDuplicateToast] = useState(false)
   const [activePage, setActivePage] = useState<"quotes" | "history" | "settings">("quotes")
+  const [quoteStatus, setQuoteStatus] = useState<QuoteStatus>("Draft")
 
   // Manual line items added outside the calculated pricing rules
   const [manualItems, setManualItems] = useState<
@@ -108,6 +109,7 @@ export default function Home() {
     setCustomerEmail(quote.customer_email || "")
     setAddress(quote.address || "")
     setQuoteDate(quote.quote_date || "")
+    setQuoteStatus((quote.status as QuoteStatus) || "Draft")
     setBaseService(quote.base_service)
     setTreeCountsByHeight({
       "0-15 ft": quote.tree_count_0_15 || "",
@@ -380,6 +382,7 @@ export default function Home() {
     const { data, error } = await supabase
       .from("quotes")
       .select(`
+  status,
   id,
   quote_number,
   customer_name,
@@ -577,6 +580,7 @@ export default function Home() {
     // ================= SAVE QUOTE =================
     const { error } = await supabase.from("quotes").upsert([
         {
+          status: quoteStatus,
           quote_number: quoteNumber,
           customer_name: customerName,
           customer_phone: customerPhone,
@@ -672,6 +676,7 @@ export default function Home() {
     setManualItems([])
 
     setQuoteDate(new Date().toISOString().split("T")[0])
+    setQuoteDate("Draft")
 
     const { data, error } = await supabase
       .from("app_settings")
@@ -812,6 +817,7 @@ export default function Home() {
                 selectedQuoteId={selectedQuoteId}
                 result={result}
                 inputClass={inputClass}
+                quoteStatus={quoteStatus}
                 setQuoteNumber={setQuoteNumber}
                 setQuoteDate={setQuoteDate}
                 setCustomerName={setCustomerName}
@@ -829,6 +835,7 @@ export default function Home() {
                 setDiscountAmount={setDiscountAmount}
                 setManualItems={setManualItems}
                 setNotes={setNotes}
+                setQuoteStatus={setQuoteStatus}
                 handleNewQuote={handleNewQuote}
                 handleDuplicateQuote={handleDuplicateQuote}
                 handleSaveQuote={handleSaveQuote}

@@ -45,7 +45,7 @@ export function MobileActionBar({
         disabled={disabled}
         className="active:scale-95 transition-transform duration-100 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-400 text-white px-3 py-2 rounded text-sm font-medium"
       >
-        Export
+        Print
       </button>
     </div>
   )

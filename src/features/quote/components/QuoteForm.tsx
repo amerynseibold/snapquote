@@ -2,6 +2,27 @@ import { useEffect, useRef, useState } from "react"
 import type { ChangeEvent } from "react"
 import type { TreeHeightTier } from "../types"
 import type { Customer } from "../types"
+import type { QuoteStatus} from "../types"
+
+/* =========================================================
+   STATUS COLOR STYLES
+   Controls color themes for quote status UI
+========================================================= */
+const getStatusClasses = (status?: string | null) => {
+  switch (status) {
+    case "Sent":
+      return "bg-blue-50 text-blue-700 border-blue-300"
+
+    case "Approved":
+      return "bg-green-50 text-green-700 border-green-300"
+
+    case "Paid":
+      return "bg-slate-200 text-slate-800 border-slate-300"
+
+    default:
+      return "bg-yellow-50 text-yellow-700 border-yellow-300"
+  }
+}
 
 /* =========================================================
    PROPS
@@ -11,6 +32,7 @@ import type { Customer } from "../types"
 type QuoteFormProps = {
   quoteNumber: string
   quoteDate: string
+  quoteStatus: QuoteStatus
 
   customerName: string
   customerPhone: string
@@ -45,6 +67,7 @@ type QuoteFormProps = {
 
   setQuoteNumber: (value: string) => void
   setQuoteDate: (value: string) => void
+  setQuoteStatus: (value: QuoteStatus) => void
 
   setCustomerName: (value: string) => void
   setCustomerPhone: (value: string) => void
@@ -102,6 +125,7 @@ type QuoteFormProps = {
 export function QuoteForm({
   quoteNumber,
   quoteDate,
+  quoteStatus,
 
   customerName,
   customerPhone,
@@ -130,6 +154,7 @@ export function QuoteForm({
 
   setQuoteNumber,
   setQuoteDate,
+  setQuoteStatus,
 
   setCustomerName,
   setCustomerPhone,
@@ -225,12 +250,38 @@ export function QuoteForm({
       {/* =================================================
          FORM HEADER + DESKTOP ACTION BUTTONS
       ================================================= */}
-      <div className="flex items-end justify-between border-b border-gray-200 pb-3 min-h-[64px]">
+      <div className="flex items-end justify-between gap-3 border-b border-gray-200 pb-3 min-h-[64px]">
         <div>
           <h2 className="text-lg font-semibold">Quote Builder</h2>
           <p className="text-xs text-gray-400 mt-1">
             Enter the job details, then review quote preview below.
           </p>
+        </div>
+
+        {/* =================================================
+            QUOTE STATUS
+        ================================================= */}
+        <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5">
+          <span className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+            Status
+          </span>
+
+          <div
+            className={`flex items-center justify-center rounded-full border px-3 py-1 ${getStatusClasses(
+              quoteStatus
+            )}`}
+          >
+            <select
+              value={quoteStatus}
+              onChange={(e) => setQuoteStatus(e.target.value as QuoteStatus)}
+              className="min-w-[72px] bg-transparent text-center text-xs font-medium outline-none"
+            >
+              <option className="text-black" value="Draft">Draft</option>
+              <option className="text-black" value="Sent">Sent</option>
+              <option className="text-black" value="Approved">Approved</option>
+              <option className="text-black" value="Paid">Paid</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -280,14 +331,18 @@ export function QuoteForm({
             <button
               type="button"
               onClick={() => setShowCustomerInfo(!showCustomerInfo)}
-              className="flex w-full items-center justify-between"
+              className="flex w-full items-start justify-between rounded-md px-1 py-1 active:bg-gray-100 transition-colors"
             >
               <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
                 Customer Info
               </h3>
 
-              <span className="text-lg leading-none text-gray-400">
-                {showCustomerInfo ? "⌄" : "›"}
+              <span
+                className={`text-gray-400 transition-transform duration-200 ${
+                  showCustomerInfo ? "rotate-90" : ""
+                }`}
+              >
+                ›
               </span>
             </button>
 
@@ -430,14 +485,18 @@ export function QuoteForm({
           <button
             type="button"
             onClick={() => setShowJobDetails(!showJobDetails)}
-            className="flex w-full items-center justify-between"
+            className="flex w-full items-start justify-between rounded-md px-1 py-1 active:bg-gray-100 transition-colors"
           >
             <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
               Job Details
             </h3>
 
-            <span className="text-lg leading-none text-gray-400">
-              {showJobDetails ? "⌄" : "›"}
+            <span 
+              className={`text-gray-400 transition-transform duration-200 ${
+                  showJobDetails ? "rotate-90" : ""
+                }`}
+              >
+                ›
             </span>
           </button>
 
@@ -867,14 +926,18 @@ export function QuoteForm({
           onClick={() =>
             setShowPricingAdjustments(!showPricingAdjustments)
           }
-          className="flex w-full items-center justify-between"
+          className="flex w-full items-start justify-between rounded-md px-1 py-1 active:bg-gray-100 transition-colors"
         >
           <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Pricing Adjustments
           </h3>
 
-          <span className="text-lg leading-none text-gray-400">
-            {showPricingAdjustments ? "⌄" : "›"}
+          <span 
+            className={`text-gray-400 transition-transform duration-200 ${
+              showPricingAdjustments ? "rotate-90" : ""
+            }`}
+          > 
+            ›
           </span>
         </button>
         {showPricingAdjustments && (
@@ -950,7 +1013,7 @@ export function QuoteForm({
         <button
           type="button"
           onClick={() => setShowNotesTerms(!showNotesTerms)}
-          className="flex w-full items-center justify-between"
+          className="flex w-full items-start justify-between rounded-md px-1 py-1 active:bg-gray-100 transition-colors"
         >
           <div className="text-left">
             <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -964,8 +1027,12 @@ export function QuoteForm({
             )}
           </div>
 
-          <span className="text-lg leading-none text-gray-400">
-            {showNotesTerms ? "⌄" : "›"}
+          <span 
+            className={`text-gray-400 transition-transform duration-200 ${
+              showNotesTerms ? "rotate-90" : ""
+            }`}
+          >
+            ›
           </span>
         </button>
 
