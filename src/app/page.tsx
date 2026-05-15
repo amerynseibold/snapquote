@@ -676,7 +676,7 @@ export default function Home() {
     setManualItems([])
 
     setQuoteDate(new Date().toISOString().split("T")[0])
-    setQuoteDate("Draft")
+    setQuoteStatus("Draft")
 
     const { data, error } = await supabase
       .from("app_settings")
