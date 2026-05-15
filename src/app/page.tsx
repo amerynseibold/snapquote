@@ -23,7 +23,7 @@ export default function Home() {
   // STATE: company branding, quote info, customer info, job inputs
   // ============================================================
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
-  const [companyName, setCompanyName] = useState("Petra Services Complete Yard Care")
+  const [companyName, setCompanyName] = useState("Your Company Name")
   const [companyPhone, setCompanyPhone] = useState("")
   const [companyEmail, setCompanyEmail] = useState("")
   const [companyAddress, setCompanyAddress] = useState("")
