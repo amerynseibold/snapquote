@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react"
-import type { ChangeEvent } from "react"
 import type { TreeHeightTier } from "../types"
 import type { Customer } from "../types"
 import type { QuoteStatus} from "../types"
@@ -11,18 +10,20 @@ import type { QuoteStatus} from "../types"
 const getStatusClasses = (status?: string | null) => {
   switch (status) {
     case "Sent":
-      return "bg-blue-50 text-blue-700 border-blue-300"
+      return "bg-[#eef4fb] text-[#315c88] border-[#c9d9ea]"
 
     case "Approved":
-      return "bg-green-50 text-green-700 border-green-300"
+      return "bg-[#eef7e8] text-[#4f7f2a] border-[#cfe2bf]"
 
     case "Paid":
-      return "bg-slate-200 text-slate-800 border-slate-300"
+      return "bg-[#eef0ec] text-[#101522] border-[#d9dfd1]"
 
     default:
       return "bg-yellow-50 text-yellow-700 border-yellow-300"
   }
 }
+
+const getDisclosureLabel = (isOpen: boolean) => (isOpen ? "Hide" : "Open")
 
 /* =========================================================
    PROPS
@@ -60,8 +61,6 @@ type QuoteFormProps = {
 
   notes: string
   totalTreeCount: number
-  selectedQuoteId: number | null
-  result: unknown
 
   inputClass: string
 
@@ -97,9 +96,6 @@ type QuoteFormProps = {
   setNotes: (value: string) => void
   findCustomerByPhone: (phoneValue: string) => void
 
-  handleNewQuote: () => void
-  handleDuplicateQuote: () => void
-  handleSaveQuote: () => void
   formatPhoneNumber: (value: string) => string
   formatCurrency: (value: number) => string
 
@@ -110,11 +106,6 @@ type QuoteFormProps = {
   isSearchingCustomers: boolean
   fetchCustomerSuggestions: (value: string) => void
   setCustomerSearchResults: (value: Customer[]) => void
-
-  /* =========================================================
-   RECENT CUSTOMERS
-  ========================================================= */
-  recentCustomers: Customer[]
 
 }
 
@@ -147,8 +138,6 @@ export function QuoteForm({
   notes,
 
   totalTreeCount,
-  selectedQuoteId,
-  result,
 
   inputClass,
 
@@ -174,15 +163,11 @@ export function QuoteForm({
   setManualItems,
   setNotes,
 
-  handleNewQuote,
-  handleDuplicateQuote,
-  handleSaveQuote,
   formatPhoneNumber,
   formatCurrency,
 
   customerSearchResults,
   isSearchingCustomers,
-  recentCustomers,
   fetchCustomerSuggestions,
   setCustomerSearchResults,
   findCustomerByPhone,
@@ -205,7 +190,7 @@ export function QuoteForm({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [])
+  }, [setCustomerSearchResults])
 
   useEffect(() => {
     if ((difficultTreeCount || 0) > totalTreeCount) {
@@ -226,19 +211,23 @@ export function QuoteForm({
   /* =========================================================
    MOBILE DEFAULT COLLAPSED SECTIONS
   ========================================================= */
-  useEffect(() => {
-    if (window.innerWidth < 768) {
-      setShowCustomerInfo(false)
-      setShowJobDetails(false)
-      setShowPricingAdjustments(false)
-      setShowNotesTerms(false)
-    }
-  }, [])
-
   const [showCustomerInfo, setShowCustomerInfo] = useState(true)
   const [showJobDetails, setShowJobDetails] = useState(true)
   const [showPricingAdjustments, setShowPricingAdjustments] = useState(true)
   const [showNotesTerms, setShowNotesTerms] = useState(true)
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      if (window.innerWidth >= 768) return
+
+      setShowCustomerInfo(false)
+      setShowJobDetails(false)
+      setShowPricingAdjustments(false)
+      setShowNotesTerms(false)
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [])
 
   return (
     /* =====================================================
@@ -267,10 +256,11 @@ export function QuoteForm({
           </span>
 
           <div
-            className={`flex items-center justify-center rounded-full border px-3 py-1 ${getStatusClasses(
+            className={`flex items-center justify-center gap-2 rounded-full border px-3 py-1 ${getStatusClasses(
               quoteStatus
             )}`}
           >
+            <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
             <select
               value={quoteStatus}
               onChange={(e) => setQuoteStatus(e.target.value as QuoteStatus)}
@@ -290,7 +280,7 @@ export function QuoteForm({
       ================================================= */}
       <div className="grid grid-cols-1 xl:grid-cols-[320px_425px_1fr] gap-4 xl:gap-3 items-start">
 
-        {/* LEFT COLUMN: Quote Info + Cusomter Info*/}
+        {/* LEFT COLUMN: Quote Info + Customer Info*/}
         <div className="space-y-3 ">
 
           {/* Quote Info */}
@@ -337,12 +327,8 @@ export function QuoteForm({
                 Customer Info
               </h3>
 
-              <span
-                className={`text-gray-400 transition-transform duration-200 ${
-                  showCustomerInfo ? "rotate-90" : ""
-                }`}
-              >
-                ›
+              <span className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gray-500">
+                {getDisclosureLabel(showCustomerInfo)}
               </span>
             </button>
 
@@ -491,12 +477,8 @@ export function QuoteForm({
               Job Details
             </h3>
 
-            <span 
-              className={`text-gray-400 transition-transform duration-200 ${
-                  showJobDetails ? "rotate-90" : ""
-                }`}
-              >
-                ›
+            <span className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gray-500">
+              {getDisclosureLabel(showJobDetails)}
             </span>
           </button>
 
@@ -900,7 +882,7 @@ export function QuoteForm({
                   { description: "", details: "", qty: "", price: "" },
                 ])
               }
-              className="text-blue-600 text-sm"
+              className="text-sm font-medium text-[#5f9534] hover:text-[#4f7f2a]"
             >
               + Add Item
             </button>
@@ -932,12 +914,8 @@ export function QuoteForm({
             Pricing Adjustments
           </h3>
 
-          <span 
-            className={`text-gray-400 transition-transform duration-200 ${
-              showPricingAdjustments ? "rotate-90" : ""
-            }`}
-          > 
-            ›
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gray-500">
+            {getDisclosureLabel(showPricingAdjustments)}
           </span>
         </button>
         {showPricingAdjustments && (
@@ -1027,12 +1005,8 @@ export function QuoteForm({
             )}
           </div>
 
-          <span 
-            className={`text-gray-400 transition-transform duration-200 ${
-              showNotesTerms ? "rotate-90" : ""
-            }`}
-          >
-            ›
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gray-500">
+            {getDisclosureLabel(showNotesTerms)}
           </span>
         </button>
 

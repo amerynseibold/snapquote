@@ -23,10 +23,10 @@ const getQuoteSummary = (quote: SavedQuote) => {
     Number(quote.tree_count_60_plus || 0)
 
   if (quote.base_service === "Stump Grinding") {
-    return `Stump Grinding • ${quote.stump_count || 0} Stumps`
+    return `Stump Grinding / ${quote.stump_count || 0} Stumps`
   }
 
-  return `${quote.base_service || "Service"} • ${totalTrees} Trees`
+  return `${quote.base_service || "Service"} / ${totalTrees} Trees`
 }
 
 /* =========================================================
@@ -35,11 +35,11 @@ const getQuoteSummary = (quote: SavedQuote) => {
 const getStatusClasses = (status?: string | null) => {
   switch (status) {
     case "Sent":
-      return "bg-blue-50 text-blue-700 border-blue-300"
+      return "bg-[#eef4fb] text-[#315c88] border-[#c9d9ea]"
     case "Approved":
-      return "bg-green-50 text-green-700 border-green-300"
+      return "bg-[#eef7e8] text-[#4f7f2a] border-[#cfe2bf]"
     case "Paid":
-      return "bg-slate-200 text-slate-800 border-slate-300"
+      return "bg-[#eef0ec] text-[#101522] border-[#d9dfd1]"
     default:
       return "bg-yellow-50 text-yellow-700 border-yellow-300"
   }
@@ -87,8 +87,8 @@ export function QuoteHistory({
               }
               className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                 statusFilter === status
-                  ? "border-gray-900 bg-gray-900 text-white"
-                  : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                  ? "border-[#101522] bg-[#101522] text-white"
+                  : "border-[#d9dfd1] bg-white text-gray-600 hover:bg-[#f8faf5]"
               }`}
             >
               {status}
@@ -100,6 +100,8 @@ export function QuoteHistory({
       <div className="mt-3 flex-1 min-h-0 overflow-y-auto pr-3">
         {savedQuotes.length === 0 ? (
           <p className="text-sm text-gray-400">No saved quotes yet.</p>
+        ) : filteredQuotes.length === 0 ? (
+          <p className="text-sm text-gray-400">No quotes match this status.</p>
         ) : (
           <div className="grid grid-cols-1 gap-3">
             {filteredQuotes.map((quote) => (
@@ -108,8 +110,8 @@ export function QuoteHistory({
                 onClick={() => onLoadQuote(quote)}
                 className={`border rounded-xl px-5 py-3 text-sm cursor-pointer transition-colors shadow-sm active:bg-gray-50 ${
                   selectedQuoteId === quote.id
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:bg-gray-50"
+                    ? "border-[#7fb23b] bg-[#f1f7ea]"
+                    : "border-[#d9dfd1] hover:bg-[#f8faf5]"
                 }`}
               >
                 <div className="flex justify-between items-start gap-4">

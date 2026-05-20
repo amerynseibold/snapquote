@@ -18,7 +18,6 @@ export function calculateQuote(
     hazardTreeCount,
     stumpCount,
     haulOffIncluded,
-    includeTax,
     emergencyJob,
     discountAmount,
     manualItems = [],
@@ -42,11 +41,6 @@ export function calculateQuote(
   /* ---------------------------------------------------------
      Base calculations
   --------------------------------------------------------- */
-  const totalTreeCount = Object.values(treeCountsByHeight).reduce(
-    (sum, count) => sum + count,
-    0
-  )
-
   const lineItems: {
     item: string
     description: string
@@ -195,7 +189,7 @@ export function calculateQuote(
 
     // Tree counts by height
     const treeDescriptions = Object.entries(input.treeCountsByHeight)
-      .filter(([_, count]) => Number(count) > 0)
+      .filter(([, count]) => Number(count) > 0)
       .map(([height, count]) => `${count} ${Number(count) === 1 ? "tree" : "trees"} (${height})`)
 
     if (treeDescriptions.length > 0) {

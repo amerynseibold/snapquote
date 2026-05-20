@@ -51,7 +51,7 @@ export type PricingConfig = {
 }
 
 /* =========================================================
-   QUOTE HISOTRY
+   QUOTE HISTORY
 ========================================================= */
 
 export type SavedQuote = {
@@ -74,6 +74,7 @@ export type SavedQuote = {
   emergency_job: boolean
   discount_amount: number
   notes?: string | null
+  tax?: number | null
   total: number
   manual_items: {
     description: string

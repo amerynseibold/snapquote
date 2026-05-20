@@ -56,8 +56,10 @@ export default function Home() {
   const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([])
   const [selectedQuoteId, setSelectedQuoteId] = useState<number | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
-  const [logoFileName, setLogoFileName] = useState("")
-  const [showDuplicateToast, setShowDuplicateToast] = useState(false)
+  const [toast, setToast] = useState<{
+    message: string
+    variant: "success" | "error" | "info"
+  } | null>(null)
   const [activePage, setActivePage] = useState<"quotes" | "history" | "settings">("quotes")
   const [quoteStatus, setQuoteStatus] = useState<QuoteStatus>("Draft")
 
@@ -77,13 +79,6 @@ export default function Home() {
   ========================================================= */
   const [customerSearchResults, setCustomerSearchResults] = useState<Customer[]>([])
   const [isSearchingCustomers, setIsSearchingCustomers] = useState(false)
-
-  /* =========================================================
-   RECENT CUSTOMERS STATE
-   Stores the most recently updated customers for quick selection
-  ========================================================= */
-  const [recentCustomers, setRecentCustomers] = useState<Customer[]>([])
-
 
   // ============================================================
   // HELPERS: display formatting and small reusable utilities
@@ -121,6 +116,7 @@ export default function Home() {
     setHazardTreeCount(quote.hazard_tree_count)
     setStumpCount(quote.stump_count)
     setHaulOffIncluded(quote.haul_off_included)
+    setIncludeTax(quote.tax == null ? true : Number(quote.tax) > 0)
     setEmergencyJob(quote.emergency_job)
     setDiscountAmount(quote.discount_amount ? String(quote.discount_amount) : "")
     setNotes(quote.notes || DEFAULT_NOTES)
@@ -137,6 +133,13 @@ export default function Home() {
 
   }
 
+  const showToast = (
+    message: string,
+    variant: "success" | "error" | "info" = "info"
+  ) => {
+    setToast({ message, variant })
+  }
+
   const deleteQuote = async (quoteId: number) => {
 
 
@@ -147,7 +150,7 @@ export default function Home() {
 
     if (error) {
       console.error("Error deleting quote:", error)
-      alert(`Failed to delete quote: ${error.message}`)
+      showToast(`Failed to delete quote: ${error.message}`, "error")
       return
     }
 
@@ -156,11 +159,12 @@ export default function Home() {
     }
 
     await fetchSavedQuotes()
+    showToast("Quote deleted", "success")
   }
 
   // Shared input styling used throughout the form
   const inputClass =
-  "w-full h-12 rounded-md border border-gray-300 bg-white px-3 text-base text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 md:h-10 md:text-sm"
+  "w-full h-12 rounded-md border border-[#d9dfd1] bg-white px-3 text-base text-gray-900 shadow-sm focus:border-[#7fb23b] focus:outline-none focus:ring-2 focus:ring-[#e3f0d8] md:h-10 md:text-sm"
 
   // Updates the tree count for one height tier without affecting the others
   const updateTreeCountByHeight = (tier: TreeHeightTier, value: string) => {
@@ -201,8 +205,8 @@ export default function Home() {
   return value.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   })
 }
     /* =========================================================
@@ -295,26 +299,6 @@ export default function Home() {
       }
     }
 
-    /* =========================================================
-     RECENT CUSTOMERS
-     Loads the most recently updated customers for quick selection
-    ========================================================= */
-    const fetchRecentCustomers = async () => {
-      const { data, error } = await supabase
-        .from("customers")
-        .select("id, customer_name, customer_phone, customer_email, address")
-        .order("updated_at", { ascending: false })
-        .limit(5)
-
-      if (error) {
-        console.error("Error fetching recent customers:", error)
-        setRecentCustomers([])
-        return
-      }
-
-      setRecentCustomers((data || []) as Customer[])
-    }
-
   // ============================================================
   // SUPABASE ACTIONS: logo upload and quote history fetch
   // ============================================================
@@ -332,17 +316,16 @@ export default function Home() {
 
       if (error) {
         console.error("Error saving company settings:", error)
-        alert("Failed to save company settings.")
+        showToast("Failed to save company settings.", "error")
         return
       }
 
-      alert("Company settings saved successfully.")
+      showToast("Company settings saved.", "success")
     }
   
   const handleLogoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setLogoFileName(file.name)
 
     const fileExt = file.name.split(".").pop()
     const filePath = `company-logo-${Date.now()}.${fileExt}`
@@ -355,7 +338,7 @@ export default function Home() {
 
     if (uploadError) {
       console.error("Error uploading logo:", uploadError)
-      alert("Failed to upload logo.")
+      showToast("Failed to upload logo.", "error")
       return
     }
 
@@ -370,12 +353,12 @@ export default function Home() {
 
     if (updateError) {
       console.error("Error saving logo URL:", updateError)
-      alert("Logo uploaded, but failed to save logo URL.")
+      showToast("Logo uploaded, but the URL was not saved.", "error")
       return
     }
 
     setLogoUrl(publicUrl)
-    alert("Logo saved successfully.")
+    showToast("Logo saved.", "success")
   }
 
   const fetchSavedQuotes = async () => {
@@ -402,6 +385,7 @@ export default function Home() {
   emergency_job,
   discount_amount,
   notes,
+  tax,
   total,
   manual_items
 `)
@@ -415,18 +399,26 @@ export default function Home() {
     setSavedQuotes((data || []) as SavedQuote[])
   }
 
+  const handlePageChange = (page: "quotes" | "history" | "settings") => {
+    setActivePage(page)
+
+    if (page === "history") {
+      fetchSavedQuotes()
+    }
+  }
+
   // ============================================================
   // EFFECTS: startup loading, toast timing, and service-specific resets
   // ============================================================
   useEffect(() => {
-    if (showDuplicateToast) {
+    if (toast) {
       const timer = setTimeout(() => {
-        setShowDuplicateToast(false)
-      }, 2000)
+        setToast(null)
+      }, 2400)
 
       return () => clearTimeout(timer)
     }
-  }, [showDuplicateToast])
+  }, [toast])
 
   useEffect(() => {
     const fetchSuggestedQuoteNumber = async () => {
@@ -442,25 +434,26 @@ export default function Home() {
         return
       }
 
-      if (!quoteNumber) {
-        setQuoteNumber(formatQuoteNumber(data.next_quote_number))
-        if (data.logo_url) {
-          setLogoUrl(data.logo_url)
-        }
-        if (data.company_name) setCompanyName(data.company_name)
-        if (data.company_phone) setCompanyPhone(data.company_phone)
-        if (data.company_email) setCompanyEmail(data.company_email)
-        if (data.company_address) setCompanyAddress(data.company_address)
+      setQuoteNumber((currentQuoteNumber) =>
+        currentQuoteNumber || formatQuoteNumber(data.next_quote_number)
+      )
+      if (data.logo_url) {
+        setLogoUrl(data.logo_url)
       }
+      if (data.company_name) setCompanyName(data.company_name)
+      if (data.company_phone) setCompanyPhone(data.company_phone)
+      if (data.company_email) setCompanyEmail(data.company_email)
+      if (data.company_address) setCompanyAddress(data.company_address)
     }
 
     fetchSuggestedQuoteNumber()
     fetchSavedQuotes()
-    fetchRecentCustomers()
   }, [])
 
-  useEffect(() => {
-    if (baseService === "Stump Grinding") {
+  const handleBaseServiceChange = (nextBaseService: string) => {
+    setBaseService(nextBaseService)
+
+    if (nextBaseService === "Stump Grinding") {
       setTreeCountsByHeight({
         "0-15 ft": "",
         "15-30 ft": "",
@@ -470,7 +463,7 @@ export default function Home() {
       setDifficultTreeCount(0)
       setHazardTreeCount(0)
     }
-  }, [baseService])
+  }
 
   // ============================================================
   // DERIVED VALUES: validation gates and quote calculation result
@@ -511,17 +504,17 @@ export default function Home() {
 
     // ================= VALIDATION =================
     if (!customerName || !customerName.trim()) {
-      alert("Please enter a customer name before saving.")
+      showToast("Please enter a customer name before saving.", "error")
       return
     }
 
     if (!customerPhone || !customerPhone.trim()) {
-      alert("Please enter a customer phone number before saving.")
+      showToast("Please enter a customer phone number before saving.", "error")
       return
     }
 
     if (!address || !address.trim()) {
-      alert("Please enter a service address before saving.")
+      showToast("Please enter a service address before saving.", "error")
       return
     }
 
@@ -616,7 +609,7 @@ export default function Home() {
 
     if (error) {
       console.error("Error saving quote:", error)
-      alert(`Failed to save quote: ${error.message}`)
+      showToast(`Failed to save quote: ${error.message}`, "error")
       return
     }
 
@@ -646,7 +639,7 @@ export default function Home() {
       }
     }
     await fetchSavedQuotes()
-    alert("Quote saved successfully.")
+    showToast("Quote saved.", "success")
   }
 
   const handleNewQuote = async () => {
@@ -714,13 +707,12 @@ export default function Home() {
 
     if (error) {
       console.error("Error fetching next quote number:", error)
-      alert("Could not create duplicate quote number.")
+      showToast("Could not create duplicate quote number.", "error")
       return
     }
 
     setQuoteNumber(formatQuoteNumber(data.next_quote_number))
-
-    setShowDuplicateToast(true)
+    showToast("Quote duplicated - ready to edit.", "success")
   }
 
 
@@ -728,13 +720,16 @@ export default function Home() {
   // UI RENDER
   // ============================================================
   return (
-    <main className="min-h-screen bg-[#f5f6f8] text-gray-900 px-3 py-2 sm:p-3 md:p-4 xl:p-5 pb-32 md:pb-6 print:bg-white print:p-0">
+    <main className="min-h-screen bg-[#f6f7f4] text-gray-900 px-3 py-2 sm:p-3 md:p-4 xl:p-5 pb-32 md:pb-6 print:bg-white print:p-0">
       <div className="w-full max-w-[1120px] mx-auto space-y-4 sm:space-y-5">
         {/* =========================================================
           STICKY APP HEADER
         ========================================================= */}
         <TopBar
           quoteNumber={quoteNumber}
+          activePage={activePage}
+          savedQuoteCount={savedQuotes.length}
+          onPageChange={handlePageChange}
           onNew={handleNewQuote}
           onDuplicate={handleDuplicateQuote}
           onSave={handleSaveQuote}
@@ -742,50 +737,6 @@ export default function Home() {
           canDuplicate={!!selectedQuoteId}
           canSave={!!result}
         />
-
-        {/* =========================================================
-          NAVIGATION MENU
-          Switches between Quotes and Settings views
-        ========================================================= */}
-        <div className="print:hidden flex gap-2 rounded-xl border border-gray-200 bg-white p-2 shadow-sm">
-          <button
-            type="button"
-            onClick={() => setActivePage("quotes")}
-            className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium ${
-              activePage === "quotes"
-                ? "bg-gray-900 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            Quotes
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActivePage("history")}
-            className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium ${
-              activePage === "history"
-                ? "bg-gray-900 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            History
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActivePage("settings")}
-            className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium ${
-              activePage === "settings"
-                ? "bg-gray-900 text-white"
-                : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            Settings
-          </button>
-        </div>
-
-
 
         {/* =========================================================
           QUOTES PAGE
@@ -814,8 +765,6 @@ export default function Home() {
                 manualItems={manualItems}
                 notes={notes}
                 totalTreeCount={totalTreeCount}
-                selectedQuoteId={selectedQuoteId}
-                result={result}
                 inputClass={inputClass}
                 quoteStatus={quoteStatus}
                 setQuoteNumber={setQuoteNumber}
@@ -824,7 +773,7 @@ export default function Home() {
                 setCustomerPhone={setCustomerPhone}
                 setCustomerEmail={setCustomerEmail}
                 setAddress={setAddress}
-                setBaseService={setBaseService}
+                setBaseService={handleBaseServiceChange}
                 updateTreeCountByHeight={updateTreeCountByHeight}
                 setDifficultTreeCount={setDifficultTreeCount}
                 setHazardTreeCount={setHazardTreeCount}
@@ -836,9 +785,6 @@ export default function Home() {
                 setManualItems={setManualItems}
                 setNotes={setNotes}
                 setQuoteStatus={setQuoteStatus}
-                handleNewQuote={handleNewQuote}
-                handleDuplicateQuote={handleDuplicateQuote}
-                handleSaveQuote={handleSaveQuote}
                 formatPhoneNumber={formatPhoneNumber}
                 findCustomerByPhone={findCustomerByPhone}
                 formatCurrency={formatCurrency}
@@ -846,7 +792,6 @@ export default function Home() {
                 isSearchingCustomers={isSearchingCustomers}
                 fetchCustomerSuggestions={fetchCustomerSuggestions}
                 setCustomerSearchResults={setCustomerSearchResults}
-                recentCustomers={recentCustomers}
               />
             </div>
 
@@ -868,10 +813,6 @@ export default function Home() {
                 logoUrl={logoUrl}
                 discountAmount={discountAmount}
                 notes={notes}
-                onNewQuote={handleNewQuote}
-                onDuplicateQuote={handleDuplicateQuote}
-                onSaveQuote={handleSaveQuote}
-                onPrint={() => window.print()}
                 formatCurrency={formatCurrency}
                 formatDisplayDate={formatDisplayDate}
               />
@@ -1001,7 +942,7 @@ export default function Home() {
 
                   <label
                     htmlFor="logo-upload"
-                    className="inline-flex h-11 cursor-pointer items-center rounded-lg bg-gray-800 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-900"
+                    className="inline-flex h-11 cursor-pointer items-center rounded-lg bg-[#101522] px-4 text-sm font-medium text-white shadow-sm hover:bg-[#1a2133]"
                   >
                     Choose File
                   </label>
@@ -1025,7 +966,7 @@ export default function Home() {
           <div className="flex justify-end border-t border-gray-200 pt-4">            <button
               type="button"
               onClick={handleSaveCompanySettings}
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800"
+              className="rounded-lg bg-[#101522] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#1a2133]"
             >
               Save Company Settings
             </button>
@@ -1070,8 +1011,12 @@ export default function Home() {
         />
       )}
 
-      {/* Duplicate confirmation toast */}
-      <DuplicateToast show={showDuplicateToast} />
+      {/* App feedback toast */}
+      <DuplicateToast
+        show={!!toast}
+        message={toast?.message || ""}
+        variant={toast?.variant}
+      />
     </main>
   )
 }
