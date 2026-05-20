@@ -26,6 +26,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SnapQuote",
   description: "SnapQuote Quote Builder",
+    icons: {
+    icon: "/favicon.ico?v=2",
+  },
 }
 
 
