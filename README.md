@@ -69,6 +69,21 @@ The app is designed for contractors who need to quickly build professional tree 
 
 SnapQuote was built as a focused estimating tool for tree service businesses. The goal was to create a clean, field-friendly workflow that helps service providers generate professional quotes quickly without relying on spreadsheets, paper forms, or disconnected admin tools.
 
+## Why I Built This
+
+Many small service businesses still rely on paper estimates,
+phone-based quoting, or disconnected spreadsheets.
+
+SnapQuote was built to explore a faster, mobile-first quoting
+workflow tailored specifically for field service businesses.
+
+The project focused heavily on:
+- field usability
+- fast quote generation
+- clean PDF exports
+- mobile responsiveness
+- operational simplicity
+
 ## Current Status
 
 This project is an active working prototype / MVP. Core quote creation, saving, editing, history, status tracking, and PDF export workflows are functional.
