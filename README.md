@@ -24,6 +24,36 @@ The app is designed for contractors who need to quickly build professional tree 
 - Custom company logo and company information support
 - Supabase-backed quote storage
 
+## Screenshots
+
+### Mobile Quote Builder
+
+![Mobile Quote Builder](public/readme/mobile-preview.png)
+
+---
+
+### Mobile Quote History
+
+![Mobile Quote History](public/readme/mobile-history-preview.png)
+
+---
+
+### Mobile PDF Export
+
+![Mobile PDF Export](public/readme/mobile-pdf-preview.png)
+
+---
+
+### Desktop Quote Preview
+
+![Desktop Quote Preview](public/readme/desktop-dashboard-preview.png)
+
+---
+
+### Settings & Configuration
+
+![Settings Preview](public/readme/mobile-settings-preview.png)
+
 ## Tech Stack
 
 - Next.js
