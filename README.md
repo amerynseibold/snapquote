@@ -28,31 +28,33 @@ The app is designed for contractors who need to quickly build professional tree 
 
 ### Mobile Quote Builder
 
-![Mobile Quote Builder](public/readme/mobile-preview.png)
+<img src="public/readme/mobile-preview.png" width="300" />
 
 ---
 
 ### Mobile Quote History
 
-![Mobile Quote History](public/readme/mobile-history-preview.png)
+<img src="public/readme/mobile-history-preview.png" width="300" />
 
 ---
 
 ### Mobile PDF Export
 
-![Mobile PDF Export](public/readme/mobile-pdf-preview.png)
-
----
-
-### Desktop Quote Preview
-
-![Desktop Quote Preview](public/readme/desktop-dashboard-preview.png)
+<img src="public/readme/mobile-pdf-preview.png" width="300" />
 
 ---
 
 ### Settings & Configuration
 
-![Settings Preview](public/readme/mobile-settings-preview.png)
+<img src="public/readme/mobile-settings-preview.png" width="300" />
+
+---
+
+### Desktop Quote Preview
+
+<img src="public/readme/desktop-dashboard-preview.png" width="900" />
+
+
 
 ## Tech Stack
 
